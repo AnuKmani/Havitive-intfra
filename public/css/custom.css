@@ -1,0 +1,25 @@
+/* Overrides carried over from the Laravel views' inline <style> blocks */
+.header-layout1 { background: #052132 !important; }
+.bg-title-dark { background: #052132 !important; }
+.bg-smokes { background-color: #e8e8e8 !important; }
+.bg-smoke { background-color: white !important; }
+.th-btn.btn-mask { background-color: white !important; }
+.hero-1 { background: #052132 !important; }
+@media (max-width: 1500px) { .hero-1 .hero-slider1 { max-width: none !important; } }
+.hero-style1 { padding: 210px 0 130px !important; }
+.hero-1 .hero-slider1 { margin-top: -155px; }
+@media (max-width: 575px) {
+  .hero-style1 { padding: 50px 0 0 !important; }
+  .img-box2 .about-tag { top: 8% !important; }
+}
+@media (max-width: 991px) { .img-box2 .about-tag .about-experience-tag { background: none !important; } }
+/* The fixed header overlaps the top of the page banner, so leave room for it. */
+.breadcumb-wrapper { padding: 150px 0 50px !important; }
+.breadcumb-title { font-size: clamp(28px, 4vw, 48px); }
+@media (max-width: 991px) { .breadcumb-wrapper { padding: 120px 0 40px !important; } }
+.rich-text img { max-width: 100%; height: auto; }
+.rich-text ul, .rich-text ol { padding-left: 1.25rem; }
+.form-alert { margin-top: 12px; padding: 10px 14px; border-radius: 8px; font-size: 15px; }
+.form-alert.ok { background: #e7f6ec; color: #14532d; }
+.form-alert.err { background: #fdecec; color: #7f1d1d; }
+.visually-hidden-focusable:not(:focus) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
