@@ -56,7 +56,8 @@ export default async function Dashboard() {
           <h1>{greeting()}!</h1>
           <p>Manage your website content here. Changes appear on the live site within a few seconds.</p>
           <div className="ad-hero-actions">
-            <a className="ad-btn ad-btn-white" href="/admin/projects/new"><Icon name="plus" /> Add project</a>
+            <a className="ad-btn ad-btn-white" href="/admin/home"><Icon name="edit" /> Edit home page</a>
+            <a className="ad-btn ad-btn-ghost" href="/admin/projects/new"><Icon name="plus" /> Add project</a>
             <a className="ad-btn ad-btn-ghost" href="/admin/posts/new"><Icon name="pen" /> Write blog post</a>
             <a className="ad-btn ad-btn-ghost" href="/" target="_blank"><Icon name="external" /> View website</a>
           </div>
@@ -124,7 +125,7 @@ export default async function Dashboard() {
           <h2 className="ad-section-title">{g}</h2>
           <div className="ad-tiles">
             {RESOURCES.map((r, i) => ({ r, i })).filter(({ r }) => r.group === g).map(({ r, i }) => (
-              <a key={r.key} href={`/admin/${r.key}`} className="ad-tile">
+              <a key={r.key} href={r.home ? "/admin/home" : `/admin/${r.key}`} className="ad-tile">
                 <div className="ad-tile-img">
                   {thumbs[i] ? <img src={media(thumbs[i], r.fields.find((f) => f.legacyFolder)?.legacyFolder)} alt="" /> : <Icon name={r.icon} size={34} />}
                 </div>

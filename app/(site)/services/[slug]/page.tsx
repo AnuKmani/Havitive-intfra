@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo-page";
+import { defaults } from "@/lib/seo";
 import Breadcrumb from "@/components/site/Breadcrumb";
 import Strengths from "@/components/site/Strengths";
 import LatestProjects from "@/components/home/LatestProjects";
@@ -23,13 +25,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const s = await loadBySlug(slug, getService, routes.service);
-  const name = titleCase(s.name);
-  return {
-    title: `${name} Services in Kerala`,
-    description: truncate(`${name} by Havitive Infra Pvt Ltd, Thiruvananthapuram. ${s.description ?? ""}`, 158),
-    alternates: { canonical: routes.service(s) },
-    openGraph: { images: [{ url: media(s.img) }] },
-  };
+  return pageMetadata(`service:${s.id}`, defaults.service(s));
 }
 
 export default async function ServicePage({ params }: Props) {
@@ -68,7 +64,7 @@ export default async function ServicePage({ params }: Props) {
                 </div>
               </div>
               <div className="col-lg-6">
-                <div className="img-box3"><div className="img1"><img src={media(service.img)} alt={name} /></div></div>
+                <div className="img-box3"><div className="img1"><img src={media(service.img)} alt={service.img_alt || name} /></div></div>
               </div>
             </div>
           </div>
@@ -79,7 +75,7 @@ export default async function ServicePage({ params }: Props) {
         <Strengths
           heading="Design Solutions for Every Need"
           intro="Our expertise ensures outstanding results for both residential and commercial sectors, delivering creative excellence in every detail."
-          items={serviceSections.map((s) => ({ title: s.section_name ?? "", icon: media(s.icon), img: media(s.img) }))}
+          items={serviceSections.map((s) => ({ title: s.section_name ?? "", icon: media(s.icon), img: media(s.img), imgAlt: s.img_alt }))}
         />
       )}
       <Upcoming projects={upcoming} />

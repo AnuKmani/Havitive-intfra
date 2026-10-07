@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { staticPageMetadata } from "@/lib/seo-page";
 import Breadcrumb from "@/components/site/Breadcrumb";
 import JobApplicationForm from "@/components/forms/JobApplicationForm";
 import JsonLd from "@/components/site/JsonLd";
@@ -8,11 +9,9 @@ import { safeHtml, stripHtml } from "@/lib/text";
 
 export const revalidate = 300;
 
-export const metadata: Metadata = {
-  title: "Careers – Jobs at Havitive",
-  description: "Join Havitive Infra Pvt Ltd in Thiruvananthapuram. See open positions for architects, engineers, draughtsmen and designers, and apply online.",
-  alternates: { canonical: "/careers" },
-};
+export function generateMetadata(): Promise<Metadata> {
+  return staticPageMetadata("page:careers");
+}
 
 export default async function CareersPage() {
   const jobs = await getJobs();

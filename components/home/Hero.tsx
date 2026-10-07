@@ -10,7 +10,7 @@ export default function Hero({ banners }: { banners: HomeBanner[] }) {
           {banners.map((b, i) => (
             <div className="swiper-slide" key={b.id}>
               <div className="hero-inner" data-mask-src="/frontend/assets/img/hero/hero_1_bg_mask.png">
-                <div className="th-hero-bg" data-bg-src={media(b.home_images)}></div>
+                <div className="th-hero-bg" data-bg-src={media(b.home_images)} role="img" aria-label={b.home_images_alt || b.heading || "Havitive project"}></div>
                 <div className="hero-big-text" aria-hidden="true">HAVITIVE</div>
                 <div className="container">
                   <div className="row align-items-center">

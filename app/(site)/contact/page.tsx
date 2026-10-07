@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { staticPageMetadata } from "@/lib/seo-page";
 import Breadcrumb from "@/components/site/Breadcrumb";
 import EnquiryForm from "@/components/forms/EnquiryForm";
 import { ContactInfo } from "@/components/site/ContactInfo";
@@ -7,11 +8,9 @@ import { SITE } from "@/lib/site";
 
 export const revalidate = 300;
 
-export const metadata: Metadata = {
-  title: "Contact Us",
-  description: `Contact Havitive Infra Pvt Ltd, Kazhakkoottam, Thiruvananthapuram. Call ${SITE.phones[0].label} or email ${SITE.email} for architecture, engineering and construction enquiries.`,
-  alternates: { canonical: "/contact" },
-};
+export function generateMetadata(): Promise<Metadata> {
+  return staticPageMetadata("page:contact");
+}
 
 export default async function ContactPage() {
   const sectors = await getSectors();

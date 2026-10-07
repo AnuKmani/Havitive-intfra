@@ -12,7 +12,7 @@ export default function RecentPosts({ posts }: { posts: BlogPost[] }) {
         {posts.map((p) => (
           <div className="recent-post" key={p.id}>
             <div className="media-img">
-              <a href={routes.post(p)}><img src={media(p.post_image)} alt={p.post_title ?? ""} loading="lazy" /></a>
+              <a href={routes.post(p)}><img src={media(p.post_image)} alt={p.post_image_alt || p.post_title || ""} loading="lazy" /></a>
             </div>
             <div className="media-body">
               <h4 className="post-title"><a className="text-inherit" href={routes.post(p)}>{p.post_title}</a></h4>

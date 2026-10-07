@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo-page";
+import { defaults } from "@/lib/seo";
 import Breadcrumb from "@/components/site/Breadcrumb";
 import { getProjectsBySector, getSector, getSectors } from "@/lib/data";
 import { loadBySlug } from "@/lib/canonical";
@@ -19,11 +21,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const sector = await loadBySlug(slug, getSector, routes.sectorProjects);
-  return {
-    title: `${sector.sector_name} – All Projects`,
-    description: `Browse all ${sector.sector_name?.toLowerCase()} designed and delivered by Havitive Infra Pvt Ltd in Kerala.`,
-    alternates: { canonical: routes.sectorProjects(sector) },
-  };
+  return pageMetadata(`sector-projects:${sector.id}`, defaults.sectorProjects(sector));
 }
 
 export default async function SectorProjectsPage({ params, searchParams }: Props) {
@@ -56,7 +54,7 @@ export default async function SectorProjectsPage({ params, searchParams }: Props
               <div className="col-md-6 col-xl-4" key={p.id}>
                 <article className="property-card2">
                   <div className="property-card-thumb img-shine">
-                    <img src={media(p.project_image)} alt={p.project_name ?? "Project"} loading="lazy" />
+                    <img src={media(p.project_image)} alt={p.project_image_alt || p.project_name || "Project"} loading="lazy" />
                   </div>
                   <div className="property-card-details">
                     <div className="media-left">

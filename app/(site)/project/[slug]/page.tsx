@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo-page";
+import { defaults } from "@/lib/seo";
 import Breadcrumb from "@/components/site/Breadcrumb";
 import JsonLd from "@/components/site/JsonLd";
 import RecentPosts from "@/components/site/RecentPosts";
@@ -21,13 +23,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const p = await loadBySlug(slug, getProject, routes.project);
-  const description = p.meta_descp || truncate(`${p.project_heading ?? ""}. ${p.description ?? ""}`, 158);
-  return {
-    title: p.meta_title || p.project_name || "Project",
-    description,
-    alternates: { canonical: routes.project(p) },
-    openGraph: { title: p.project_name ?? undefined, description, images: [{ url: media(p.project_image) }] },
-  };
+  return pageMetadata(`project:${p.id}`, defaults.project(p));
 }
 
 export default async function ProjectPage({ params }: Props) {
@@ -38,6 +34,7 @@ export default async function ProjectPage({ params }: Props) {
     project.sector_id ? getSector(project.sector_id) : Promise.resolve(null),
   ]);
   const images = gallery.length ? gallery.map((g) => media(g.gallery)) : [media(project.project_image)];
+  const imageAlts = gallery.length ? gallery.map((g) => g.gallery_alt) : [project.project_image_alt];
   const videoUrl = /^https?:\/\//.test(project.main_content ?? "") ? project.main_content! : SITE.video;
 
   return (
@@ -68,7 +65,7 @@ export default async function ProjectPage({ params }: Props) {
               <div className="swiper-wrapper">
                 {images.map((src, i) => (
                   <div className="swiper-slide" key={i}>
-                    <div className="property-slider-img"><img src={src} alt={`${project.project_name} – image ${i + 1}`} loading={i ? "lazy" : "eager"} /></div>
+                    <div className="property-slider-img"><img src={src} alt={imageAlts[i] || `${project.project_name} – image ${i + 1}`} loading={i ? "lazy" : "eager"} /></div>
                   </div>
                 ))}
               </div>
@@ -102,7 +99,7 @@ export default async function ProjectPage({ params }: Props) {
                           <div className={i % 2 === 0 ? "col-xl-5" : "col-xl-7"} key={g.id}>
                             <div className="property-gallery-card">
                               <div className="property-gallery-card-img">
-                                <img className="w-100" src={media(g.gallery)} alt={`${project.project_name} gallery`} loading="lazy" />
+                                <img className="w-100" src={media(g.gallery)} alt={g.gallery_alt || `${project.project_name} gallery`} loading="lazy" />
                               </div>
                               <a className="icon-btn popup-image" href={media(g.gallery)} aria-label="Enlarge image"><i className="fal fa-magnifying-glass-plus"></i></a>
                             </div>
@@ -132,7 +129,7 @@ export default async function ProjectPage({ params }: Props) {
                         {floors.map((f, i) => (
                           <div className={`tab-pane fade${i === 0 ? " show active" : ""}`} id={`floor-pane-${f.id}`} role="tabpanel" aria-labelledby={`floor-tab-${f.id}`} tabIndex={0} key={f.id}>
                             <div className="property-grid-plan">
-                              <div className="property-grid-thumb"><img src={media(f.image)} alt={`${f.floor_name} plan`} loading="lazy" style={{ height: 300, objectFit: "contain" }} /></div>
+                              <div className="property-grid-thumb"><img src={media(f.image)} alt={f.image_alt || `${f.floor_name} plan`} loading="lazy" style={{ height: 300, objectFit: "contain" }} /></div>
                               <div className="property-grid-details">
                                 <h4 className="property-grid-title">{f.floor_name}</h4>
                                 <div className="property-grid-text rich-text" dangerouslySetInnerHTML={{ __html: richText(f.description) }} />
@@ -164,7 +161,7 @@ export default async function ProjectPage({ params }: Props) {
                         {facilities.map((f, i) => (
                           <div className={`tab-pane fade${i === 0 ? " show active" : ""}`} id={`facility-pane-${f.id}`} role="tabpanel" aria-labelledby={`facility-tab-${f.id}`} tabIndex={0} key={f.id}>
                             <div className="property-grid-plan">
-                              <div className="property-grid-thumb"><img src={media(f.facility_image)} alt={f.facility_name ?? ""} loading="lazy" style={{ height: 300, objectFit: "contain" }} /></div>
+                              <div className="property-grid-thumb"><img src={media(f.facility_image)} alt={f.facility_image_alt || f.facility_name || ""} loading="lazy" style={{ height: 300, objectFit: "contain" }} /></div>
                               <div className="property-grid-details">
                                 <h4 className="property-grid-title">{f.facility_name}</h4>
                                 <div className="property-grid-text rich-text" dangerouslySetInnerHTML={{ __html: richText(f.facility_description) }} />

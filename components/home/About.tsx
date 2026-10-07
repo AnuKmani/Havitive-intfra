@@ -6,6 +6,7 @@ const ABOUT_SLIDER = '{"breakpoints":{"0":{"slidesPerView":1},"576":{"slidesPerV
 
 export default function About({ about }: { about: Home | null }) {
   const images = splitList(about?.home_images);
+  const alts = (about?.home_images_alt ?? "").split("\n");
   return (
     <div className="overflow-hidden space" id="about-sec" style={{ backgroundColor: "white" }}>
       <div className="sec-bg-shape2-1 spin shape-mockup d-xl-block d-none" data-bottom="9%" data-right="13%">
@@ -18,10 +19,10 @@ export default function About({ about }: { about: Home | null }) {
               <div className="slider-area">
                 <div className="swiper th-slider about-thumb-slider" id="aboutSlider1" data-slider-options={ABOUT_SLIDER}>
                   <div className="swiper-wrapper">
-                    {images.map((img) => (
+                    {images.map((img, i) => (
                       <div className="swiper-slide" key={img}>
                         <div className="img1">
-                          <img src={media(img, "upload/home_img")} alt="Havitive project" loading="lazy" style={{ width: "100%", height: "auto", objectFit: "cover" }} />
+                          <img src={media(img, "upload/home_img")} alt={alts[i] || "Havitive project"} loading="lazy" style={{ width: "100%", height: "auto", objectFit: "cover" }} />
                         </div>
                       </div>
                     ))}

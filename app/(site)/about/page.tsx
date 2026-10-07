@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { staticPageMetadata } from "@/lib/seo-page";
 import Breadcrumb from "@/components/site/Breadcrumb";
 import Strengths from "@/components/site/Strengths";
 import { getCompanies, getTeam } from "@/lib/data";
@@ -8,12 +9,9 @@ import { SITE } from "@/lib/site";
 
 export const revalidate = 300;
 
-export const metadata: Metadata = {
-  title: "About Us – Vision, Group Companies & Leadership",
-  description:
-    "Learn about Havitive Infra Pvt Ltd: our vision and mission, the Havitive group of companies (constructions, architectural studio, engineering consultancy, interiors) and the management team behind our projects in Kerala.",
-  alternates: { canonical: "/about" },
-};
+export function generateMetadata(): Promise<Metadata> {
+  return staticPageMetadata("page:about");
+}
 
 export default async function AboutPage() {
   const [companies, management, team] = await Promise.all([getCompanies(), getTeam("management"), getTeam("team")]);
@@ -70,7 +68,7 @@ export default async function AboutPage() {
           {companies.map((c, i) => (
             <div className="property-card-wrap" key={c.id}>
               <div className="property-thumb img-shine" data-mask-src="/frontend/assets/img/shape/property-card1-img-mask.png">
-                <img src={media(c.compani_img)} alt={c.company_name ?? "Havitive company"} loading="lazy" style={{ width: 338, height: 298, objectFit: "cover" }} />
+                <img src={media(c.compani_img)} alt={c.compani_img_alt || c.company_name || "Havitive company"} loading="lazy" style={{ width: 338, height: 298, objectFit: "cover" }} />
               </div>
               <div className="property-card">
                 <div className="property-card-number">{String(i + 1).padStart(2, "0")}</div>
@@ -80,7 +78,7 @@ export default async function AboutPage() {
                   <p className="property-card-text">{c.company_description}</p>
                   <div className="property-btn-wrap">
                     <div className="property-author-wrap">
-                      <img src={media(c.compani_logo)} alt="" style={{ width: 40, height: 40, objectFit: "contain" }} />
+                      <img src={media(c.compani_logo)} alt={c.compani_logo_alt || ""} style={{ width: 40, height: 40, objectFit: "contain" }} />
                       <span>Havitive</span>
                     </div>
                     <a href={c.link || "/contact"} className="th-btn btn-mask2 th-btn-icon">Details</a>
@@ -146,7 +144,7 @@ export default async function AboutPage() {
                   <div className="swiper-slide" key={m.id}>
                     <div className="th-team team-card style3">
                       <div className="img-wrap">
-                        <div className="team-img"><img src={media(m.img)} alt={m.name ?? "Team member"} loading="lazy" /></div>
+                        <div className="team-img"><img src={media(m.img)} alt={m.img_alt || m.name || "Team member"} loading="lazy" /></div>
                         <div className="th-social-wrap">
                           <a className="icon-btn" href={routes.team(m)} aria-label={`About ${m.name}`}><img src="/frontend/assets/img/icon/arrow-right.svg" alt="" /></a>
                         </div>
@@ -189,7 +187,7 @@ export default async function AboutPage() {
                   <div className="th-team team-card">
                     <div className="img-wrap">
                       <div className="team-img" data-mask-src="/frontend/assets/img/theme-img/team-shape1.png">
-                        <img src={media(m.img)} alt={m.name ?? "Team member"} loading="lazy" style={{ width: 416, height: 550, objectFit: "cover" }} />
+                        <img src={media(m.img)} alt={m.img_alt || m.name || "Team member"} loading="lazy" style={{ width: 416, height: 550, objectFit: "cover" }} />
                       </div>
                     </div>
                     <div className="team-card-content">

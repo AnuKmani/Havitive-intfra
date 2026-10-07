@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo-page";
+import { defaults } from "@/lib/seo";
 import Breadcrumb from "@/components/site/Breadcrumb";
 import EnquiryForm from "@/components/forms/EnquiryForm";
 import JsonLd from "@/components/site/JsonLd";
@@ -7,7 +9,7 @@ import { loadBySlug } from "@/lib/canonical";
 import { media } from "@/lib/media";
 import { routes } from "@/lib/routes";
 import { SITE } from "@/lib/site";
-import { richText, truncate } from "@/lib/text";
+import { richText } from "@/lib/text";
 
 export const revalidate = 300;
 
@@ -21,12 +23,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const m = await loadBySlug(slug, getTeamMember, routes.team);
-  return {
-    title: `${m.name} – ${m.designation}`,
-    description: truncate(m.about, 158) || `${m.name}, ${m.designation} at Havitive Infra Pvt Ltd.`,
-    alternates: { canonical: routes.team(m) },
-    openGraph: { type: "profile", images: [{ url: media(m.img) }] },
-  };
+  return pageMetadata(`team:${m.id}`, defaults.team(m), { openGraph: { type: "profile" } });
 }
 
 export default async function TeamMemberPage({ params }: Props) {
@@ -58,7 +55,7 @@ export default async function TeamMemberPage({ params }: Props) {
             <div className="col-xl-4 col-lg-5 col-md-8">
               <div className="th-team team-card style4">
                 <div className="img-wrap">
-                  <div className="team-img"><img src={media(m.img)} alt={m.name ?? ""} /></div>
+                  <div className="team-img"><img src={media(m.img)} alt={m.img_alt || m.name || ""} /></div>
                   {m.linkedin && (
                     <div className="th-social-wrap">
                       <div className="th-social"><a target="_blank" rel="noopener" href={m.linkedin} aria-label="LinkedIn"><i className="fab fa-linkedin-in"></i></a></div>

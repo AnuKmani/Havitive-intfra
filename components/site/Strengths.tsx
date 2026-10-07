@@ -1,6 +1,6 @@
 const MASK = "/frontend/assets/img/theme-img/aminities-shape1.png";
 
-export type StrengthItem = { title: string; icon: string; img?: string };
+export type StrengthItem = { title: string; icon: string; img?: string; imgAlt?: string | null };
 
 export default function Strengths({ heading, intro, items }: { heading: string; intro: string; items: StrengthItem[] }) {
   return (
@@ -22,7 +22,7 @@ export default function Strengths({ heading, intro, items }: { heading: string; 
                 <div className="aminities-card" data-mask-src={MASK}>
                   {s.img && (
                     <div className="aminities-card-img">
-                      <img src={s.img} alt="" loading="lazy" style={{ width: 196, height: 240, objectFit: "cover" }} />
+                      <img src={s.img} alt={s.imgAlt || s.title} loading="lazy" style={{ width: 196, height: 240, objectFit: "cover" }} />
                     </div>
                   )}
                   <div className="aminities-content">

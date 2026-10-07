@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { staticPageMetadata } from "@/lib/seo-page";
 import Breadcrumb from "@/components/site/Breadcrumb";
 import BlogSidebar from "@/components/site/BlogSidebar";
 import PostList from "@/components/site/PostList";
@@ -6,11 +7,9 @@ import { getBlogCategories, getPosts } from "@/lib/data";
 
 export const revalidate = 300;
 
-export const metadata: Metadata = {
-  title: "Blog – Architecture, Construction & Design Insights",
-  description: "News and articles from Havitive Infra Pvt Ltd on architecture, construction, engineering and interior design trends in Kerala.",
-  alternates: { canonical: "/blog" },
-};
+export function generateMetadata(): Promise<Metadata> {
+  return staticPageMetadata("page:blog");
+}
 
 export default async function BlogPage() {
   const [posts, categories] = await Promise.all([getPosts(), getBlogCategories()]);

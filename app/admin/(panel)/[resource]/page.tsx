@@ -9,6 +9,8 @@ import { stripHtml } from "@/lib/text";
 export default async function ResourceList({ params }: { params: Promise<{ resource: string }> }) {
   const res = getResource((await params).resource);
   if (!res) notFound();
+  // Home page sections are all edited together on the Home page editor.
+  if (res.home) redirect("/admin/home");
   const { supabase } = await requireAdmin();
   let q = supabase.from(res.table).select("*").order("id", { ascending: false });
   for (const [k, v] of Object.entries(res.fixed ?? {})) q = q.eq(k, v);

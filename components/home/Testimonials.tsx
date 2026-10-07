@@ -38,7 +38,7 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
                   <div className="swiper-slide" key={t.id}>
                     <div className="testi-grid-wrap2">
                       <div className="testi-grid-thumb">
-                        <img src={media(t.img)} alt="" loading="lazy" style={{ width: 637, height: 469, objectFit: "cover" }} />
+                        <img src={media(t.img)} alt={t.img_alt || ""} loading="lazy" style={{ width: 637, height: 469, objectFit: "cover" }} />
                       </div>
                       <div className="testi-card style2">
                         <div className="testi-grid_review" aria-label="5 out of 5 stars">
@@ -47,7 +47,7 @@ export default function Testimonials({ items }: { items: Testimonial[] }) {
                         <p className="testi-card_text">{t.desription}</p>
                         <div className="testi-card_profile">
                           <div className="quote-icon"><img src="/frontend/assets/img/icon/qoute2.svg" alt="" /></div>
-                          <div className="avatar"><img src={media(t.client_img)} alt={t.client_name ?? ""} style={{ width: 40, height: 40 }} /></div>
+                          <div className="avatar"><img src={media(t.client_img)} alt={t.client_img_alt || t.client_name || ""} style={{ width: 40, height: 40 }} /></div>
                           <div className="testi-card_profile-details">
                             <h3 className="testi-card_name">{t.client_name}</h3>
                             <span className="testi-card_desig">{t.client_designation}</span>

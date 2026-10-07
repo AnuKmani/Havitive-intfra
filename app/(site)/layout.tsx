@@ -20,7 +20,6 @@ export const metadata: Metadata = {
     "Kazhakkoottam architects",
   ],
   applicationName: SITE.shortName,
-  alternates: { canonical: "/" },
   icons: { icon: "/upload/logos/hav.png", apple: "/upload/logos/hav.png" },
   openGraph: {
     type: "website",

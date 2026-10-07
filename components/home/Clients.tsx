@@ -13,7 +13,7 @@ export default function Clients({ clients }: { clients: Client[] }) {
               {clients.map((c) => (
                 <div className="swiper-slide" key={c.id}>
                   <span className="client-card">
-                    <img src={media(c.img)} alt="Havitive client logo" loading="lazy" style={{ width: "100%", height: 100, objectFit: "contain" }} />
+                    <img src={media(c.img)} alt={c.img_alt || "Havitive client logo"} loading="lazy" style={{ width: "100%", height: 100, objectFit: "contain" }} />
                   </span>
                 </div>
               ))}

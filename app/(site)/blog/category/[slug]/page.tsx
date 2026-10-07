@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { pageMetadata } from "@/lib/seo-page";
+import { defaults } from "@/lib/seo";
 import Breadcrumb from "@/components/site/Breadcrumb";
 import BlogSidebar from "@/components/site/BlogSidebar";
 import PostList from "@/components/site/PostList";
@@ -17,11 +19,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const cat = await getBlogCategoryBySlug(decodeURIComponent((await params).slug));
   if (!cat) return {};
-  return {
-    title: `${cat.category_name} Articles`,
-    description: `Havitive articles about ${cat.category_name.toLowerCase()}.`,
-    alternates: { canonical: routes.blogCategory(cat) },
-  };
+  return pageMetadata(`blog-category:${cat.id}`, defaults.blogCategory(cat));
 }
 
 export default async function BlogCategoryPage({ params }: Props) {

@@ -29,7 +29,7 @@ export default function BlogSlider({ posts }: { posts: BlogPost[] }) {
                 <div className="swiper-slide" key={p.id}>
                   <div className="blog-card style2">
                     <div className="blog-img">
-                      <a href={routes.post(p)}><img src={media(p.post_image)} alt={p.post_title ?? "Blog post"} loading="lazy" /></a>
+                      <a href={routes.post(p)}><img src={media(p.post_image)} alt={p.post_image_alt || p.post_title || "Blog post"} loading="lazy" /></a>
                     </div>
                     <div className="blog-content">
                       <div className="blog-meta">

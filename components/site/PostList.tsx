@@ -12,7 +12,7 @@ export default function PostList({ posts, categories }: { posts: BlogPost[]; cat
         return (
           <article className="th-blog blog-single has-post-thumbnail" key={p.id}>
             <div className="blog-img">
-              <a href={routes.post(p)}><img src={media(p.post_image)} alt={p.post_title ?? ""} loading="lazy" /></a>
+              <a href={routes.post(p)}><img src={media(p.post_image)} alt={p.post_image_alt || p.post_title || ""} loading="lazy" /></a>
             </div>
             <div className="blog-content">
               <div className="blog-meta">

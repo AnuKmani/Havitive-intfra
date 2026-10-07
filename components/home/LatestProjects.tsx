@@ -32,7 +32,7 @@ export default function LatestProjects({ projects, title = "Browse Our Latest Pr
                   <div className="portfolio-card style2">
                     <div className="portfolio-img img-shine" style={{ width: "100%", height: 278 }}>
                       <a href={routes.project(p)}>
-                        <img src={media(p.project_image)} alt={p.project_name ?? "Project"} loading="lazy" />
+                        <img src={media(p.project_image)} alt={p.project_image_alt || p.project_name || "Project"} loading="lazy" />
                         <div className="portfolio-card-shape"><img src={media(p.project_image)} alt="" loading="lazy" /></div>
                       </a>
                     </div>

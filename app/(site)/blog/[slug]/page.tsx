@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { pageMetadata } from "@/lib/seo-page";
+import { defaults } from "@/lib/seo";
 import Breadcrumb from "@/components/site/Breadcrumb";
 import BlogSidebar from "@/components/site/BlogSidebar";
 import JsonLd from "@/components/site/JsonLd";
@@ -25,21 +27,10 @@ async function load(params: Props["params"]) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const p = await load(params);
   if (!p) return {};
-  const description = truncate(p.short_descp, 158) || truncate(p.meta_descp, 158);
-  return {
-    title: p.post_title ?? "Article",
-    description,
+  return pageMetadata(`post:${p.id}`, defaults.post(p), {
     keywords: splitList(p.post_tags),
-    alternates: { canonical: routes.post(p) },
-    openGraph: {
-      type: "article",
-      title: p.post_title ?? undefined,
-      description,
-      publishedTime: p.created_at ?? undefined,
-      modifiedTime: p.updated_at ?? undefined,
-      images: [{ url: media(p.post_image) }],
-    },
-  };
+    openGraph: { type: "article", publishedTime: p.created_at ?? undefined, modifiedTime: p.updated_at ?? undefined },
+  });
 }
 
 export default async function PostPage({ params }: Props) {
@@ -72,7 +63,7 @@ export default async function PostPage({ params }: Props) {
           <div className="row gx-30">
             <div className="col-xxl-8 col-lg-7">
               <article className="th-blog blog-single mb-0">
-                <div className="blog-img"><img src={image} alt={post.post_title ?? ""} /></div>
+                <div className="blog-img"><img src={image} alt={post.post_image_alt || post.post_title || ""} /></div>
                 <div className="blog-content">
                   <div className="blog-meta">
                     <span className="author"><i className="far fa-user"></i>Havitive</span>

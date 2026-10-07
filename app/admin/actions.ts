@@ -3,7 +3,7 @@
 import { revalidatePath, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/admin/auth";
-import { getResource, type Field } from "@/lib/admin/resources";
+import { altName, getResource, type Field } from "@/lib/admin/resources";
 import { serverClient } from "@/lib/supabase/server";
 
 export type ActionState = { ok: boolean; message: string } | null;
@@ -18,6 +18,10 @@ function readValues(fields: Field[], form: FormData, table: string) {
     if (v === "") v = null;
     if (f.required && v === null) throw new Error(`${f.label} is required.`);
     values[f.name] = v !== null && (INT_COLUMNS.has(f.name) || (table === "sectors" && f.name === "category")) ? Number(v) : v;
+    if (f.type === "image" || f.type === "images") {
+      const alt = String(form.get(altName(f)) ?? "").trim();
+      values[altName(f)] = alt || null;
+    }
   }
   return values;
 }
@@ -137,4 +141,99 @@ export async function changePassword(_: ActionState, form: FormData): Promise<Ac
   const { error } = await supabase.auth.updateUser({ password });
   if (error) return { ok: false, message: error.message };
   return { ok: true, message: "Password changed." };
+}
+
+/** Save from the combined Home page editor: never redirects, refreshes the editor instead. */
+export async function saveInline(resourceKey: string, id: number | null, returnTo: string, _: ActionState, form: FormData): Promise<ActionState> {
+  const res = getResource(resourceKey);
+  if (!res) return { ok: false, message: "Unknown section." };
+  const { supabase } = await requireAdmin();
+  let values: Record<string, string | number | null>;
+  try {
+    values = readValues(res.fields, form, res.table);
+  } catch (e) {
+    return { ok: false, message: (e as Error).message };
+  }
+  if (res.derive) Object.assign(values, res.derive(values as Record<string, string | null>, id === null));
+  Object.assign(values, res.fixed ?? {});
+  const { error } = id
+    ? await supabase.from(res.table).update({ ...values, updated_at: new Date().toISOString() }).eq("id", id)
+    : await supabase.from(res.table).insert(values);
+  if (error) return { ok: false, message: error.message };
+  refreshSite();
+  revalidatePath(returnTo);
+  return { ok: true, message: id ? "Saved. The website is updated." : "Added. The website is updated." };
+}
+
+export async function deleteInline(resourceKey: string, id: number, returnTo: string) {
+  const res = getResource(resourceKey);
+  if (!res || res.singleton) return;
+  const { supabase } = await requireAdmin();
+  if (res.key === "banners") {
+    // Same rule as the Laravel admin: the home page always keeps at least one banner.
+    const { count } = await supabase.from(res.table).select("id", { count: "exact", head: true });
+    if ((count ?? 0) <= 1) return;
+  }
+  await supabase.from(res.table).delete().eq("id", id);
+  refreshSite();
+  revalidatePath(returnTo);
+}
+
+/** Add several gallery images or floor plans at once (one row per uploaded image). */
+export async function addChildrenBulk(resourceKey: string, childKey: string, parentId: number, images: string[]) {
+  const child = getResource(resourceKey)?.children?.find((c) => c.key === childKey);
+  const imageField = child?.fields.find((f) => f.type === "image");
+  if (!child || !imageField || !images.length) return;
+  const { supabase } = await requireAdmin();
+  const { count } = await supabase.from(child.table).select("id", { count: "exact", head: true }).eq(child.foreignKey, parentId);
+  const titleField = child.title !== imageField.name ? child.title : null;
+  const rows = images
+    .filter((p) => typeof p === "string" && p.startsWith("storage:"))
+    .slice(0, 50)
+    .map((path, i) => ({
+      [child.foreignKey]: parentId,
+      [imageField.name]: path,
+      ...(titleField ? { [titleField]: `${child.key === "floors" ? "Plan" : "Item"} ${(count ?? 0) + i + 1}` } : {}),
+    }));
+  await supabase.from(child.table).insert(rows);
+  refreshSite();
+  revalidatePath(`/admin/${resourceKey}/${parentId}`);
+}
+
+const SEO_KEY = /^(page:[a-z-]+|(project|sector|sector-projects|service|team|post|blog-category):\d+)$/;
+
+export async function saveSeo(key: string, returnTo: string, _: ActionState, form: FormData): Promise<ActionState> {
+  if (!SEO_KEY.test(key)) return { ok: false, message: "Unknown page." };
+  const { supabase } = await requireAdmin();
+  const str = (k: string, max: number) => {
+    const v = String(form.get(k) ?? "").trim().slice(0, max);
+    return v || null;
+  };
+  const canonical = str("canonical_url", 500);
+  if (canonical && !/^(https?:\/\/|\/)/.test(canonical)) return { ok: false, message: "Canonical URL must start with https:// or /" };
+  const { error } = await supabase.from("page_seo").upsert({
+    key,
+    meta_title: str("meta_title", 200),
+    meta_description: str("meta_description", 400),
+    canonical_url: canonical,
+    og_image: str("og_image", 500),
+    og_image_alt: str("og_image_alt", 200),
+    noindex: form.get("noindex") === "on",
+    updated_at: new Date().toISOString(),
+  });
+  if (error) return { ok: false, message: error.message };
+  refreshSite();
+  revalidatePath(returnTo);
+  return { ok: true, message: "SEO settings saved." };
+}
+
+export async function updateProfile(_: ActionState, form: FormData): Promise<ActionState> {
+  const { supabase } = await requireAdmin();
+  const name = String(form.get("name") ?? "").trim().slice(0, 100);
+  const phone = String(form.get("phone") ?? "").trim().slice(0, 30);
+  const photo = String(form.get("photo") ?? "").trim().slice(0, 500);
+  const { error } = await supabase.auth.updateUser({ data: { name, phone, photo } });
+  if (error) return { ok: false, message: error.message };
+  revalidatePath("/admin", "layout");
+  return { ok: true, message: "Profile updated." };
 }

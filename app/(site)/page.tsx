@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+import { staticPageMetadata } from "@/lib/seo-page";
 import Hero from "@/components/home/Hero";
 import Counters from "@/components/home/Counters";
 import About from "@/components/home/About";
@@ -13,6 +15,10 @@ import {
 } from "@/lib/data";
 
 export const revalidate = 300;
+
+export function generateMetadata(): Promise<Metadata> {
+  return staticPageMetadata("page:home");
+}
 
 export default async function HomePage() {
   const [banners, counters, about, service, upcoming, projects, clients, sectors, testimonials, posts] = await Promise.all([

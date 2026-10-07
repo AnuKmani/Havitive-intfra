@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import type { ActionState } from "@/app/admin/actions";
-import type { Field, Option } from "@/lib/admin/resources";
+import { altName, type Field, type Option } from "@/lib/admin/resources";
 import { FieldInput } from "./Fields";
 
 type Props = {
@@ -31,6 +31,7 @@ export default function RecordForm({ fields, values, options, action, submitLabe
           <FieldInput
             field={f}
             value={values[f.name] === null || values[f.name] === undefined ? "" : String(values[f.name])}
+            alt={String(values[altName(f)] ?? "")}
             options={typeof f.options === "string" ? options[f.options] : f.options}
           />
           {f.help && <small>{f.help}</small>}

@@ -58,3 +58,6 @@ export const getPosts = cache(() => rows<T.BlogPost>(db().from("blog_posts").sel
 export const getPostBySlug = cache((slug: string) => one<T.BlogPost>(db().from("blog_posts").select("*").eq("post_slug", slug).maybeSingle()));
 
 export const getJobs = cache(() => rows<T.Job>(db().from("alljobs").select("*").order("id")));
+
+export const getSeo = cache((key: string) => one<import("./seo").PageSeo>(db().from("page_seo").select("*").eq("key", key).maybeSingle()));
+export const getAllSeo = cache(() => rows<import("./seo").PageSeo>(db().from("page_seo").select("*")));

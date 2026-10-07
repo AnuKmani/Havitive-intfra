@@ -1,13 +1,13 @@
 "use client";
 
 import { useRef, useState } from "react";
-import type { Field, Option } from "@/lib/admin/resources";
+import { altName, type Field, type Option } from "@/lib/admin/resources";
 import { media, splitList, STORAGE_PREFIX } from "@/lib/media";
 import { browserClient } from "@/lib/supabase/browser";
 
 const MAX_IMAGE = 8 * 1024 * 1024;
 
-async function uploadImage(file: File, folder = "misc"): Promise<string> {
+export async function uploadImage(file: File, folder = "misc"): Promise<string> {
   if (!file.type.startsWith("image/")) throw new Error("Please choose an image file.");
   if (file.size > MAX_IMAGE) throw new Error("Images must be under 8 MB.");
   const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -17,7 +17,7 @@ async function uploadImage(file: File, folder = "misc"): Promise<string> {
   return STORAGE_PREFIX + path;
 }
 
-function ImageField({ field, value }: { field: Field; value: string }) {
+function ImageField({ field, value, alt }: { field: Field; value: string; alt: string }) {
   const [current, setCurrent] = useState(value);
   const [status, setStatus] = useState("");
   return (
@@ -53,13 +53,20 @@ function ImageField({ field, value }: { field: Field; value: string }) {
           <button type="button" className="ad-btn ad-btn-light" onClick={() => setCurrent("")}>Remove</button>
         )}
         {status && <small>{status}</small>}
+        <label className="ad-alt">
+          <span>Alt text (describes the image for Google and screen readers)</span>
+          <input type="text" name={altName(field)} defaultValue={alt} placeholder="e.g. Front view of the Kottarakkara municipality office" maxLength={200} />
+        </label>
       </div>
     </div>
   );
 }
 
-function ImagesField({ field, value }: { field: Field; value: string }) {
-  const [list, setList] = useState(splitList(value));
+function ImagesField({ field, value, alt }: { field: Field; value: string; alt: string }) {
+  const [list, setList] = useState(() => {
+    const alts = alt.split("\n");
+    return splitList(value).map((src, i) => ({ src, alt: alts[i] ?? "" }));
+  });
   const [status, setStatus] = useState("");
   const move = (i: number, d: number) => {
     const next = [...list];
@@ -70,11 +77,19 @@ function ImagesField({ field, value }: { field: Field; value: string }) {
   };
   return (
     <div>
-      <input type="hidden" name={field.name} value={list.join(",")} />
+      <input type="hidden" name={field.name} value={list.map((x) => x.src).join(",")} />
+      <input type="hidden" name={altName(field)} value={list.map((x) => x.alt.replace(/\s+/g, " ")).join("\n")} />
       <div className="ad-gallery">
         {list.map((img, i) => (
-          <div key={img + i} className="ad-gallery-item">
-            <img src={media(img, field.legacyFolder)} alt="" />
+          <div key={img.src + i} className="ad-gallery-item">
+            <img src={media(img.src, field.legacyFolder)} alt="" />
+            <input
+              className="ad-gallery-alt"
+              value={img.alt}
+              placeholder="Alt text"
+              aria-label={`Alt text for image ${i + 1}`}
+              onChange={(e) => setList(list.map((x, k) => (k === i ? { ...x, alt: e.target.value } : x)))}
+            />
             <div>
               <button type="button" onClick={() => move(i, -1)} aria-label="Move left">←</button>
               <button type="button" onClick={() => move(i, 1)} aria-label="Move right">→</button>
@@ -94,7 +109,7 @@ function ImagesField({ field, value }: { field: Field; value: string }) {
             try {
               const added: string[] = [];
               for (const f of files) added.push(await uploadImage(f, field.folder));
-              setList((l) => [...l, ...added]);
+              setList((l) => [...l, ...added.map((src) => ({ src, alt: "" }))]);
               setStatus("Uploaded. Remember to save.");
             } catch (err) {
               setStatus((err as Error).message);
@@ -148,7 +163,7 @@ function RichTextField({ field, value }: { field: Field; value: string }) {
   );
 }
 
-export function FieldInput({ field, value, options }: { field: Field; value: string; options?: Option[] }) {
+export function FieldInput({ field, value, alt = "", options }: { field: Field; value: string; alt?: string; options?: Option[] }) {
   const common = { id: field.name, name: field.name, required: field.required, defaultValue: value };
   switch (field.type) {
     case "textarea":
@@ -156,9 +171,9 @@ export function FieldInput({ field, value, options }: { field: Field; value: str
     case "html":
       return <RichTextField field={field} value={value} />;
     case "image":
-      return <ImageField field={field} value={value} />;
+      return <ImageField field={field} value={value} alt={alt} />;
     case "images":
-      return <ImagesField field={field} value={value} />;
+      return <ImagesField field={field} value={value} alt={alt} />;
     case "select":
       return (
         <select {...common}>

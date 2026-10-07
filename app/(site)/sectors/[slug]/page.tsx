@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo-page";
+import { defaults } from "@/lib/seo";
 import Breadcrumb from "@/components/site/Breadcrumb";
 import EnquiryForm from "@/components/forms/EnquiryForm";
 import { PortfolioModal, portfolioData } from "@/components/home/Upcoming";
@@ -21,12 +23,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const sector = await loadBySlug(slug, getSector, routes.sector);
-  const name = sector.sector_name ?? "Sector";
-  return {
-    title: `${name} in Kerala`,
-    description: `${name} by Havitive Infra Pvt Ltd – architecture, structural engineering and construction for ${name.toLowerCase()} across Kerala. View our work and schedule a site visit.`,
-    alternates: { canonical: routes.sector(sector) },
-  };
+  return pageMetadata(`sector:${sector.id}`, defaults.sector(sector));
 }
 
 export default async function SectorPage({ params }: Props) {
@@ -65,7 +62,7 @@ export default async function SectorPage({ params }: Props) {
                     <div className="swiper-slide" key={r.id}>
                       <div className="portfolio-card style2">
                         <div className="portfolio-img img-shine" data-bs-toggle="modal" data-bs-target="#portfolioModal" data-portfolio={portfolioData(r)} role="button">
-                          <img src={media(r.residence_image_one)} alt={r.project_heading ?? "Project"} loading="lazy" />
+                          <img src={media(r.residence_image_one)} alt={r.residence_image_one_alt || r.project_heading || "Project"} loading="lazy" />
                         </div>
                         <div className="portfolio-content">
                           <h3 className="portfolio-title" style={{ color: "white" }}>{r.project_heading}</h3>
@@ -131,7 +128,7 @@ export default async function SectorPage({ params }: Props) {
                       <div className="swiper-slide" key={p.id}>
                         <div className="portfolio-card style3">
                           <div className="portfolio-img">
-                            <img src={media(p.project_image)} alt={p.project_name ?? "Project"} loading="lazy" style={{ width: 416, height: 400, objectFit: "cover" }} />
+                            <img src={media(p.project_image)} alt={p.project_image_alt || p.project_name || "Project"} loading="lazy" style={{ width: 416, height: 400, objectFit: "cover" }} />
                             <a href={routes.project(p)} className="icon-btn">
                               <div className="icon"><img src="/frontend/assets/img/icon/arrow-right.svg" alt="" /></div>
                               Look More

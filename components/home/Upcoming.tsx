@@ -83,7 +83,7 @@ export default function Upcoming({ projects }: { projects: ShowcaseProject[] }) 
                         <div className="swiper-slide" key={p.id}>
                           <div className="portfolio-card">
                             <div className="portfolio-img img-shine" data-bs-toggle="modal" data-bs-target="#portfolioModal" data-portfolio={portfolioData(p)} role="button" aria-label={`View ${p.project_heading ?? "project"}`}>
-                              <img src={media(p.residence_image_one)} alt={p.project_heading ?? "Upcoming project"} loading="lazy" style={{ width: 371, height: 241, objectFit: "cover" }} />
+                              <img src={media(p.residence_image_one)} alt={p.residence_image_one_alt || p.project_heading || "Upcoming project"} loading="lazy" style={{ width: 371, height: 241, objectFit: "cover" }} />
                             </div>
                             <div className="portfolio-content">
                               <a href="#portfolioModal" data-bs-toggle="modal" data-bs-target="#portfolioModal" data-portfolio={portfolioData(p)} className="icon-btn" aria-label="View details">
