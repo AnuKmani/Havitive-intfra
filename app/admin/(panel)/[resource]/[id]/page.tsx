@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import RecordForm from "@/components/admin/RecordForm";
 import ConfirmButton from "@/components/admin/ConfirmButton";
+import Icon from "@/components/admin/Icon";
+import PageHeader from "@/components/admin/PageHeader";
 import { requireAdmin } from "@/lib/admin/auth";
 import { loadOptions } from "@/lib/admin/options";
 import { getResource } from "@/lib/admin/resources";
@@ -37,15 +39,15 @@ export default async function EditRecord({ params, searchParams }: Props) {
 
   return (
     <>
-      <div className="ad-head">
-        <div>
-          {!res.singleton && <a href={`/admin/${res.key}`} className="ad-muted">← {res.label}</a>}
-          <h1>{isNew ? `New ${res.singular.toLowerCase()}` : res.singleton ? res.label : `Edit ${res.singular.toLowerCase()}`}</h1>
-        </div>
-        {id && !res.singleton && (
+      <PageHeader
+        icon={res.icon}
+        title={isNew ? `New ${res.singular.toLowerCase()}` : res.singleton ? res.label : `Edit ${res.singular.toLowerCase()}`}
+        subtitle={res.hint}
+        back={res.singleton ? { href: "/admin", label: "Dashboard" } : { href: `/admin/${res.key}`, label: res.label }}
+        action={id && !res.singleton ? (
           <ConfirmButton action={deleteRecord.bind(null, res.key, id)} message={`Delete this ${res.singular.toLowerCase()}? This cannot be undone.`} />
-        )}
-      </div>
+        ) : undefined}
+      />
 
       <section className="ad-panel">
         <RecordForm
@@ -58,11 +60,17 @@ export default async function EditRecord({ params, searchParams }: Props) {
         />
       </section>
 
-      {isNew && res.children?.length ? <p className="ad-muted">Save the project first, then add gallery images, floor plans and facilities.</p> : null}
+      {isNew && res.children?.length ? (
+        <div className="ad-note"><Icon name="info" /> Save the project first, then add gallery images, floor plans and facilities.</div>
+      ) : null}
 
       {children.map(({ child, rows }) => (
         <section className="ad-panel" key={child.key}>
-          <h2>{child.label}</h2>
+          <div className="ad-panel-head">
+            <h2><Icon name={child.key === "gallery" ? "image" : child.key === "floors" ? "layers" : "check"} /> {child.label}</h2>
+            <span className="ad-tag">{rows.length}</span>
+          </div>
+          <div className={child.key === "gallery" ? "ad-children ad-children-gallery" : "ad-children"}>
           {rows.map((row) => (
             <details key={row.id} className="ad-child">
               <summary>
@@ -81,8 +89,9 @@ export default async function EditRecord({ params, searchParams }: Props) {
               <ConfirmButton action={deleteChild.bind(null, res.key, child.key, id!, row.id)} label="Remove" />
             </details>
           ))}
+          </div>
           <details className="ad-child ad-child-new">
-            <summary>+ Add {child.label.toLowerCase().replace(/s$/, "")}</summary>
+            <summary><Icon name="plus" /> Add {child.key === "gallery" ? "image" : child.label.toLowerCase().replace(/ies$/, "y").replace(/s$/, "")}</summary>
             <RecordForm compact fields={child.fields} values={{}} options={options} action={saveChild.bind(null, res.key, child.key, id!, null)} submitLabel="Add" />
           </details>
         </section>

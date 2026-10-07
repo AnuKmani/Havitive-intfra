@@ -22,6 +22,10 @@ export type Resource = {
   label: string;
   singular: string;
   group: "Home page" | "Projects" | "Company" | "Content";
+  /** Icon name from components/admin/Icon. */
+  icon: string;
+  /** One-line hint shown on the dashboard. */
+  hint: string;
   fields: Field[];
   /** Columns shown in the list (first is the link). */
   columns: string[];
@@ -69,7 +73,7 @@ const TEAM_FIELDS: Field[] = [
 
 export const RESOURCES: Resource[] = [
   {
-    key: "banners", table: "home_banners", label: "Hero banners", singular: "Banner", group: "Home page",
+    key: "banners", icon: "image", hint: "Big slideshow at the top of the home page", table: "home_banners", label: "Hero banners", singular: "Banner", group: "Home page",
     columns: ["heading", "description"], thumb: "home_images",
     fields: [
       { name: "heading", label: "Heading", type: "text", required: true },
@@ -78,7 +82,7 @@ export const RESOURCES: Resource[] = [
     ],
   },
   {
-    key: "counters", table: "counters", label: "Counters", singular: "Counter", group: "Home page",
+    key: "counters", icon: "hash", hint: "Numbers like “99+ projects”", table: "counters", label: "Counters", singular: "Counter", group: "Home page",
     columns: ["counter_name", "counter"],
     fields: [
       { name: "counter_name", label: "Label", type: "text", required: true },
@@ -86,7 +90,7 @@ export const RESOURCES: Resource[] = [
     ],
   },
   {
-    key: "home-about", table: "homes", label: "About section", singular: "About section", group: "Home page",
+    key: "home-about", icon: "info", hint: "Home page about text and photos", table: "homes", label: "About section", singular: "About section", group: "Home page",
     fixed: { category: "about" }, singleton: true, columns: ["main_content"],
     fields: [
       { name: "main_content", label: "About text", type: "textarea", required: true },
@@ -94,12 +98,12 @@ export const RESOURCES: Resource[] = [
     ],
   },
   {
-    key: "home-service", table: "homes", label: "“What we offer” intro", singular: "Intro", group: "Home page",
+    key: "home-service", icon: "sparkles", hint: "Intro for “What we offer”", table: "homes", label: "“What we offer” intro", singular: "Intro", group: "Home page",
     fixed: { category: "service" }, singleton: true, columns: ["main_content"],
     fields: [{ name: "main_content", label: "Intro text", type: "textarea", required: true }],
   },
   {
-    key: "projects", table: "latest_projects", label: "Projects", singular: "Project", group: "Projects",
+    key: "projects", icon: "building", hint: "Completed projects, galleries, floor plans", table: "latest_projects", label: "Projects", singular: "Project", group: "Projects",
     columns: ["project_name", "project_heading"], thumb: "project_image",
     fields: [
       { name: "project_name", label: "Project name", type: "text", required: true },
@@ -138,21 +142,21 @@ export const RESOURCES: Resource[] = [
     ],
   },
   {
-    key: "sectors", table: "sectors", label: "Sectors", singular: "Sector", group: "Projects",
+    key: "sectors", icon: "layers", hint: "Project categories in the menu", table: "sectors", label: "Sectors", singular: "Sector", group: "Projects",
     columns: ["sector_name", "category"],
     fields: [
       { name: "sector_name", label: "Sector name", type: "text", required: true },
       { name: "category", label: "Menu group", type: "select", required: true, options: [{ value: "0", label: "Government" }, { value: "1", label: "Private" }] },
     ],
   },
-  { key: "showcase", table: "residenceprojects", label: "Sector showcase", singular: "Showcase project", group: "Projects", columns: ["project_heading", "client_name"], thumb: "residence_image_one", fields: SHOWCASE_FIELDS },
-  { key: "upcoming", table: "upcomming_projects", label: "Upcoming projects", singular: "Upcoming project", group: "Projects", columns: ["project_heading", "location"], thumb: "residence_image_one", fields: SHOWCASE_FIELDS },
+  { key: "showcase", icon: "star", hint: "Featured work on sector pages", table: "residenceprojects", label: "Sector showcase", singular: "Showcase project", group: "Projects", columns: ["project_heading", "client_name"], thumb: "residence_image_one", fields: SHOWCASE_FIELDS },
+  { key: "upcoming", icon: "clock", hint: "“Our Future Projects” slider", table: "upcomming_projects", label: "Upcoming projects", singular: "Upcoming project", group: "Projects", columns: ["project_heading", "location"], thumb: "residence_image_one", fields: SHOWCASE_FIELDS },
   {
-    key: "amenities", table: "project_aminities", label: "Amenities", singular: "Amenity", group: "Projects",
+    key: "amenities", icon: "check", hint: "Amenities you can tag on projects", table: "project_aminities", label: "Amenities", singular: "Amenity", group: "Projects",
     columns: ["aminity_name"], fields: [{ name: "aminity_name", label: "Amenity", type: "text", required: true }],
   },
   {
-    key: "services", table: "services", label: "Services", singular: "Service", group: "Company",
+    key: "services", icon: "tool", hint: "Services and their detail pages", table: "services", label: "Services", singular: "Service", group: "Company",
     columns: ["name"], thumb: "img",
     fields: [
       { name: "name", label: "Service name", type: "text", required: true },
@@ -162,7 +166,7 @@ export const RESOURCES: Resource[] = [
     ],
   },
   {
-    key: "sections", table: "sections", label: "Service strength cards", singular: "Card", group: "Company",
+    key: "sections", icon: "grid", hint: "Cards on service pages", table: "sections", label: "Service strength cards", singular: "Card", group: "Company",
     columns: ["section_name"], thumb: "img",
     fields: [
       { name: "section_name", label: "Title", type: "text", required: true },
@@ -171,7 +175,7 @@ export const RESOURCES: Resource[] = [
     ],
   },
   {
-    key: "companies", table: "gropuof_companies", label: "Group companies", singular: "Company", group: "Company",
+    key: "companies", icon: "globe", hint: "Havitive group companies", table: "gropuof_companies", label: "Group companies", singular: "Company", group: "Company",
     columns: ["company_name"], thumb: "compani_img",
     fields: [
       { name: "company_name", label: "Company name", type: "text", required: true },
@@ -181,10 +185,10 @@ export const RESOURCES: Resource[] = [
       { name: "link", label: "Website link", type: "url" },
     ],
   },
-  { key: "management", table: "teams", label: "Management team", singular: "Manager", group: "Company", fixed: { category: "management" }, columns: ["name", "designation"], thumb: "img", fields: TEAM_FIELDS },
-  { key: "team", table: "teams", label: "Team members", singular: "Team member", group: "Company", fixed: { category: "team" }, columns: ["name", "designation"], thumb: "img", fields: TEAM_FIELDS },
+  { key: "management", icon: "users", hint: "Directors and leadership", table: "teams", label: "Management team", singular: "Manager", group: "Company", fixed: { category: "management" }, columns: ["name", "designation"], thumb: "img", fields: TEAM_FIELDS },
+  { key: "team", icon: "user", hint: "Architects, engineers and staff", table: "teams", label: "Team members", singular: "Team member", group: "Company", fixed: { category: "team" }, columns: ["name", "designation"], thumb: "img", fields: TEAM_FIELDS },
   {
-    key: "testimonials", table: "testimonials", label: "Testimonials", singular: "Testimonial", group: "Company",
+    key: "testimonials", icon: "quote", hint: "Client reviews", table: "testimonials", label: "Testimonials", singular: "Testimonial", group: "Company",
     columns: ["client_name", "client_designation"], thumb: "client_img",
     fields: [
       { name: "client_name", label: "Client name", type: "text", required: true },
@@ -195,11 +199,11 @@ export const RESOURCES: Resource[] = [
     ],
   },
   {
-    key: "clients", table: "clients", label: "Client logos", singular: "Client logo", group: "Company",
+    key: "clients", icon: "award", hint: "Client logo strip", table: "clients", label: "Client logos", singular: "Client logo", group: "Company",
     columns: ["id"], thumb: "img", fields: [{ name: "img", label: "Logo", type: "image", folder: "clients", required: true }],
   },
   {
-    key: "posts", table: "blog_posts", label: "Blog posts", singular: "Post", group: "Content",
+    key: "posts", icon: "pen", hint: "News & articles", table: "blog_posts", label: "Blog posts", singular: "Post", group: "Content",
     columns: ["post_title", "created_at"], thumb: "post_image",
     fields: [
       { name: "post_title", label: "Title", type: "text", required: true },
@@ -215,13 +219,13 @@ export const RESOURCES: Resource[] = [
     derive: (v) => ({ post_slug: v.post_slug ? slug(v.post_slug) : slug(v.post_title ?? "") }),
   },
   {
-    key: "categories", table: "blog_categories", label: "Blog categories", singular: "Category", group: "Content",
+    key: "categories", icon: "folder", hint: "Blog categories", table: "blog_categories", label: "Blog categories", singular: "Category", group: "Content",
     columns: ["category_name", "category_slug"],
     fields: [{ name: "category_name", label: "Category name", type: "text", required: true }],
     derive: (v) => ({ category_slug: slug(v.category_name ?? "") }),
   },
   {
-    key: "jobs", table: "alljobs", label: "Job openings", singular: "Job", group: "Content",
+    key: "jobs", icon: "briefcase", hint: "Open positions on the careers page", table: "alljobs", label: "Job openings", singular: "Job", group: "Content",
     columns: ["title"],
     fields: [
       { name: "title", label: "Job title", type: "text", required: true },

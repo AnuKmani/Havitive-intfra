@@ -23,7 +23,14 @@ function ImageField({ field, value }: { field: Field; value: string }) {
   return (
     <div className="ad-image">
       <input type="hidden" name={field.name} value={current} />
-      {current ? <img src={media(current, field.legacyFolder)} alt="" /> : <div className="ad-noimg">No image</div>}
+      {current ? (
+        <img src={media(current, field.legacyFolder)} alt="" />
+      ) : (
+        <div className="ad-noimg">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="m21 15-5-5L5 21" /></svg>
+          No image yet
+        </div>
+      )}
       <div className="ad-image-actions">
         <label className="ad-btn ad-btn-light">
           {current ? "Replace" : "Upload"}

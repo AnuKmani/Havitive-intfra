@@ -23,7 +23,7 @@ export default function RecordForm({ fields, values, options, action, submitLabe
   return (
     <form action={formAction} className={compact ? "ad-form ad-form-compact" : "ad-form"}>
       {fields.map((f) => (
-        <div className="ad-field" key={f.name}>
+        <div className={`ad-field ad-field-${f.type}`} key={f.name}>
           <label htmlFor={f.name}>
             {f.label}
             {f.required && <span className="ad-req"> *</span>}

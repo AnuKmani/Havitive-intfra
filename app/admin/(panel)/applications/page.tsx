@@ -1,4 +1,6 @@
 import ConfirmButton from "@/components/admin/ConfirmButton";
+import Icon from "@/components/admin/Icon";
+import PageHeader from "@/components/admin/PageHeader";
 import { requireAdmin } from "@/lib/admin/auth";
 import type { CareerApplication, Job } from "@/lib/types";
 import { deleteSubmission } from "../../actions";
@@ -23,28 +25,36 @@ export default async function Applications() {
 
   return (
     <>
-      <h1>Job applications</h1>
-      <p className="ad-muted">Download links stay valid for 10 minutes. Reload the page for fresh links.</p>
-      {!rows.length && <p className="ad-muted">No applications yet.</p>}
+      <PageHeader icon="briefcase" title="Job applications" subtitle={`${rows.length} total · download links stay valid for 10 minutes`} />
+      {!rows.length && (
+        <div className="ad-empty">
+          <span className="ad-empty-icon"><Icon name="briefcase" size={40} /></span>
+          <h2>No applications yet</h2>
+          <p>CVs sent from the careers page will appear here.</p>
+        </div>
+      )}
       <div className="ad-inbox">
         {rows.map((r, i) => (
-          <article key={r.id} className="ad-panel">
+          <article key={r.id} className="ad-panel ad-msg">
             <div className="ad-head">
-              <div>
+              <div className="ad-msg-from">
+                <span className="ad-avatar ad-avatar-lg">{r.name.charAt(0).toUpperCase()}</span>
+                <div>
                 <strong>{r.name}</strong>{" "}
                 <span className="ad-tag">{(jobs as Pick<Job, "id" | "title">[] | null)?.find((j) => j.id === r.job_id)?.title ?? "General"}</span>
                 <div className="ad-muted">
                   {r.created_at && new Date(r.created_at).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}
                   {" · "}<a href={`mailto:${r.email}`}>{r.email}</a> · <a href={`tel:${r.phone}`}>{r.phone}</a>
                 </div>
+                </div>
               </div>
               <ConfirmButton action={deleteSubmission.bind(null, "career_pages", r.id)} message="Delete this application and its files?" />
             </div>
             {r.message && <p className="ad-pre">{r.message}</p>}
-            <p>
-              {links[i][0] ? <a className="ad-btn ad-btn-light" href={links[i][0]!} target="_blank">Download CV</a> : <span className="ad-muted">CV on old server</span>}{" "}
-              {links[i][1] ? <a className="ad-btn ad-btn-light" href={links[i][1]!} target="_blank">Download cover letter</a> : <span className="ad-muted">Cover letter on old server</span>}
-            </p>
+            <div className="ad-msg-actions">
+              {links[i][0] ? <a className="ad-btn ad-btn-light ad-btn-sm" href={links[i][0]!} target="_blank"><Icon name="file" size={14} /> Download CV</a> : <span className="ad-muted">CV on old server</span>}
+              {links[i][1] ? <a className="ad-btn ad-btn-light ad-btn-sm" href={links[i][1]!} target="_blank"><Icon name="file" size={14} /> Cover letter</a> : <span className="ad-muted">Cover letter on old server</span>}
+            </div>
           </article>
         ))}
       </div>
