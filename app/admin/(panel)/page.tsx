@@ -2,7 +2,8 @@ import Icon from "@/components/admin/Icon";
 import { requireAdmin } from "@/lib/admin/auth";
 import { RESOURCES } from "@/lib/admin/resources";
 import { media } from "@/lib/media";
-import type { Apply, Project } from "@/lib/types";
+import { statusInfo } from "@/lib/careers";
+import type { Apply, CareerApplication, Project } from "@/lib/types";
 
 export const metadata = { title: "Dashboard" };
 
@@ -28,24 +29,27 @@ export default async function Dashboard() {
     return row?.[column]?.split(",")[0] ?? null;
   };
 
-  const [enquiries, applications, counts, thumbs, recentEnquiries, recentProjects] = await Promise.all([
+  const [enquiries, applications, counts, thumbs, recentEnquiries, recentProjects, unreadApps, recentApps] = await Promise.all([
     count("applies"),
     count("career_pages"),
     Promise.all(RESOURCES.map((r) => count(r.table, r.fixed))),
     Promise.all(RESOURCES.map((r) => latestThumb(r.table, r.thumb ?? r.fields.find((f) => f.type === "images")?.name, r.fixed))),
     supabase.from("applies").select("*").order("created_at", { ascending: false }).limit(5),
     supabase.from("latest_projects").select("id, project_name, project_heading, project_image, updated_at").order("updated_at", { ascending: false }).limit(4),
+    supabase.from("career_pages").select("id", { count: "exact", head: true }).is("read_at", null),
+    supabase.from("career_pages").select("id, name, job_id, status, read_at, created_at").order("created_at", { ascending: false }).limit(5),
   ]);
   const countOf = (key: string) => counts[RESOURCES.findIndex((r) => r.key === key)];
 
   const stats = [
     { label: "Enquiries", value: enquiries, icon: "inbox", href: "/admin/enquiries", tone: "blue" },
-    { label: "Job applications", value: applications, icon: "briefcase", href: "/admin/applications", tone: "violet" },
+    { label: unreadApps.count ? `Job applications · ${unreadApps.count} new` : "Job applications", value: applications, icon: "briefcase", href: "/admin/applications", tone: "violet" },
     { label: "Projects", value: countOf("projects"), icon: "building", href: "/admin/projects", tone: "amber" },
     { label: "Blog posts", value: countOf("posts"), icon: "pen", href: "/admin/posts", tone: "green" },
   ];
   const groups = [...new Set(RESOURCES.map((r) => r.group))];
   const latest = (recentEnquiries.data ?? []) as Apply[];
+  const apps = (recentApps.data ?? []) as Pick<CareerApplication, "id" | "name" | "job_id" | "status" | "read_at" | "created_at">[];
   const projects = (recentProjects.data ?? []) as Pick<Project, "id" | "project_name" | "project_heading" | "project_image">[];
 
   return (
@@ -119,6 +123,30 @@ export default async function Dashboard() {
           </div>
         </section>
       </div>
+
+      <section className="ad-panel">
+        <div className="ad-panel-head">
+          <h2><Icon name="briefcase" /> Latest job applications</h2>
+          <a href="/admin/applications" className="ad-link">View all <Icon name="arrow" size={14} /></a>
+        </div>
+        {!apps.length ? (
+          <div className="ad-empty-sm"><Icon name="briefcase" size={28} /> No applications yet</div>
+        ) : (
+          <ul className="ad-feed">
+            {apps.map((a) => (
+              <li key={a.id}>
+                <span className="ad-avatar">{a.name.charAt(0).toUpperCase()}</span>
+                <div>
+                  <a href={`/admin/applications/${a.id}`}><strong>{a.name}</strong></a>{" "}
+                  {!a.read_at && <span className="ad-pill pill-blue">New</span>}{" "}
+                  <span className={`ad-pill pill-${statusInfo(a.status).tone}`}>{statusInfo(a.status).label}</span>
+                </div>
+                <time>{a.created_at ? new Date(a.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" }) : ""}</time>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
 
       {groups.map((g) => (
         <section key={g} className="ad-section">

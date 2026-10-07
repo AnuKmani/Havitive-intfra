@@ -12,10 +12,10 @@ function weekAgo() {
 
 export default async function PanelLayout({ children }: { children: React.ReactNode }) {
   const { user, supabase } = await requireAdmin();
-  const { count: newEnquiries } = await supabase
-    .from("applies")
-    .select("id", { count: "exact", head: true })
-    .gte("created_at", weekAgo());
+  const [{ count: newEnquiries }, { count: unreadApplications }] = await Promise.all([
+    supabase.from("applies").select("id", { count: "exact", head: true }).gte("created_at", weekAgo()),
+    supabase.from("career_pages").select("id", { count: "exact", head: true }).is("read_at", null),
+  ]);
   const navResources = RESOURCES.filter((r) => !r.home);
   const groups = [...new Set(navResources.map((r) => r.group))];
   const meta = (user.user_metadata ?? {}) as { name?: string; photo?: string };
@@ -40,7 +40,10 @@ export default async function PanelLayout({ children }: { children: React.ReactN
             <NavLink href="/admin/enquiries" icon="inbox" label="Enquiries" />
             {!!newEnquiries && <span className="ad-badge" title="New this week">{newEnquiries}</span>}
           </div>
-          <NavLink href="/admin/applications" icon="briefcase" label="Job applications" />
+          <div className="ad-nav-badge-wrap">
+            <NavLink href="/admin/applications" icon="briefcase" label="Job applications" />
+            {!!unreadApplications && <span className="ad-badge" title="Unread applications">{unreadApplications}</span>}
+          </div>
           {groups.map((g) => (
             <div key={g}>
               <div className="ad-nav-group">{g}</div>

@@ -57,7 +57,9 @@ export const getBlogCategoryBySlug = cache((slug: string) => one<T.BlogCategory>
 export const getPosts = cache(() => rows<T.BlogPost>(db().from("blog_posts").select("*").order("created_at", latest)));
 export const getPostBySlug = cache((slug: string) => one<T.BlogPost>(db().from("blog_posts").select("*").eq("post_slug", slug).maybeSingle()));
 
-export const getJobs = cache(() => rows<T.Job>(db().from("alljobs").select("*").order("id")));
+export const getJobs = cache(() =>
+  rows<T.Job>(db().from("alljobs").select("*").eq("status", "open").order("sort_order").order("created_at", latest).order("id", { ascending: false })));
+export const getCareersPage = cache(() => one<T.CareersPage>(db().from("careers_page").select("*").order("id").limit(1).maybeSingle()));
 
 export const getSeo = cache((key: string) => one<import("./seo").PageSeo>(db().from("page_seo").select("*").eq("key", key).maybeSingle()));
 export const getAllSeo = cache(() => rows<import("./seo").PageSeo>(db().from("page_seo").select("*")));

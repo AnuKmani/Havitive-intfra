@@ -8,7 +8,7 @@ import { serverClient } from "@/lib/supabase/server";
 
 export type ActionState = { ok: boolean; message: string } | null;
 
-const INT_COLUMNS = new Set(["sector_id", "blogcat_id", "project_id", "job_id"]);
+const INT_COLUMNS = new Set(["sector_id", "blogcat_id", "project_id", "job_id", "sort_order"]);
 
 function readValues(fields: Field[], form: FormData, table: string) {
   const values: Record<string, string | number | null> = {};

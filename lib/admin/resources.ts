@@ -23,7 +23,7 @@ export type Resource = {
   table: string;
   label: string;
   singular: string;
-  group: "Home page" | "Projects" | "Company" | "Content";
+  group: "Home page" | "Projects" | "Company" | "Content" | "Careers";
   /** Icon name from components/admin/Icon. */
   icon: string;
   /** One-line hint shown on the dashboard. */
@@ -244,11 +244,40 @@ export const RESOURCES: Resource[] = [
     derive: (v) => ({ category_slug: slug(v.category_name ?? "") }),
   },
   {
-    key: "jobs", viewUrl: () => "/careers", icon: "briefcase", hint: "Open positions on the careers page", table: "alljobs", label: "Job openings", singular: "Job", group: "Content",
-    columns: ["title"],
+    key: "jobs", viewUrl: () => "/careers", icon: "briefcase", hint: "Open positions and job descriptions on the careers page",
+    table: "alljobs", label: "Job openings", singular: "Job", group: "Careers",
+    derive: (v): Record<string, string | null> => (v.sort_order == null ? { sort_order: "0" } : {}),
+    columns: ["title", "department", "location", "status"],
     fields: [
       { name: "title", label: "Job title", type: "text", required: true },
-      { name: "description", label: "Description", type: "html", required: true },
+      { name: "code", label: "Job code", type: "text", help: "Shown on the job card, e.g. HAV-001. Leave empty to use HAV-<number>." },
+      { name: "department", label: "Department", type: "text", help: "e.g. Architecture, Structural Engineering, Interiors, Site Execution" },
+      { name: "location", label: "Location", type: "text", help: "e.g. Thiruvananthapuram, Kerala" },
+      { name: "employment_type", label: "Employment type", type: "select", options: ["Full-time", "Part-time", "Contract", "Internship", "Freelance"].map((v) => ({ value: v, label: v })) },
+      { name: "experience", label: "Experience", type: "text", help: "e.g. 2–4 years" },
+      { name: "status", label: "Status", type: "select", required: true, options: [{ value: "open", label: "Open – shown on the website" }, { value: "closed", label: "Closed – hidden from the website" }] },
+      { name: "sort_order", label: "Order", type: "number", help: "Lower numbers are shown first. Leave 0 to show newest first." },
+      { name: "summary", label: "Short summary", type: "textarea", help: "One or two lines shown at the top of the job description." },
+      { name: "description", label: "Job description", type: "html", required: true, help: "Responsibilities, requirements, skills, benefits… Use headings and bullet lists." },
+    ],
+  },
+  {
+    key: "careers-page", viewUrl: () => "/careers", seoKey: () => "page:careers", icon: "file", hint: "Careers page banner, “Life at Havitive” and talent network texts",
+    table: "careers_page", label: "Careers page", singular: "Careers page", group: "Careers", singleton: true, columns: ["hero_title"],
+    fields: [
+      { name: "hero_kicker", label: "Banner small heading", type: "text", help: "e.g. CAREERS AT HAVITIVE" },
+      { name: "hero_title", label: "Banner title", type: "text", required: true },
+      { name: "hero_text", label: "Banner text", type: "textarea" },
+      { name: "hero_image", label: "Banner photo (team / office)", type: "image", folder: "careers" },
+      { name: "openings_kicker", label: "Openings small heading", type: "text", help: "e.g. Current Openings" },
+      { name: "openings_title", label: "Openings title", type: "text", help: "e.g. Explore Opportunities" },
+      { name: "openings_text", label: "Openings intro", type: "textarea" },
+      { name: "life_title", label: "“Life at Havitive” title", type: "text" },
+      { name: "life_text", label: "“Life at Havitive” text", type: "textarea" },
+      { name: "life_points", label: "Why join us (one point per line)", type: "textarea" },
+      { name: "life_image", label: "“Life at Havitive” photo", type: "image", folder: "careers" },
+      { name: "talent_title", label: "Drop-your-CV title", type: "text" },
+      { name: "talent_text", label: "Drop-your-CV text", type: "textarea" },
     ],
   },
 ];

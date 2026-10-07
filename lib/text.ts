@@ -65,3 +65,8 @@ export function richText(value?: string | null): string {
     .map((p) => `<p>${p.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/\n/g, "<br/>")}</p>`)
     .join("");
 }
+
+/** Reference shown on job cards, e.g. HAV-001, when the admin hasn't set one. */
+export function jobCode(job: { id: number; code?: string | null }): string {
+  return job.code?.trim() || `HAV-${String(job.id).padStart(3, "0")}`;
+}

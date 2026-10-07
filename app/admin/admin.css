@@ -357,3 +357,40 @@
 @media (max-width: 860px) {
   .ad-add-row, .ad-stats-3 { grid-template-columns: 1fr; }
 }
+
+/* Job applications */
+.ad-form-1 { grid-template-columns: 1fr; }
+.ad-filter-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+.ad-filter-tabs a { display: inline-flex; align-items: center; gap: 7px; padding: 7px 13px; border-radius: 999px; background: var(--ad-card); border: 1px solid var(--ad-line); color: var(--ad-ink-2) !important; font-size: 13.5px; font-weight: 500; }
+.ad-filter-tabs a span { background: #eef2f7; border-radius: 999px; padding: 0 7px; font-size: 12px; color: var(--ad-muted); }
+.ad-filter-tabs a.on { background: var(--ad-brand); border-color: var(--ad-brand); color: #fff !important; }
+.ad-filter-tabs a.on span { background: rgba(255, 255, 255, .18); color: #fff; }
+.ad-filter-bar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; background: var(--ad-card); border: 1px solid var(--ad-line); border-radius: var(--ad-radius); padding: 12px; margin-bottom: 16px; }
+.ad-filter-bar .ad-field { min-width: 220px; }
+.ad-filter-bar .ad-grow { flex: 1; }
+.ad-block { display: block; font-weight: 400; }
+.ad-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--ad-accent); vertical-align: middle; margin-left: 4px; }
+.ad-apps tr.is-unread td { background: #f6f9ff; }
+.ad-apps tr.is-unread .ad-row-title > span:last-child { font-weight: 700; }
+.pill-amber { background: #fdf3e1; color: #b7791f; }
+.pill-violet { background: #f0eafd; color: #6d3fd1; }
+.pill-teal { background: #e0f5f4; color: #0f766e; }
+.pill-red { background: #fdecec; color: #b42318; }
+.pill-grey { background: #eef2f7; color: #475569; }
+.ad-app-grid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 18px; align-items: start; }
+.ad-app-grid aside { position: sticky; top: 18px; }
+.ad-dl { display: grid; grid-template-columns: 160px 1fr; gap: 8px 16px; margin: 0 0 16px; }
+.ad-dl dt { color: var(--ad-muted); font-size: 13.5px; }
+.ad-dl dd { margin: 0; word-break: break-word; }
+.ad-template-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.ad-chip { border: 1px solid #cfd8e3; background: #fbfcfe; border-radius: 999px; padding: 6px 12px; font: inherit; font-size: 13px; cursor: pointer; color: var(--ad-ink-2); }
+.ad-chip:hover { border-color: var(--ad-accent); color: var(--ad-accent); background: #fff; }
+.ad-replies { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.ad-replies details { border: 1px solid var(--ad-line); border-radius: 10px; padding: 10px 14px; }
+.ad-replies summary { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; cursor: pointer; }
+.ad-replies summary strong { flex: 1; min-width: 180px; }
+@media (max-width: 1100px) {
+  .ad-app-grid { grid-template-columns: 1fr; }
+  .ad-app-grid aside { position: static; }
+}
+@media (max-width: 640px) { .ad-dl { grid-template-columns: 1fr; gap: 2px; } .ad-dl dd { margin-bottom: 8px; } }

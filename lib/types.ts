@@ -39,9 +39,20 @@ export type BlogPost = Timestamps & {
   id: number; post_image_alt?: string | null; blogcat_id: number; meta_title: string | null; meta_descp: string | null; post_title: string | null;
   post_slug: string | null; post_image: string | null; short_descp: string | null; long_descp: string | null; post_tags: string | null;
 };
-export type Job = Timestamps & { id: number; title: string; description: string };
+export type Job = Timestamps & {
+  id: number; title: string; description: string; code: string | null; department: string | null; location: string | null;
+  employment_type: string | null; experience: string | null; summary: string | null; status: string; sort_order: number;
+};
+export type CareersPage = {
+  id: number; hero_kicker: string | null; hero_title: string | null; hero_text: string | null; hero_image: string | null; hero_image_alt: string | null;
+  openings_kicker: string | null; openings_title: string | null; openings_text: string | null;
+  life_title: string | null; life_text: string | null; life_points: string | null; life_image: string | null; life_image_alt: string | null;
+  talent_title: string | null; talent_text: string | null;
+};
 export type Apply = Timestamps & { id: number; name: string | null; email: string | null; phone: string | null; service_type: string | null; message: string | null };
 export type CareerApplication = Timestamps & {
   id: number; job_id: number | null; name: string; email: string; phone: string;
-  cover_letter_path: string; cv_path: string; message: string | null;
+  cover_letter_path: string | null; cv_path: string; message: string | null;
+  location: string | null; linkedin: string | null; cover_letter: string | null; status: string; notes: string | null; read_at: string | null;
 };
+export type ApplicationReply = { id: number; application_id: number; subject: string; body: string; sent: boolean; error: string | null; sent_by: string | null; created_at: string };
