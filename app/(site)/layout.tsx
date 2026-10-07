@@ -67,7 +67,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Outfit:wght@100..900&display=swap" />
         <link rel="stylesheet" href="/frontend/assets/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="/frontend/assets/css/fontawesome.min.css" />
+        <link rel="stylesheet" href="/frontend/assets/css/fontawesome.subset.css" />
         <link rel="stylesheet" href="/frontend/assets/css/magnific-popup.min.css" />
         <link rel="stylesheet" href="/frontend/assets/css/swiper-bundle.min.css" />
         <link rel="stylesheet" href="/frontend/assets/css/style.css" />

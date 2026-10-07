@@ -7,8 +7,27 @@ import { browserClient } from "@/lib/supabase/browser";
 
 const MAX_IMAGE = 8 * 1024 * 1024;
 
-export async function uploadImage(file: File, folder = "misc"): Promise<string> {
-  if (!file.type.startsWith("image/")) throw new Error("Please choose an image file.");
+/** Large camera photos are scaled down in the browser before upload, so pages stay fast. */
+async function shrinkPhoto(file: File): Promise<File> {
+  if (file.type !== "image/jpeg" || file.size < 600_000) return file;
+  try {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, 2400 / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+    canvas.getContext("2d")!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close();
+    const blob = await new Promise<Blob | null>((r) => canvas.toBlob(r, "image/jpeg", 0.85));
+    return blob && blob.size < file.size ? new File([blob], file.name, { type: "image/jpeg" }) : file;
+  } catch {
+    return file; // Keep the original if the browser can't process it.
+  }
+}
+
+export async function uploadImage(original: File, folder = "misc"): Promise<string> {
+  if (!original.type.startsWith("image/")) throw new Error("Please choose an image file.");
+  const file = await shrinkPhoto(original);
   if (file.size > MAX_IMAGE) throw new Error("Images must be under 8 MB.");
   const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
   const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;

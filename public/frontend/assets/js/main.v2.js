@@ -595,97 +595,12 @@
 
     var postionHandler = "[data-sec-pos]";
     if ($(postionHandler).length) {
-        $(postionHandler).imagesLoaded(function () {
+        $(window).on("load", function () {
             $(postionHandler).sectionPosition("data-sec-pos", "data-pos-for");
         });
     }
 
-    /*----------- 14. Filter ----------*/
-    $(".filter-active").imagesLoaded(function () {
-        var $filter = ".filter-active",
-            $filterItem = ".filter-item",
-            $filterMenu = ".filter-menu-active";
-
-        if ($($filter).length > 0) {
-            var $grid = $($filter).isotope({
-                itemSelector: $filterItem,
-                filter: "*",
-                masonry: {
-                    // use outer width of grid-sizer for columnWidth
-                    // columnWidth: 1,
-                },
-            });
-
-            // filter items on button click
-            $($filterMenu).on("click", "button", function () {
-                var filterValue = $(this).attr("data-filter");
-                $grid.isotope({
-                    filter: filterValue,
-                });
-            });
-
-            // Menu Active Class
-            $($filterMenu).on("click", "button", function (event) {
-                event.preventDefault();
-                $(this).addClass("active");
-                $(this).siblings(".active").removeClass("active");
-            });
-        }
-    });
-
-    $(".masonary-active, .woocommerce-Reviews .comment-list").imagesLoaded(function () {
-        var $filter = ".masonary-active, .woocommerce-Reviews .comment-list",
-            $filterItem = ".filter-item, .woocommerce-Reviews .comment-list li";
-
-        if ($($filter).length > 0) {
-            $($filter).isotope({
-                itemSelector: $filterItem,
-                filter: "*",
-                masonry: {
-                    // use outer width of grid-sizer for columnWidth
-                    columnWidth: 1,
-                },
-            });
-        }
-        $('[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
-            $($filter).isotope({
-                filter: "*",
-            });
-        });
-    });
-
-    // Active specifix
-    $('.filter-active-cat1').imagesLoaded(function () {
-        var $filter = '.filter-active-cat1',
-        $filterItem = '.filter-item',
-        $filterMenu = '.filter-menu-active';
-
-        if ($($filter).length > 0) {
-            var $grid = $($filter).isotope({
-                itemSelector: $filterItem,
-                filter: '.cat1',
-                masonry: {
-                // use outer width of grid-sizer for columnWidth
-                columnWidth: 1
-                }
-            });
-
-            // filter items on button click
-            $($filterMenu).on('click', 'button', function () {
-                var filterValue = $(this).attr('data-filter');
-                $grid.isotope({
-                filter: filterValue
-                });
-            });
-
-            // Menu Active Class 
-            $($filterMenu).on('click', 'button', function (event) {
-                event.preventDefault();
-                $(this).addClass('active');
-                $(this).siblings('.active').removeClass('active');
-            });
-        };
-    });
+    /* Filter / masonry (Isotope) removed: not used on this site. */
 
     /*----------- 14. Counter Up ----------*/
     $(".counter-number").counterUp({
@@ -994,20 +909,15 @@
         var mouseX = 0,
             mouseY = 0;
     
-        TweenMax.to({}, 0.016, {
-        repeat: -1,
-        onRepeat: function() {
+        // Same easing as the old TweenMax loop, using requestAnimationFrame (no GSAP needed).
+        var followerEl = follower.get(0);
+        (function followTick() {
             posX += (mouseX - posX) / 9;
             posY += (mouseY - posY) / 9;
-    
-            TweenMax.set(follower, {
-                css: {
-                left: posX - 12,
-                top: posY - 12
-                }
-            });
-        }
-        });
+            followerEl.style.left = (posX - 12) + "px";
+            followerEl.style.top = (posY - 12) + "px";
+            requestAnimationFrame(followTick);
+        })();
     
         $(document).on("mousemove", function(e) {
             mouseX = e.clientX;
@@ -1023,28 +933,18 @@
     }
 
     
+    // "DRAG" cursor over sliders (was GSAP; plain JS keeps the same effect without the library).
     const cursor = document.querySelector(".slider-drag-cursor");
-    const pos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-    const mouse = { x: pos.x, y: pos.y };
-    const speed = 1;
-
-    const xSet = gsap.quickSetter(cursor, "x", "px");
-    const ySet = gsap.quickSetter(cursor, "y", "px");
-
-    window.addEventListener("pointermove", e => {    
-    mouse.x = e.x;
-    mouse.y = e.y;  
-    });
-
-    gsap.set(".slider-drag-cursor", {xPercent: -50, yPercent: -50});
-    gsap.ticker.add(() => {
-    const dt = 1.0 - Math.pow(1.0 - speed, gsap.ticker.deltaRatio());
-    pos.x += (mouse.x - pos.x) * dt;
-    pos.y += (mouse.y - pos.y) * dt;
-    xSet(pos.x);
-    ySet(pos.y);
-    });
-
+    if (cursor) {
+        let frame = 0, mx = 0, my = 0;
+        window.addEventListener("pointermove", (e) => {
+            mx = e.clientX; my = e.clientY;
+            if (!frame) frame = requestAnimationFrame(() => {
+                frame = 0;
+                cursor.style.transform = "translate(" + mx + "px, " + my + "px) translate(-50%, -50%)";
+            });
+        }, { passive: true });
+    }
 
     $(".slider-drag-wrap").hover(function() {
         $('.slider-drag-cursor').addClass('active');
