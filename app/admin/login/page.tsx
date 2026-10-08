@@ -19,7 +19,8 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
           <img src="/upload/logos/hav.png" alt="Havitive" width={64} height={64} />
           <h1>Welcome back</h1>
           <p className="ad-muted">Sign in to manage the Havitive website.</p>
-          {error === "not-admin" && <p className="ad-err">This account doesn&rsquo;t have admin access.</p>}
+          {error === "not-admin" && <p className="ad-err" role="alert">This account doesn&rsquo;t have admin access.</p>}
+          {error === "invalid" && <p className="ad-err" role="alert">Wrong email or password.</p>}
           <LoginForm />
           <a href="/" className="ad-back">← Back to website</a>
         </div>

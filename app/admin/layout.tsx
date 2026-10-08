@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ImageFallback from "@/components/admin/ImageFallback";
+import ErrorReporter from "@/components/errors/ErrorReporter";
 import "./admin.css";
 
 export const metadata: Metadata = {
@@ -14,6 +15,7 @@ export default function AdminRootLayout({ children }: { children: React.ReactNod
       <body className="ad-body">
         {children}
         <ImageFallback />
+        <ErrorReporter />
       </body>
     </html>
   );

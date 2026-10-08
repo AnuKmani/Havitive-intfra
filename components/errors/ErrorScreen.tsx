@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { reportError } from "./reportError";
 
 const KEY = "hv-error-reload";
 
@@ -17,6 +18,7 @@ export default function ErrorScreen({ error, reset, variant }: {
 
   useEffect(() => {
     console.error(error);
+    reportError(error);
     let last = 0;
     try { last = Number(sessionStorage.getItem(KEY) || 0); } catch {}
     if (Date.now() - last > 30_000) {

@@ -112,21 +112,6 @@ export async function deleteSubmission(table: "applies" | "career_pages", id: nu
   revalidatePath(table === "applies" ? "/admin/enquiries" : "/admin/applications");
 }
 
-export async function signIn(_: ActionState, form: FormData): Promise<ActionState> {
-  const supabase = await serverClient();
-  const { error } = await supabase.auth.signInWithPassword({
-    email: String(form.get("email") ?? "").trim(),
-    password: String(form.get("password") ?? ""),
-  });
-  if (error) return { ok: false, message: "Wrong email or password." };
-  const { data: isAdmin } = await supabase.rpc("is_admin");
-  if (!isAdmin) {
-    await supabase.auth.signOut();
-    return { ok: false, message: "This account is not an administrator." };
-  }
-  redirect("/admin");
-}
-
 export async function signOut() {
   const supabase = await serverClient();
   await supabase.auth.signOut();

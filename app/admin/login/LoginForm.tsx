@@ -1,12 +1,12 @@
 "use client";
 
-import { useActionState } from "react";
-import { signIn, type ActionState } from "../actions";
+import { useState } from "react";
 
+// A regular form post (see ./submit/route.ts): it keeps working even in a tab opened before a site update.
 export default function LoginForm() {
-  const [state, action, pending] = useActionState<ActionState, FormData>(signIn, null);
+  const [pending, setPending] = useState(false);
   return (
-    <form action={action} className="ad-form">
+    <form method="post" action="/admin/login/submit" className="ad-form" onSubmit={() => setPending(true)}>
       <div className="ad-field">
         <label htmlFor="email">Email</label>
         <input id="email" name="email" type="email" autoComplete="username" required />
@@ -16,7 +16,6 @@ export default function LoginForm() {
         <input id="password" name="password" type="password" autoComplete="current-password" required />
       </div>
       <button className="ad-btn" disabled={pending}>{pending ? "Signing in…" : "Sign in"}</button>
-      {state && !state.ok && <p className="ad-err" role="alert">{state.message}</p>}
     </form>
   );
 }
