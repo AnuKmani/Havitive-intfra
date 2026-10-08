@@ -20,6 +20,7 @@ export async function proxy(request: NextRequest) {
   );
   const { data } = await supabase.auth.getClaims();
   const isLogin = request.nextUrl.pathname === "/admin/login" || request.nextUrl.pathname === "/admin/login/submit";
+  // (The two-factor step under /admin/login/verify needs a signed-in session, so it is not exempt.)
   if (!data?.claims && !isLogin) {
     const url = request.nextUrl.clone();
     url.pathname = "/admin/login";

@@ -394,3 +394,13 @@
   .ad-app-grid aside { position: static; }
 }
 @media (max-width: 640px) { .ad-dl { grid-template-columns: 1fr; gap: 2px; } .ad-dl dd { margin-bottom: 8px; } }
+
+/* Image upload size hints */
+.ad-hint { display: block; color: var(--ad-muted); font-size: 12px; line-height: 1.45; margin-top: 4px; }
+.ad-image .ad-status, .ad-status { display: block; font-size: 12.5px; color: var(--ad-ink-2); margin-top: 4px; }
+
+/* Two-step verification set-up */
+.ad-2fa { display: grid; gap: 10px; max-width: 460px; }
+.ad-steps { margin: 0 0 4px; padding-left: 1.2rem; color: var(--ad-ink-2); }
+.ad-qr { background: #fff; border: 1px solid var(--ad-line); border-radius: 12px; padding: 8px; }
+.ad-code { background: #f3f5f9; border-radius: 6px; padding: 2px 6px; font-size: 13px; word-break: break-all; user-select: all; }

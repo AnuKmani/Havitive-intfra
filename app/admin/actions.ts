@@ -222,3 +222,45 @@ export async function updateProfile(_: ActionState, form: FormData): Promise<Act
   revalidatePath("/admin", "layout");
   return { ok: true, message: "Profile updated." };
 }
+
+// ---- Two-step verification (authenticator app) ----
+
+export type TwoFactorState = { ok: boolean; message: string; factorId?: string; qr?: string; secret?: string } | null;
+
+const SIX_DIGITS = /^\d{6}$/;
+
+/** Creates a new authenticator-app key and returns its QR code. Nothing changes until the code is confirmed. */
+export async function startTwoFactor(): Promise<TwoFactorState> {
+  const { supabase } = await requireAdmin();
+  const { data: existing } = await supabase.auth.mfa.listFactors();
+  // Remove unfinished set-ups so a fresh QR code can be made.
+  for (const f of existing?.all ?? []) if (f.status !== "verified") await supabase.auth.mfa.unenroll({ factorId: f.id });
+  const { data, error } = await supabase.auth.mfa.enroll({ factorType: "totp", friendlyName: `Authenticator ${new Date().toISOString().slice(0, 10)}`, issuer: "Havitive Admin" });
+  if (error || !data) return { ok: false, message: error?.message ?? "Could not start set-up." };
+  return { ok: true, message: "", factorId: data.id, qr: data.totp.qr_code, secret: data.totp.secret };
+}
+
+export async function confirmTwoFactor(factorId: string, _: TwoFactorState, form: FormData): Promise<TwoFactorState> {
+  const { supabase } = await requireAdmin();
+  const code = String(form.get("code") ?? "").replace(/\s+/g, "");
+  if (!SIX_DIGITS.test(code)) return { ok: false, message: "Enter the 6-digit code from the app.", factorId };
+  const { error } = await supabase.auth.mfa.challengeAndVerify({ factorId, code });
+  if (error) return { ok: false, message: "That code didn't work. Try the newest code shown in the app.", factorId };
+  revalidatePath("/admin/account");
+  return { ok: true, message: "Two-step verification is on. You'll need a code from the app each time you sign in." };
+}
+
+export async function disableTwoFactor(_: TwoFactorState, form: FormData): Promise<TwoFactorState> {
+  const { supabase } = await requireAdmin();
+  const code = String(form.get("code") ?? "").replace(/\s+/g, "");
+  if (!SIX_DIGITS.test(code)) return { ok: false, message: "Enter the current 6-digit code to confirm." };
+  const { data } = await supabase.auth.mfa.listFactors();
+  const factor = data?.totp.find((f) => f.status === "verified");
+  if (!factor) return { ok: true, message: "Two-step verification is already off." };
+  const check = await supabase.auth.mfa.challengeAndVerify({ factorId: factor.id, code });
+  if (check.error) return { ok: false, message: "That code didn't work." };
+  const { error } = await supabase.auth.mfa.unenroll({ factorId: factor.id });
+  if (error) return { ok: false, message: error.message };
+  revalidatePath("/admin/account");
+  return { ok: true, message: "Two-step verification is off." };
+}

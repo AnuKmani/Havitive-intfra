@@ -14,6 +14,8 @@ export type Field = {
   folder?: string;
   /** Folder that bare legacy file names live in (homes.home_images). */
   legacyFolder?: string;
+  /** Upload size rule when it differs from the folder's default (see lib/admin/imageRules). */
+  size?: import("./imageRules").ImageKind;
 };
 
 export type Child = { key: string; table: string; label: string; foreignKey: string; fields: Field[]; title: string };
@@ -192,7 +194,7 @@ export const RESOURCES: Resource[] = [
     fields: [
       { name: "section_name", label: "Title", type: "text", required: true },
       { name: "img", label: "Image", type: "image", folder: "service_sections" },
-      { name: "icon", label: "Icon", type: "image", folder: "service_sections" },
+      { name: "icon", label: "Icon", type: "image", folder: "service_sections", size: "icon" },
     ],
   },
   {
@@ -202,7 +204,7 @@ export const RESOURCES: Resource[] = [
       { name: "company_name", label: "Company name", type: "text", required: true },
       { name: "company_description", label: "Description", type: "textarea" },
       { name: "compani_img", label: "Image", type: "image", folder: "company_img" },
-      { name: "compani_logo", label: "Logo", type: "image", folder: "company_img" },
+      { name: "compani_logo", label: "Logo", type: "image", folder: "company_img", size: "logo" },
       { name: "link", label: "Website link", type: "url" },
     ],
   },
@@ -215,7 +217,7 @@ export const RESOURCES: Resource[] = [
       { name: "client_name", label: "Client name", type: "text", required: true },
       { name: "client_designation", label: "Client role", type: "text" },
       { name: "desription", label: "Testimonial", type: "textarea", required: true },
-      { name: "client_img", label: "Client photo", type: "image", folder: "testimonial" },
+      { name: "client_img", label: "Client photo", type: "image", folder: "testimonial", size: "photo" },
       { name: "img", label: "Project image", type: "image", folder: "testimonial" },
     ],
   },

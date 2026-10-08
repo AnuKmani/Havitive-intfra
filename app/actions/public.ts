@@ -27,6 +27,7 @@ export async function submitEnquiry(_: FormState, form: FormData): Promise<FormS
   if (!data.message || data.message.length > 5000) return { ok: false, message: "Please enter a message." };
 
   const { error } = await publicClient().from("applies").insert(data);
+  if (error?.code === "P0001") return { ok: false, message: error.message }; // spam limit from the database
   if (error) {
     console.error("Enquiry insert failed:", error.message);
     return { ok: false, message: "Sorry, something went wrong. Please call us instead." };
@@ -77,6 +78,7 @@ export async function submitJobApplication(input: {
     job_id: input.jobId, name, email, phone, location, linkedin, cover_letter: coverLetter,
     cv_path: `applications:${input.cvPath}`,
   });
+  if (error?.code === "P0001") return { ok: false, message: error.message }; // spam limit from the database
   if (error) {
     console.error("Application insert failed:", error.message);
     return { ok: false, message: "Sorry, something went wrong. Please try again." };

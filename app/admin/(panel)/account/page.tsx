@@ -3,11 +3,13 @@ import PageHeader from "@/components/admin/PageHeader";
 import { requireAdmin } from "@/lib/admin/auth";
 import PasswordForm from "./PasswordForm";
 import ProfileForm from "./ProfileForm";
+import TwoFactor from "./TwoFactor";
 
 export const metadata = { title: "Profile & password" };
 
 export default async function Account() {
   const { user } = await requireAdmin();
+  const twoFactorOn = !!user.factors?.some((f) => f.status === "verified");
   const meta = (user.user_metadata ?? {}) as { name?: string; phone?: string; photo?: string };
   return (
     <>
@@ -23,6 +25,11 @@ export default async function Account() {
           <PasswordForm />
         </section>
       </div>
+      <section className="ad-panel" id="two-step">
+        <div className="ad-panel-head"><h2><Icon name="key" /> Two-step verification</h2></div>
+        {/* Keyed on the state so the panel starts fresh after turning it on or off. */}
+        <TwoFactor key={twoFactorOn ? "on" : "off"} enabled={twoFactorOn} />
+      </section>
     </>
   );
 }

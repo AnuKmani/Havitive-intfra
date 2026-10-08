@@ -4,36 +4,76 @@ import { useRef, useState } from "react";
 import { altName, type Field, type Option } from "@/lib/admin/resources";
 import { media, splitList, STORAGE_PREFIX } from "@/lib/media";
 import { browserClient } from "@/lib/supabase/browser";
+import { describeRule, imageRule, type ImageKind } from "@/lib/admin/imageRules";
 
-const MAX_IMAGE = 8 * 1024 * 1024;
+const MAX_ORIGINAL = 25 * 1024 * 1024;
+const MAX_STORED = 2 * 1024 * 1024; // the storage bucket rejects anything bigger
+const ACCEPTED = ["image/jpeg", "image/png", "image/webp"];
 
-/** Large camera photos are scaled down in the browser before upload, so pages stay fast. */
-async function shrinkPhoto(file: File): Promise<File> {
-  if (file.type !== "image/jpeg" || file.size < 600_000) return file;
-  try {
-    const bitmap = await createImageBitmap(file);
-    const scale = Math.min(1, 2400 / Math.max(bitmap.width, bitmap.height));
-    const canvas = document.createElement("canvas");
-    canvas.width = Math.round(bitmap.width * scale);
-    canvas.height = Math.round(bitmap.height * scale);
-    canvas.getContext("2d")!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-    bitmap.close();
-    const blob = await new Promise<Blob | null>((r) => canvas.toBlob(r, "image/jpeg", 0.85));
-    return blob && blob.size < file.size ? new File([blob], file.name, { type: "image/jpeg" }) : file;
-  } catch {
-    return file; // Keep the original if the browser can't process it.
-  }
+function toBlob(canvas: HTMLCanvasElement, type: string, quality: number) {
+  return new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, type, quality));
 }
 
-export async function uploadImage(original: File, folder = "misc"): Promise<string> {
-  if (!original.type.startsWith("image/")) throw new Error("Please choose an image file.");
-  const file = await shrinkPhoto(original);
-  if (file.size > MAX_IMAGE) throw new Error("Images must be under 8 MB.");
-  const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
+/**
+ * Checks an image against its size rule, scales it down to fit and compresses it (WebP when the
+ * browser supports it), then uploads it. Returns the stored path and a short note for the admin.
+ */
+export async function uploadImageDetailed(original: File, folder = "misc", kind?: ImageKind): Promise<{ path: string; note: string }> {
+  const rule = imageRule(folder, kind);
+  if (!ACCEPTED.includes(original.type)) throw new Error("Please use a JPG, PNG or WebP image.");
+  if (original.size > MAX_ORIGINAL) throw new Error("This file is too large (over 25 MB). Please export a smaller image.");
+
+  let bitmap: ImageBitmap;
+  try {
+    bitmap = await createImageBitmap(original);
+  } catch {
+    throw new Error("This image can't be read. Please save it again as JPG or PNG.");
+  }
+  const { width, height } = bitmap;
+  const long = Math.max(width, height), short = Math.min(width, height);
+  const tooSmall = rule.landscape
+    ? width < rule.minW || height < rule.minH
+    : long < Math.max(rule.minW, rule.minH) || short < Math.min(rule.minW, rule.minH);
+  if (tooSmall) {
+    bitmap.close();
+    throw new Error(`Image is too small (${width} × ${height} px). ${rule.label}s need at least ${rule.minW} × ${rule.minH} px – best ${rule.w} × ${rule.h} px.`);
+  }
+
+  const scale = rule.landscape
+    ? Math.min(1, rule.w / width, rule.h / height)
+    : Math.min(1, Math.max(rule.w, rule.h) / long, Math.min(rule.w, rule.h) / short);
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, Math.round(width * scale));
+  canvas.height = Math.max(1, Math.round(height * scale));
+  const ctx = canvas.getContext("2d")!;
+  ctx.imageSmoothingQuality = "high";
+  ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  bitmap.close();
+
+  // WebP keeps transparency and is much smaller; older browsers fall back to PNG (transparent) or JPEG.
+  let blob: Blob | null = null;
+  for (const q of [0.82, 0.7, 0.55]) {
+    blob = await toBlob(canvas, "image/webp", q);
+    if (blob?.type !== "image/webp") {
+      blob = original.type === "image/png" ? await toBlob(canvas, "image/png", 1) : await toBlob(canvas, "image/jpeg", q + 0.03);
+    }
+    if (blob && blob.size <= MAX_STORED) break;
+  }
+  if (!blob || blob.size > MAX_STORED) throw new Error("This image is still over 2 MB after compression. Please use a simpler or smaller image.");
+
+  const ext = blob.type === "image/webp" ? "webp" : blob.type === "image/png" ? "png" : "jpg";
   const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-  const { error } = await browserClient().storage.from("upload").upload(path, file, { contentType: file.type, cacheControl: "31536000" });
+  const { error } = await browserClient().storage.from("upload").upload(path, blob, { contentType: blob.type, cacheControl: "31536000" });
   if (error) throw new Error(error.message);
-  return STORAGE_PREFIX + path;
+  const kb = Math.round(blob.size / 1024);
+  const note = scale < 1
+    ? `Resized from ${width} × ${height} to ${canvas.width} × ${canvas.height} px (${kb} KB).`
+    : `Optimised (${canvas.width} × ${canvas.height} px, ${kb} KB).`;
+  return { path: STORAGE_PREFIX + path, note };
+}
+
+export async function uploadImage(original: File, folder = "misc", kind?: ImageKind): Promise<string> {
+  return (await uploadImageDetailed(original, folder, kind)).path;
 }
 
 function ImageField({ field, value, alt }: { field: Field; value: string; alt: string }) {
@@ -54,14 +94,16 @@ function ImageField({ field, value, alt }: { field: Field; value: string; alt: s
         <label className="ad-btn ad-btn-light">
           {current ? "Replace" : "Upload"}
           <input
-            type="file" accept="image/*" hidden
+            type="file" accept="image/jpeg,image/png,image/webp" hidden
             onChange={async (e) => {
               const file = e.target.files?.[0];
+              e.target.value = "";
               if (!file) return;
-              setStatus("Uploading…");
+              setStatus("Checking and compressing…");
               try {
-                setCurrent(await uploadImage(file, field.folder));
-                setStatus("Uploaded. Remember to save.");
+                const { path, note } = await uploadImageDetailed(file, field.folder, field.size);
+                setCurrent(path);
+                setStatus(`${note} Remember to save.`);
               } catch (err) {
                 setStatus((err as Error).message);
               }
@@ -71,7 +113,8 @@ function ImageField({ field, value, alt }: { field: Field; value: string; alt: s
         {current && !field.required && (
           <button type="button" className="ad-btn ad-btn-light" onClick={() => setCurrent("")}>Remove</button>
         )}
-        {status && <small>{status}</small>}
+        {status && <small className="ad-status">{status}</small>}
+        <small className="ad-hint">{describeRule(imageRule(field.folder, field.size))}</small>
         <label className="ad-alt">
           <span>Alt text (describes the image for Google and screen readers)</span>
           <input type="text" name={altName(field)} defaultValue={alt} placeholder="e.g. Front view of the Kottarakkara municipality office" maxLength={200} />
@@ -120,23 +163,28 @@ function ImagesField({ field, value, alt }: { field: Field; value: string; alt: 
       <label className="ad-btn ad-btn-light">
         Add images
         <input
-          type="file" accept="image/*" multiple hidden
+          type="file" accept="image/jpeg,image/png,image/webp" multiple hidden
           onChange={async (e) => {
             const files = Array.from(e.target.files ?? []);
+            e.target.value = "";
             if (!files.length) return;
-            setStatus(`Uploading ${files.length}…`);
-            try {
-              const added: string[] = [];
-              for (const f of files) added.push(await uploadImage(f, field.folder));
-              setList((l) => [...l, ...added.map((src) => ({ src, alt: "" }))]);
-              setStatus("Uploaded. Remember to save.");
-            } catch (err) {
-              setStatus((err as Error).message);
+            const added: string[] = [];
+            const problems: string[] = [];
+            for (const [i, f] of files.entries()) {
+              setStatus(`Compressing and uploading ${i + 1} of ${files.length}…`);
+              try {
+                added.push(await uploadImage(f, field.folder, field.size));
+              } catch (err) {
+                problems.push(`${f.name}: ${(err as Error).message}`);
+              }
             }
+            setList((l) => [...l, ...added.map((src) => ({ src, alt: "" }))]);
+            setStatus([added.length ? `${added.length} uploaded. Remember to save.` : "", ...problems].filter(Boolean).join(" "));
           }}
         />
       </label>
       {status && <small className="ad-status">{status}</small>}
+      <small className="ad-hint">{describeRule(imageRule(field.folder, field.size))}</small>
     </div>
   );
 }
