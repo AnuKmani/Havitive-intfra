@@ -404,3 +404,8 @@
 .ad-steps { margin: 0 0 4px; padding-left: 1.2rem; color: var(--ad-ink-2); }
 .ad-qr { background: #fff; border: 1px solid var(--ad-line); border-radius: 12px; padding: 8px; }
 .ad-code { background: #f3f5f9; border-radius: 6px; padding: 2px 6px; font-size: 13px; word-break: break-all; user-select: all; }
+
+/* Page loading screen */
+.ad-loading { min-height: 60vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; color: var(--ad-muted); font-size: 15px; }
+.ad-spinner { width: 38px; height: 38px; border-radius: 50%; border: 3px solid #d9e1ea; border-top-color: var(--ad-brand); animation: ad-spin .8s linear infinite; }
+@keyframes ad-spin { to { transform: rotate(360deg); } }
