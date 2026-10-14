@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
       message: clip(data.message, 500),
       digest: clip(data.digest, 50),
       url: clip(data.url, 300),
-      stack: clip(data.stack, 1500),
+      stack: clip(data.stack, 1600),
       ua: clip(request.headers.get("user-agent"), 200),
     }));
   } catch {

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import ImageFallback from "@/components/admin/ImageFallback";
 import ErrorReporter from "@/components/errors/ErrorReporter";
+import { EARLY_MONITOR } from "@/components/errors/earlyMonitor";
 import "./admin.css";
 
 export const metadata: Metadata = {
@@ -12,6 +13,9 @@ export const metadata: Metadata = {
 export default function AdminRootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: EARLY_MONITOR }} />
+      </head>
       <body className="ad-body">
         {children}
         <ImageFallback />
