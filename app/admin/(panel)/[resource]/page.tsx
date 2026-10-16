@@ -1,7 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import Icon from "@/components/admin/Icon";
 import PageHeader from "@/components/admin/PageHeader";
-import { requireAdmin } from "@/lib/admin/auth";
+import { requireSection } from "@/lib/admin/auth";
 import { getResource } from "@/lib/admin/resources";
 import { media } from "@/lib/media";
 import { stripHtml } from "@/lib/text";
@@ -11,7 +11,7 @@ export default async function ResourceList({ params }: { params: Promise<{ resou
   if (!res) notFound();
   // Home page sections are all edited together on the Home page editor.
   if (res.home) redirect("/admin/home");
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requireSection(res);
   let q = supabase.from(res.table).select("*").order("id", { ascending: false });
   for (const [k, v] of Object.entries(res.fixed ?? {})) q = q.eq(k, v);
   const { data: rows, error } = await q;

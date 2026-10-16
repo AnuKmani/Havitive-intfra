@@ -5,7 +5,7 @@ import Icon from "@/components/admin/Icon";
 import BulkImageAdd from "@/components/admin/BulkImageAdd";
 import PageHeader from "@/components/admin/PageHeader";
 import SeoPanel from "@/components/admin/SeoPanel";
-import { requireAdmin } from "@/lib/admin/auth";
+import { requireSection } from "@/lib/admin/auth";
 import { loadOptions } from "@/lib/admin/options";
 import { getResource } from "@/lib/admin/resources";
 import { listSitePages } from "@/lib/admin/seo-pages";
@@ -24,7 +24,7 @@ export default async function EditRecord({ params, searchParams }: Props) {
   const id = isNew ? null : Number(rawId);
   if (!isNew && !Number.isInteger(id)) notFound();
 
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requireSection(res);
   const options = await loadOptions(supabase);
   let record: Record<string, unknown> = {};
   if (id) {

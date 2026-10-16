@@ -32,8 +32,8 @@ export async function POST(request: NextRequest) {
 
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) return back("invalid");
-  const { data: isAdmin } = await supabase.rpc("is_admin");
-  if (!isAdmin) {
+  const { data: role } = await supabase.rpc("staff_role");
+  if (role !== "admin" && role !== "hr") {
     await supabase.auth.signOut();
     const denied = back("not-admin");
     // Make sure no half-signed-in session cookies stay behind.

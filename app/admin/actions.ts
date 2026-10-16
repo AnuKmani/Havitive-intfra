@@ -2,7 +2,7 @@
 
 import { revalidatePath, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
-import { requireAdmin } from "@/lib/admin/auth";
+import { requireAdmin, requireSection, requireStaff } from "@/lib/admin/auth";
 import { altName, getResource, type Field } from "@/lib/admin/resources";
 import { serverClient } from "@/lib/supabase/server";
 
@@ -34,7 +34,7 @@ function refreshSite() {
 export async function saveRecord(resourceKey: string, id: number | null, _: ActionState, form: FormData): Promise<ActionState> {
   const res = getResource(resourceKey);
   if (!res) return { ok: false, message: "Unknown section." };
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requireSection(res);
   let values: Record<string, string | number | null>;
   try {
     values = readValues(res.fields, form, res.table);
@@ -61,7 +61,7 @@ export async function saveRecord(resourceKey: string, id: number | null, _: Acti
 export async function deleteRecord(resourceKey: string, id: number) {
   const res = getResource(resourceKey);
   if (!res || res.singleton) return;
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requireSection(res);
   for (const child of res.children ?? []) await supabase.from(child.table).delete().eq(child.foreignKey, id);
   await supabase.from(res.table).delete().eq("id", id);
   refreshSite();
@@ -100,7 +100,7 @@ export async function deleteChild(resourceKey: string, childKey: string, parentI
 }
 
 export async function deleteSubmission(table: "applies" | "career_pages", id: number) {
-  const { supabase } = await requireAdmin();
+  const { supabase } = await (table === "career_pages" ? requireStaff() : requireAdmin());
   if (table === "career_pages") {
     const { data } = await supabase.from("career_pages").select("cv_path, cover_letter_path").eq("id", id).maybeSingle();
     const files = [data?.cv_path, data?.cover_letter_path]
@@ -119,7 +119,7 @@ export async function signOut() {
 }
 
 export async function changePassword(_: ActionState, form: FormData): Promise<ActionState> {
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requireStaff();
   const password = String(form.get("password") ?? "");
   if (password.length < 10) return { ok: false, message: "Use at least 10 characters." };
   if (password !== String(form.get("confirm") ?? "")) return { ok: false, message: "The passwords don't match." };
@@ -132,7 +132,7 @@ export async function changePassword(_: ActionState, form: FormData): Promise<Ac
 export async function saveInline(resourceKey: string, id: number | null, returnTo: string, _: ActionState, form: FormData): Promise<ActionState> {
   const res = getResource(resourceKey);
   if (!res) return { ok: false, message: "Unknown section." };
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requireSection(res);
   let values: Record<string, string | number | null>;
   try {
     values = readValues(res.fields, form, res.table);
@@ -153,7 +153,7 @@ export async function saveInline(resourceKey: string, id: number | null, returnT
 export async function deleteInline(resourceKey: string, id: number, returnTo: string) {
   const res = getResource(resourceKey);
   if (!res || res.singleton) return;
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requireSection(res);
   if (res.key === "banners") {
     // Same rule as the Laravel admin: the home page always keeps at least one banner.
     const { count } = await supabase.from(res.table).select("id", { count: "exact", head: true });
@@ -213,7 +213,7 @@ export async function saveSeo(key: string, returnTo: string, _: ActionState, for
 }
 
 export async function updateProfile(_: ActionState, form: FormData): Promise<ActionState> {
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requireStaff();
   const name = String(form.get("name") ?? "").trim().slice(0, 100);
   const phone = String(form.get("phone") ?? "").trim().slice(0, 30);
   const photo = String(form.get("photo") ?? "").trim().slice(0, 500);
@@ -231,7 +231,7 @@ const SIX_DIGITS = /^\d{6}$/;
 
 /** Creates a new authenticator-app key and returns its QR code. Nothing changes until the code is confirmed. */
 export async function startTwoFactor(): Promise<TwoFactorState> {
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requireStaff();
   const { data: existing } = await supabase.auth.mfa.listFactors();
   // Remove unfinished set-ups so a fresh QR code can be made.
   for (const f of existing?.all ?? []) if (f.status !== "verified") await supabase.auth.mfa.unenroll({ factorId: f.id });
@@ -241,7 +241,7 @@ export async function startTwoFactor(): Promise<TwoFactorState> {
 }
 
 export async function confirmTwoFactor(factorId: string, _: TwoFactorState, form: FormData): Promise<TwoFactorState> {
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requireStaff();
   const code = String(form.get("code") ?? "").replace(/\s+/g, "");
   if (!SIX_DIGITS.test(code)) return { ok: false, message: "Enter the 6-digit code from the app.", factorId };
   const { error } = await supabase.auth.mfa.challengeAndVerify({ factorId, code });
@@ -251,7 +251,7 @@ export async function confirmTwoFactor(factorId: string, _: TwoFactorState, form
 }
 
 export async function disableTwoFactor(_: TwoFactorState, form: FormData): Promise<TwoFactorState> {
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requireStaff();
   const code = String(form.get("code") ?? "").replace(/\s+/g, "");
   if (!SIX_DIGITS.test(code)) return { ok: false, message: "Enter the current 6-digit code to confirm." };
   const { data } = await supabase.auth.mfa.listFactors();

@@ -1,6 +1,6 @@
 import Icon from "@/components/admin/Icon";
 import PageHeader from "@/components/admin/PageHeader";
-import { requireAdmin } from "@/lib/admin/auth";
+import { requireStaff } from "@/lib/admin/auth";
 import PasswordForm from "./PasswordForm";
 import ProfileForm from "./ProfileForm";
 import TwoFactor from "./TwoFactor";
@@ -8,7 +8,7 @@ import TwoFactor from "./TwoFactor";
 export const metadata = { title: "Profile & password" };
 
 export default async function Account() {
-  const { user } = await requireAdmin();
+  const { user } = await requireStaff();
   const twoFactorOn = !!user.factors?.some((f) => f.status === "verified");
   const meta = (user.user_metadata ?? {}) as { name?: string; phone?: string; photo?: string };
   return (

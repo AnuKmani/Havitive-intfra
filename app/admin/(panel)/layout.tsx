@@ -1,6 +1,6 @@
 import Icon from "@/components/admin/Icon";
 import NavLink from "@/components/admin/NavLink";
-import { requireAdmin } from "@/lib/admin/auth";
+import { requireStaff } from "@/lib/admin/auth";
 import { RESOURCES } from "@/lib/admin/resources";
 import { media } from "@/lib/media";
 import { signOut } from "../actions";
@@ -11,12 +11,13 @@ function weekAgo() {
 }
 
 export default async function PanelLayout({ children }: { children: React.ReactNode }) {
-  const { user, supabase } = await requireAdmin();
+  const { user, supabase, role } = await requireStaff();
+  const isHr = role === "hr";
   const [{ count: newEnquiries }, { count: unreadApplications }] = await Promise.all([
-    supabase.from("applies").select("id", { count: "exact", head: true }).gte("created_at", weekAgo()),
+    isHr ? { count: 0 } : supabase.from("applies").select("id", { count: "exact", head: true }).gte("created_at", weekAgo()),
     supabase.from("career_pages").select("id", { count: "exact", head: true }).is("read_at", null),
   ]);
-  const navResources = RESOURCES.filter((r) => !r.home);
+  const navResources = RESOURCES.filter((r) => !r.home && (!isHr || r.group === "Careers"));
   const groups = [...new Set(navResources.map((r) => r.group))];
   const meta = (user.user_metadata ?? {}) as { name?: string; photo?: string };
   const initial = (meta.name || user.email || "A").charAt(0).toUpperCase();
@@ -24,22 +25,28 @@ export default async function PanelLayout({ children }: { children: React.ReactN
   return (
     <div className="ad-shell">
       <aside className="ad-side">
-        <a href="/admin" className="ad-brand">
+        <a href={isHr ? "/admin/applications" : "/admin"} className="ad-brand">
           <img src="/upload/logos/hav.png" alt="" />
           <span>
             Havitive
-            <small>Admin panel</small>
+            <small>{isHr ? "HR panel" : "Admin panel"}</small>
           </span>
         </a>
         <nav aria-label="Admin">
-          <NavLink href="/admin" icon="dashboard" label="Dashboard" />
-          <NavLink href="/admin/home" icon="building" label="Home page" />
-          <NavLink href="/admin/seo" icon="globe" label="SEO manager" />
+          {!isHr && (
+            <>
+              <NavLink href="/admin" icon="dashboard" label="Dashboard" />
+              <NavLink href="/admin/home" icon="building" label="Home page" />
+              <NavLink href="/admin/seo" icon="globe" label="SEO manager" />
+            </>
+          )}
           <div className="ad-nav-group">Inbox</div>
-          <div className="ad-nav-badge-wrap">
-            <NavLink href="/admin/enquiries" icon="inbox" label="Enquiries" />
-            {!!newEnquiries && <span className="ad-badge" title="New this week">{newEnquiries}</span>}
-          </div>
+          {!isHr && (
+            <div className="ad-nav-badge-wrap">
+              <NavLink href="/admin/enquiries" icon="inbox" label="Enquiries" />
+              {!!newEnquiries && <span className="ad-badge" title="New this week">{newEnquiries}</span>}
+            </div>
+          )}
           <div className="ad-nav-badge-wrap">
             <NavLink href="/admin/applications" icon="briefcase" label="Job applications" />
             {!!unreadApplications && <span className="ad-badge" title="Unread applications">{unreadApplications}</span>}
