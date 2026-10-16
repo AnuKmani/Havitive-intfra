@@ -3,7 +3,7 @@ import ConfirmButton from "@/components/admin/ConfirmButton";
 import Icon from "@/components/admin/Icon";
 import PageHeader from "@/components/admin/PageHeader";
 import { ReplyComposer, StatusForm } from "@/components/admin/ApplicationForms";
-import { requireStaff } from "@/lib/admin/auth";
+import { requireCareers } from "@/lib/admin/auth";
 import { statusInfo } from "@/lib/careers";
 import { mailConfigured } from "@/lib/mail";
 import type { ApplicationReply, CareerApplication, Job } from "@/lib/types";
@@ -18,7 +18,7 @@ const when = (d: string | null) =>
 export default async function ApplicationDetail({ params }: { params: Promise<{ id: string }> }) {
   const id = Number((await params).id);
   if (!Number.isInteger(id)) notFound();
-  const { supabase } = await requireStaff();
+  const { supabase } = await requireCareers();
   const { data } = await supabase.from("career_pages").select("*").eq("id", id).maybeSingle();
   if (!data) notFound();
   const app = data as CareerApplication;

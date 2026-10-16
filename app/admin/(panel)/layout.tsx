@@ -1,6 +1,6 @@
 import Icon from "@/components/admin/Icon";
 import NavLink from "@/components/admin/NavLink";
-import { requireStaff } from "@/lib/admin/auth";
+import { homeFor, requireStaff } from "@/lib/admin/auth";
 import { RESOURCES } from "@/lib/admin/resources";
 import { media } from "@/lib/media";
 import { signOut } from "../actions";
@@ -12,12 +12,15 @@ function weekAgo() {
 
 export default async function PanelLayout({ children }: { children: React.ReactNode }) {
   const { user, supabase, role } = await requireStaff();
-  const isHr = role === "hr";
-  const [{ count: newEnquiries }, { count: unreadApplications }] = await Promise.all([
-    isHr ? { count: 0 } : supabase.from("applies").select("id", { count: "exact", head: true }).gte("created_at", weekAgo()),
-    supabase.from("career_pages").select("id", { count: "exact", head: true }).is("read_at", null),
+  const isAdmin = role === "admin";
+  const canCareers = role !== "telecaller";
+  const canEnquiries = role !== "hr";
+  const [{ count: newEnquiries }, { count: unreadApplications }, { count: passwordRequests }] = await Promise.all([
+    !canEnquiries ? { count: 0 } : supabase.from("applies").select("id", { count: "exact", head: true }).gte("created_at", weekAgo()),
+    !canCareers ? { count: 0 } : supabase.from("career_pages").select("id", { count: "exact", head: true }).is("read_at", null),
+    !isAdmin ? { count: 0 } : supabase.from("password_requests").select("id", { count: "exact", head: true }).eq("status", "pending"),
   ]);
-  const navResources = RESOURCES.filter((r) => !r.home && (!isHr || r.group === "Careers"));
+  const navResources = RESOURCES.filter((r) => !r.home && (isAdmin || (canCareers && r.group === "Careers")));
   const groups = [...new Set(navResources.map((r) => r.group))];
   const meta = (user.user_metadata ?? {}) as { name?: string; photo?: string };
   const initial = (meta.name || user.email || "A").charAt(0).toUpperCase();
@@ -25,15 +28,15 @@ export default async function PanelLayout({ children }: { children: React.ReactN
   return (
     <div className="ad-shell">
       <aside className="ad-side">
-        <a href={isHr ? "/admin/applications" : "/admin"} className="ad-brand">
+        <a href={homeFor(role)} className="ad-brand">
           <img src="/upload/logos/hav.png" alt="" />
           <span>
             Havitive
-            <small>{isHr ? "HR panel" : "Admin panel"}</small>
+            <small>{isAdmin ? "Admin panel" : role === "hr" ? "HR panel" : "Telecaller panel"}</small>
           </span>
         </a>
         <nav aria-label="Admin">
-          {!isHr && (
+          {isAdmin && (
             <>
               <NavLink href="/admin" icon="dashboard" label="Dashboard" />
               <NavLink href="/admin/home" icon="building" label="Home page" />
@@ -41,16 +44,27 @@ export default async function PanelLayout({ children }: { children: React.ReactN
             </>
           )}
           <div className="ad-nav-group">Inbox</div>
-          {!isHr && (
+          {canEnquiries && (
             <div className="ad-nav-badge-wrap">
               <NavLink href="/admin/enquiries" icon="inbox" label="Enquiries" />
               {!!newEnquiries && <span className="ad-badge" title="New this week">{newEnquiries}</span>}
             </div>
           )}
-          <div className="ad-nav-badge-wrap">
-            <NavLink href="/admin/applications" icon="briefcase" label="Job applications" />
-            {!!unreadApplications && <span className="ad-badge" title="Unread applications">{unreadApplications}</span>}
-          </div>
+          {isAdmin && (
+            <>
+              <NavLink href="/admin/team" icon="users" label="Team logins" />
+              <div className="ad-nav-badge-wrap">
+                <NavLink href="/admin/password-requests" icon="key" label="Password requests" />
+                {!!passwordRequests && <span className="ad-badge" title="Someone is waiting for a password">{passwordRequests}</span>}
+              </div>
+            </>
+          )}
+          {canCareers && (
+            <div className="ad-nav-badge-wrap">
+              <NavLink href="/admin/applications" icon="briefcase" label="Job applications" />
+              {!!unreadApplications && <span className="ad-badge" title="Unread applications">{unreadApplications}</span>}
+            </div>
+          )}
           {groups.map((g) => (
             <div key={g}>
               <div className="ad-nav-group">{g}</div>

@@ -1,6 +1,6 @@
 import Icon from "@/components/admin/Icon";
 import PageHeader from "@/components/admin/PageHeader";
-import { requireStaff } from "@/lib/admin/auth";
+import { requireCareers } from "@/lib/admin/auth";
 import { APPLICATION_STATUSES, statusInfo } from "@/lib/careers";
 import { mailConfigured } from "@/lib/mail";
 import type { CareerApplication, Job } from "@/lib/types";
@@ -11,7 +11,7 @@ type Search = { status?: string; job?: string; q?: string };
 
 export default async function Applications({ searchParams }: { searchParams: Promise<Search> }) {
   const { status = "", job = "", q = "" } = await searchParams;
-  const { supabase } = await requireStaff();
+  const { supabase } = await requireCareers();
 
   let query = supabase.from("career_pages").select("*").order("created_at", { ascending: false }).limit(500);
   if (status && status !== "unread") query = query.eq("status", status);

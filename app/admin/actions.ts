@@ -2,7 +2,7 @@
 
 import { revalidatePath, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
-import { requireAdmin, requireSection, requireStaff } from "@/lib/admin/auth";
+import { requireAdmin, requireCareers, requireSection, requireStaff, requireStaffAny } from "@/lib/admin/auth";
 import { altName, getResource, type Field } from "@/lib/admin/resources";
 import { serverClient } from "@/lib/supabase/server";
 
@@ -100,7 +100,7 @@ export async function deleteChild(resourceKey: string, childKey: string, parentI
 }
 
 export async function deleteSubmission(table: "applies" | "career_pages", id: number) {
-  const { supabase } = await (table === "career_pages" ? requireStaff() : requireAdmin());
+  const { supabase } = await (table === "career_pages" ? requireCareers() : requireAdmin());
   if (table === "career_pages") {
     const { data } = await supabase.from("career_pages").select("cv_path, cover_letter_path").eq("id", id).maybeSingle();
     const files = [data?.cv_path, data?.cover_letter_path]
@@ -119,12 +119,14 @@ export async function signOut() {
 }
 
 export async function changePassword(_: ActionState, form: FormData): Promise<ActionState> {
-  const { supabase } = await requireStaff();
+  const { supabase } = await requireStaffAny();
   const password = String(form.get("password") ?? "");
   if (password.length < 10) return { ok: false, message: "Use at least 10 characters." };
   if (password !== String(form.get("confirm") ?? "")) return { ok: false, message: "The passwords don't match." };
   const { error } = await supabase.auth.updateUser({ password });
   if (error) return { ok: false, message: error.message };
+  // Ends the "choose a new password" step for accounts that were given a temporary one.
+  await supabase.rpc("clear_must_change_password");
   return { ok: true, message: "Password changed." };
 }
 

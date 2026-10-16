@@ -1,14 +1,14 @@
 import ConfirmButton from "@/components/admin/ConfirmButton";
 import Icon from "@/components/admin/Icon";
 import PageHeader from "@/components/admin/PageHeader";
-import { requireAdmin } from "@/lib/admin/auth";
+import { requireEnquiries } from "@/lib/admin/auth";
 import type { Apply } from "@/lib/types";
 import { deleteSubmission } from "../../actions";
 
 export const metadata = { title: "Enquiries" };
 
 export default async function Enquiries() {
-  const { supabase } = await requireAdmin();
+  const { supabase, role } = await requireEnquiries();
   const { data } = await supabase.from("applies").select("*").order("created_at", { ascending: false }).limit(500);
   const rows = (data ?? []) as Apply[];
   return (
@@ -36,7 +36,7 @@ export default async function Enquiries() {
                 </div>
                 </div>
               </div>
-              <ConfirmButton action={deleteSubmission.bind(null, "applies", r.id)} />
+              {role === "admin" && <ConfirmButton action={deleteSubmission.bind(null, "applies", r.id)} />}
             </div>
             <p className="ad-pre ad-msg-text">{r.message}</p>
             <div className="ad-msg-actions">

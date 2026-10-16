@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { requireStaff } from "@/lib/admin/auth";
+import { requireCareers } from "@/lib/admin/auth";
 import { APPLICATION_STATUSES } from "@/lib/careers";
 import { mailConfigured, sendMail } from "@/lib/mail";
 import { deleteSubmission } from "./actions";
@@ -18,7 +18,7 @@ function refresh(id: number) {
 }
 
 export async function updateApplication(id: number, _: ReplyState, form: FormData): Promise<ReplyState> {
-  const { supabase } = await requireStaff();
+  const { supabase } = await requireCareers();
   const status = String(form.get("status") ?? "");
   if (!STATUS_VALUES.has(status)) return { ok: false, message: "Choose a status." };
   const notes = String(form.get("notes") ?? "").trim().slice(0, 5000) || null;
@@ -31,13 +31,13 @@ export async function updateApplication(id: number, _: ReplyState, form: FormDat
 /** Quick status change from the list (one click). */
 export async function setApplicationStatus(id: number, status: string) {
   if (!STATUS_VALUES.has(status)) return;
-  const { supabase } = await requireStaff();
+  const { supabase } = await requireCareers();
   await supabase.from("career_pages").update({ status, updated_at: new Date().toISOString() }).eq("id", id);
   refresh(id);
 }
 
 export async function markUnread(id: number) {
-  const { supabase } = await requireStaff();
+  const { supabase } = await requireCareers();
   await supabase.from("career_pages").update({ read_at: null }).eq("id", id);
   refresh(id);
   redirect("/admin/applications");
@@ -45,7 +45,7 @@ export async function markUnread(id: number) {
 
 /** Email the applicant from the admin panel. Without SMTP settings, the reply opens in the admin's own mail app instead. */
 export async function sendReply(id: number, _: ReplyState, form: FormData): Promise<ReplyState> {
-  const { supabase, user } = await requireStaff();
+  const { supabase, user } = await requireCareers();
   const subject = String(form.get("subject") ?? "").trim().slice(0, 300);
   const body = String(form.get("body") ?? "").trim().slice(0, 20000);
   const newStatus = String(form.get("set_status") ?? "");

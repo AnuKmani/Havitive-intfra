@@ -19,7 +19,7 @@ export async function proxy(request: NextRequest) {
     },
   );
   const { data } = await supabase.auth.getClaims();
-  const isLogin = request.nextUrl.pathname === "/admin/login" || request.nextUrl.pathname === "/admin/login/submit";
+  const isLogin = ["/admin/login", "/admin/login/submit", "/admin/login/forgot"].includes(request.nextUrl.pathname);
   // (The two-factor step under /admin/login/verify needs a signed-in session, so it is not exempt.)
   // An expired or broken session cookie is removed, so the browser starts clean at the login page.
   const clearStale = (res: NextResponse) => {

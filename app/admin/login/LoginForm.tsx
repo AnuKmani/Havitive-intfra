@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import PasswordInput from "@/components/admin/PasswordInput";
 
 // A regular form post (see ./submit/route.ts): it keeps working even in a tab opened before a site update.
 export default function LoginForm() {
@@ -13,9 +14,10 @@ export default function LoginForm() {
       </div>
       <div className="ad-field">
         <label htmlFor="password">Password</label>
-        <input id="password" name="password" type="password" autoComplete="current-password" required />
+        <PasswordInput id="password" name="password" autoComplete="current-password" required />
       </div>
       <button className="ad-btn" disabled={pending}>{pending ? "Signing in…" : "Sign in"}</button>
+      <a href="/admin/login/forgot" className="ad-link">Forgot your password?</a>
     </form>
   );
 }
