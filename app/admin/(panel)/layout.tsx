@@ -77,14 +77,17 @@ export default async function PanelLayout({ children }: { children: React.ReactN
           <NavLink href="/admin/account" icon="user" label="Profile & password" />
           <NavLink href="/" icon="external" label="View website" external />
         </nav>
-        <form action={signOut} className="ad-user">
+        <div className="ad-user">
           {meta.photo ? (
             <img className="ad-avatar ad-avatar-img" src={media(meta.photo)} alt="" />
           ) : (
             <span className="ad-avatar" aria-hidden="true">{initial}</span>
           )}
           <a href="/admin/account" className="ad-user-mail">{meta.name || user.email}</a>
-          <button className="ad-icon-btn" title="Sign out" aria-label="Sign out"><Icon name="logout" /></button>
+          
+        </div>
+        <form action={signOut}>
+          <button className="ad-btn ad-btn-light ad-signout"><Icon name="logout" size={16} /> Sign out</button>
         </form>
       </aside>
       <main className="ad-main">{children}</main>

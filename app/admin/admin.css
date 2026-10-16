@@ -419,3 +419,4 @@
 .ad-ok-box { background: #e7f8ee; color: #0f6b3a; border-radius: 10px; padding: 12px 14px; }
 .ad-gen-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: stretch; }
 .ad-gen-row .ad-pw { flex: 1 1 220px; }
+.ad-signout { width: 100%; justify-content: center; margin-top: 10px; display: inline-flex; align-items: center; gap: 8px; }

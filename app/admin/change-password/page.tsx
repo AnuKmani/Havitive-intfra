@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation";
 import { requireStaffAny } from "@/lib/admin/auth";
+import Icon from "@/components/admin/Icon";
+import { signOut } from "../actions";
 import PasswordForm from "../(panel)/account/PasswordForm";
 
 export const metadata = { title: "Choose a new password" };
@@ -15,6 +17,9 @@ export default async function ChangePasswordPage() {
           <h1>Choose a new password</h1>
           <p className="ad-muted">You signed in with a temporary password. Choose your own password to continue (at least 10 characters).</p>
           <PasswordForm redirectTo="/admin" />
+          <form action={signOut}>
+            <button className="ad-btn ad-btn-light ad-signout"><Icon name="logout" size={16} /> Sign out</button>
+          </form>
         </div>
       </section>
     </main>
