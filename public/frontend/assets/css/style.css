@@ -10130,6 +10130,18 @@ ul.comment-list .th-comment-item:first-child > .th-post-comment {
   /* Extra small devices */
 }
 
+/* Keep every slide the same height so the side social links stay fixed */
+@media (min-width: 992px) {
+  .hero-1 .hero-slider1 .hero-inner {
+    min-height: 720px;
+    display: flex;
+    align-items: center;
+  }
+  .hero-1 .hero-slider1 .hero-inner > .container {
+    width: 100%;
+  }
+}
+
 .hero-1 .hero-slider1 .hero-inner .th-hero-bg {
   -webkit-animation: scalein 20s infinite;
           animation: scalein 20s infinite;

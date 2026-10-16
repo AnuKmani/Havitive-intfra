@@ -5,7 +5,7 @@ import { SITE } from "@/lib/site";
 export default function Hero({ banners }: { banners: HomeBanner[] }) {
   return (
     <div className="hero-1" id="hero">
-      <div className="swiper th-slider hero-slider1" id="heroSlide1" data-slider-options='{"effect":"fade", "autoHeight": "true"}'>
+      <div className="swiper th-slider hero-slider1" id="heroSlide1" data-slider-options='{"effect":"fade"}'>
         <div className="swiper-wrapper">
           {banners.map((b, i) => (
             <div className="swiper-slide" key={b.id}>
