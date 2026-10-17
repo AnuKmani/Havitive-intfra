@@ -43,6 +43,8 @@ export default function Hero({ banners }: { banners: HomeBanner[] }) {
           ))}
         </div>
         <div className="slider-pagination"></div>
+        {/* On phones this one stays put while slides change; the copies inside each slide are hidden there. */}
+        <div className="hero-big-text hero-big-text-fixed" aria-hidden="true">HAVITIVE</div>
       </div>
       <div className="hero-social-link">
         <div className="social-wrap">
