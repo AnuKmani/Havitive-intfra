@@ -443,3 +443,12 @@
   .ad-peek { flex-direction: column; align-items: flex-start; }
   .ad-peek img { width: 100%; height: 180px; }
 }
+.ad-filter { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 0 0 18px; }
+.ad-filter input[type="search"] { flex: 1 1 260px; min-width: 0; }
+.ad-filter select { flex: 0 1 190px; }
+.ad-pager { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+.ad-pager-links { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.ad-pager-links a, .ad-pager-gap { display: inline-flex; align-items: center; justify-content: center; min-width: 36px; height: 36px; padding: 0 12px; border: 1px solid var(--ad-line); border-radius: 10px; background: var(--ad-card); color: var(--ad-ink, #1f2937) !important; font-size: 14px; font-weight: 600; }
+.ad-pager-gap { border-color: transparent; background: transparent; }
+.ad-pager-links a:hover { border-color: var(--ad-accent); color: var(--ad-accent) !important; }
+.ad-pager-links a.active { background: var(--ad-accent); border-color: var(--ad-accent); color: #fff !important; }

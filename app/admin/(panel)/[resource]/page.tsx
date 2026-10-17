@@ -4,15 +4,18 @@ import PageHeader from "@/components/admin/PageHeader";
 import StatusSelect from "@/components/admin/StatusSelect";
 import { requireSection } from "@/lib/admin/auth";
 import { loadOptions } from "@/lib/admin/options";
+import { pageWindow } from "@/lib/pagination";
 import { getResource } from "@/lib/admin/resources";
 import ConfirmButton from "@/components/admin/ConfirmButton";
 import { media } from "@/lib/media";
 import { deleteArchived, restoreRecord } from "../../actions";
 import { stripHtml } from "@/lib/text";
 
+const PAGE_SIZE = 10;
+
 export default async function ResourceList({ params, searchParams }: {
   params: Promise<{ resource: string }>;
-  searchParams: Promise<{ view?: string; blocked?: string }>;
+  searchParams: Promise<{ view?: string; blocked?: string; q?: string; status?: string; page?: string }>;
 }) {
   const res = getResource((await params).resource);
   if (!res) notFound();
@@ -20,12 +23,35 @@ export default async function ResourceList({ params, searchParams }: {
   if (res.home) redirect("/admin/home");
   const { supabase, role } = await requireSection(res);
   const isAdmin = role === "admin";
-  const { view, blocked } = await searchParams;
+  const { view, blocked, q: rawSearch, status: rawStatus, page: rawPage } = await searchParams;
   const archivedView = !!res.archivable && isAdmin && view === "archived";
-  let q = supabase.from(res.table).select("*").order("id", { ascending: false });
+  // Tables with a status column can be searched by name and filtered by status.
+  const canFilter = !!res.asTable && !!res.statusField;
+  const search = canFilter ? (rawSearch ?? "").trim().slice(0, 100) : "";
+  const statusFilter = canFilter && res.statusField!.options.some((o) => o.value === rawStatus) ? rawStatus! : "";
+  const filtered = !!search || !!statusFilter;
+  const pageNo = Number.isInteger(Number(rawPage)) && Number(rawPage) > 0 ? Number(rawPage) : 1;
+  let q = supabase.from(res.table).select("*", { count: "exact" }).order("id", { ascending: false });
   for (const [k, v] of Object.entries(res.fixed ?? {})) q = q.eq(k, v);
   if (res.archivable) q = archivedView ? q.not("archived_at", "is", null) : q.is("archived_at", null);
-  const { data: rows, error } = await q;
+  if (search) q = q.ilike(res.columns[0], `%${search.replace(/[\\%_]/g, "\\$&")}%`);
+  if (statusFilter) q = q.eq(res.statusField!.name, statusFilter);
+  // Long tables show one page at a time.
+  const paged = !!res.asTable;
+  if (paged) q = q.range((pageNo - 1) * PAGE_SIZE, pageNo * PAGE_SIZE - 1);
+  const { data: rows, error, count } = await q;
+  const matchCount = count ?? rows?.length ?? 0;
+  const pages = Math.max(1, Math.ceil(matchCount / PAGE_SIZE));
+  const pageHref = (n: number) => {
+    const p = new URLSearchParams();
+    if (search) p.set("q", search);
+    if (statusFilter) p.set("status", statusFilter);
+    if (n > 1) p.set("page", String(n));
+    const qs = p.toString();
+    return `/admin/${res.key}${qs ? `?${qs}` : ""}`;
+  };
+  if (paged && !rows?.length && matchCount > 0 && pageNo > pages) redirect(pageHref(pages));
+  const totalCount = filtered ? (await supabase.from(res.table).select("id", { count: "exact", head: true })).count ?? 0 : 0;
   const archivedCount = res.archivable && isAdmin && !archivedView
     ? (await supabase.from(res.table).select("id", { count: "exact", head: true }).not("archived_at", "is", null)).count ?? 0
     : 0;
@@ -61,7 +87,9 @@ export default async function ResourceList({ params, searchParams }: {
         title={archivedView ? `Archived ${res.label.toLowerCase()}` : res.label}
         subtitle={archivedView
           ? `Hidden from the website · ${rows?.length ?? 0} archived. Restore one, or delete it for good.`
-          : `${res.hint} · ${rows?.length ?? 0} item${rows?.length === 1 ? "" : "s"}`}
+          : filtered
+            ? `${rows?.length ?? 0} of ${totalCount} ${res.label.toLowerCase()} match your search`
+            : `${res.hint} · ${rows?.length ?? 0} item${rows?.length === 1 ? "" : "s"}`}
         action={<a className="ad-btn" href={`/admin/${res.key}/new`}><Icon name="plus" /> Add {res.singular.toLowerCase()}</a>}
       />
       {res.archivable && isAdmin && (
@@ -71,6 +99,20 @@ export default async function ResourceList({ params, searchParams }: {
             <Icon name="folder" size={15} /> Archived{!archivedView && archivedCount ? ` (${archivedCount})` : ""}
           </a>
         </nav>
+      )}
+      {canFilter && (
+        <form method="get" action={`/admin/${res.key}`} className="ad-filter" role="search">
+          <input
+            type="search" name="q" defaultValue={search} placeholder={`Search by ${label(res.columns[0]).toLowerCase()}`}
+            aria-label={`Search by ${label(res.columns[0]).toLowerCase()}`} maxLength={100}
+          />
+          <select name="status" defaultValue={statusFilter} aria-label={`Filter by ${label(res.statusField!.name).toLowerCase()}`}>
+            <option value="">All statuses</option>
+            {res.statusField!.options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+          </select>
+          <button className="ad-btn"><Icon name="search" size={16} /> Search</button>
+          {filtered && <a className="ad-btn ad-btn-light" href={`/admin/${res.key}`}>Clear</a>}
+        </form>
       )}
       {error && <p className="ad-err">{error.message}</p>}
       {blocked && Number(blocked) > 0 && (
@@ -84,6 +126,13 @@ export default async function ResourceList({ params, searchParams }: {
           <span className="ad-empty-icon"><Icon name="folder" size={40} /></span>
           <h2>Nothing archived</h2>
           <p>Archived {res.label.toLowerCase()} will appear here.</p>
+        </div>
+      ) : !rows?.length && filtered ? (
+        <div className="ad-empty">
+          <span className="ad-empty-icon"><Icon name={res.icon} size={40} /></span>
+          <h2>No {res.label.toLowerCase()} match</h2>
+          <p>Try a different name or status, or clear the search.</p>
+          <a className="ad-btn ad-btn-light" href={`/admin/${res.key}`}>Clear search</a>
         </div>
       ) : !rows?.length ? (
         <div className="ad-empty">
@@ -192,6 +241,24 @@ export default async function ResourceList({ params, searchParams }: {
             </tbody>
           </table>
         </div>
+      )}
+      {paged && pages > 1 && !archivedView && (
+        <nav className="ad-pager" aria-label="Pages">
+          <span className="ad-muted">
+            Showing {(pageNo - 1) * PAGE_SIZE + 1}–{Math.min(pageNo * PAGE_SIZE, matchCount)} of {matchCount}
+          </span>
+          <div className="ad-pager-links">
+            {pageNo > 1 && <a href={pageHref(pageNo - 1)} rel="prev">← Previous</a>}
+            {pageWindow(pageNo, pages).map((n, i) =>
+              n === null ? (
+                <span key={`gap-${i}`} className="ad-pager-gap" aria-hidden="true">…</span>
+              ) : (
+                <a key={n} href={pageHref(n)} className={n === pageNo ? "active" : ""} aria-current={n === pageNo ? "page" : undefined}>{n}</a>
+              ),
+            )}
+            {pageNo < pages && <a href={pageHref(pageNo + 1)} rel="next">Next →</a>}
+          </div>
+        </nav>
       )}
     </>
   );

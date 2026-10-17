@@ -1,4 +1,5 @@
 import type { BlogCategory, BlogPost } from "@/lib/types";
+import { pageWindow } from "@/lib/pagination";
 import { routes } from "@/lib/routes";
 import PostList from "./PostList";
 import "./blog-list.css";
@@ -9,17 +10,6 @@ export const POSTS_PER_PAGE = 10;
 export function pageNumber(raw: string | string[] | undefined) {
   const n = Number(Array.isArray(raw) ? raw[0] : raw);
   return Number.isInteger(n) && n > 0 ? n : 1;
-}
-
-/** Page numbers to show: the first, the last, and the ones around the current page, with gaps marked as null. */
-function pageWindow(current: number, total: number) {
-  const keep = new Set([1, total, current - 1, current, current + 1]);
-  const out: (number | null)[] = [];
-  for (let n = 1; n <= total; n++) {
-    if (keep.has(n)) out.push(n);
-    else if (out[out.length - 1] !== null) out.push(null);
-  }
-  return out;
 }
 
 /**
