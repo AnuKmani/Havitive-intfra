@@ -42,6 +42,8 @@ export type Resource = {
   children?: Child[];
   /** Fill derived columns before saving. */
   derive?: (values: Record<string, string | null>, isNew: boolean) => Record<string, string | null>;
+  /** Non-admins archive instead of deleting; admins restore or delete archived records for good (needs an archived_at column). */
+  archivable?: boolean;
   /** Column that must be unique (case-insensitive); saving a duplicate is refused with a message. */
   unique?: { column: string; label: string };
   /** Edited on the combined Home page editor instead of its own sidebar entry. */
@@ -228,7 +230,7 @@ export const RESOURCES: Resource[] = [
     columns: ["id"], thumb: "img", fields: [{ name: "img", label: "Logo", type: "image", folder: "clients", required: true }],
   },
   {
-    key: "posts", unique: { column: "post_slug", label: "blog post" }, seoKey: (r) => `post:${r.id}`, viewUrl: (r) => routes.post({ id: r.id, post_slug: r.post_slug }), icon: "pen", hint: "News & articles", table: "blog_posts", label: "Blog posts", singular: "Post", group: "Content",
+    key: "posts", archivable: true, unique: { column: "post_slug", label: "blog post" }, seoKey: (r) => `post:${r.id}`, viewUrl: (r) => routes.post({ id: r.id, post_slug: r.post_slug }), icon: "pen", hint: "News & articles", table: "blog_posts", label: "Blog posts", singular: "Post", group: "Content",
     columns: ["post_title", "created_at"], thumb: "post_image",
     fields: [
       { name: "post_title", label: "Title", type: "text", required: true },

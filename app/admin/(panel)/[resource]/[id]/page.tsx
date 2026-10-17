@@ -24,7 +24,7 @@ export default async function EditRecord({ params, searchParams }: Props) {
   const id = isNew ? null : Number(rawId);
   if (!isNew && !Number.isInteger(id)) notFound();
 
-  const { supabase } = await requireSection(res);
+  const { supabase, role } = await requireSection(res);
   const options = await loadOptions(supabase);
   let record: Record<string, unknown> = {};
   if (id) {
@@ -63,7 +63,15 @@ export default async function EditRecord({ params, searchParams }: Props) {
           <>
             {viewUrl && <a className="ad-btn ad-btn-light" href={viewUrl} target="_blank"><Icon name="external" /> View page</a>}
             {id && !res.singleton && (
-              <ConfirmButton action={deleteRecord.bind(null, res.key, id)} message={`Delete this ${res.singular.toLowerCase()}? This cannot be undone.`} />
+              res.archivable && role !== "admin" ? (
+                <ConfirmButton
+                  action={deleteRecord.bind(null, res.key, id)}
+                  label="Archive"
+                  message={`Archive this ${res.singular.toLowerCase()}? It leaves the website now. Only an admin can restore it.`}
+                />
+              ) : (
+                <ConfirmButton action={deleteRecord.bind(null, res.key, id)} message={`Delete this ${res.singular.toLowerCase()}? This cannot be undone.`} />
+              )
             )}
           </>
         }

@@ -81,11 +81,37 @@ export async function saveRecord(resourceKey: string, id: number | null, _: Acti
 export async function deleteRecord(resourceKey: string, id: number) {
   const res = getResource(resourceKey);
   if (!res || res.singleton) return;
-  const { supabase } = await requireSection(res);
+  const { supabase, role } = await requireSection(res);
+  if (res.archivable && role !== "admin") {
+    // Marketing and designers can't delete: the record moves to the admin's Archived list instead.
+    await supabase.from(res.table).update({ archived_at: new Date().toISOString() }).eq("id", id);
+    refreshSite();
+    redirect(`/admin/${res.key}`);
+  }
   for (const child of res.children ?? []) await supabase.from(child.table).delete().eq(child.foreignKey, id);
   await supabase.from(res.table).delete().eq("id", id);
   refreshSite();
   redirect(`/admin/${res.key}`);
+}
+
+/** Admin only: bring an archived record back onto the website. */
+export async function restoreRecord(resourceKey: string, id: number) {
+  const res = getResource(resourceKey);
+  if (!res?.archivable) return;
+  const { supabase } = await requireAdmin();
+  await supabase.from(res.table).update({ archived_at: null }).eq("id", id);
+  refreshSite();
+  revalidatePath(`/admin/${res.key}`);
+}
+
+/** Admin only: delete an archived record for good. */
+export async function deleteArchived(resourceKey: string, id: number) {
+  const res = getResource(resourceKey);
+  if (!res?.archivable) return;
+  const { supabase } = await requireAdmin();
+  await supabase.from(res.table).delete().eq("id", id).not("archived_at", "is", null);
+  refreshSite();
+  revalidatePath(`/admin/${res.key}`);
 }
 
 export async function saveChild(
