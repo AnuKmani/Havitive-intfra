@@ -39,7 +39,7 @@ export default async function SectorProjectsPage({ params, searchParams }: Props
         title={`${sector.sector_name}`}
         trail={[{ name: "All Projects", href: routes.sectorProjects(sector) }]}
       />
-      <section className="space-top space-extra-bottom">
+      <section className="space-top space-extra-bottom projects-list">
         <div className="container">
           <div className="th-sort-bar">
             <div className="row justify-content-between align-items-center">

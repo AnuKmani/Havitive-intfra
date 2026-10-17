@@ -65,3 +65,11 @@
   .floor-plans-content .property-grid-title { font-size: 18px; margin-bottom: 6px; }
   .floor-plans-content .property-grid-text { font-size: 15px; line-height: 1.6; }
 }
+
+/* Project lists (Residential, Commercial, Public): less empty space on phones. */
+@media (max-width: 767px) {
+  .projects-list { padding-top: 28px !important; padding-bottom: 36px !important; }
+  .projects-list .th-sort-bar { margin-bottom: 16px; }
+  .projects-list .woocommerce-result-count { margin: 0; font-size: 15px; line-height: 1.4; text-align: left; }
+  .projects-list .row.gy-40 { --bs-gutter-y: 24px; }
+}
