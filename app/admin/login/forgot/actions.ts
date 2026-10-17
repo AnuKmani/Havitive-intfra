@@ -20,7 +20,7 @@ export async function requestPasswordHelp(_: ForgotState, form: FormData): Promi
   // Best effort: the admin also sees the request (with a badge) in the panel.
   await trySendMail({
     to: process.env.NOTIFY_EMAIL || SITE.email,
-    subject: "HR password request",
+    subject: "Team password request",
     text: `A password request was sent from the admin login page for ${email}.\n\nOpen the admin panel and go to "Password requests" to give a temporary password. They will be asked to choose their own password at the first sign-in.`,
   });
   return { ok: true, message: "Your request was sent to the admin. They will give you a temporary password, and you will choose your own when you sign in." };

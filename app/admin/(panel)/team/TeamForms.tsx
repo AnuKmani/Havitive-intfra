@@ -61,6 +61,8 @@ export function CreateLoginForm() {
         <select id="new-role" name="role" defaultValue="hr" required>
           <option value="hr">HR (job openings, careers page, job applications)</option>
           <option value="telecaller">Telecaller (website enquiries)</option>
+          <option value="marketing">Marketing manager (enquiries, blog, projects, home page)</option>
+          <option value="designer">Project manager / designer (blog, projects, home page)</option>
         </select>
       </div>
       <div className="ad-field">

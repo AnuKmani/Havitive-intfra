@@ -2,13 +2,21 @@ import "server-only";
 import { cache } from "react";
 import { redirect } from "next/navigation";
 import { serverClient } from "@/lib/supabase/server";
-import type { Resource } from "@/lib/admin/resources";
+import { isContentSection, type Resource } from "@/lib/admin/resources";
 
-export type StaffRole = "admin" | "hr" | "telecaller";
+export type StaffRole = "admin" | "hr" | "telecaller" | "marketing" | "designer";
 
-/** The first page each role sees: HR works in the job applications, telecallers in the enquiries. */
+const ROLES: StaffRole[] = ["admin", "hr", "telecaller", "marketing", "designer"];
+
+/** The first page each role sees: HR works in the job applications, telecallers and marketing in the enquiries, designers in the home page. */
 export function homeFor(role: StaffRole) {
-  return role === "hr" ? "/admin/applications" : role === "telecaller" ? "/admin/enquiries" : "/admin";
+  switch (role) {
+    case "hr": return "/admin/applications";
+    case "telecaller":
+    case "marketing": return "/admin/enquiries";
+    case "designer": return "/admin/home";
+    default: return "/admin";
+  }
 }
 
 /**
@@ -29,7 +37,7 @@ const loadStaff = cache(async () => {
     const { data } = await supabase.auth.getClaims();
     if (data?.claims?.aal !== "aal2") redirect("/admin/login/verify");
   }
-  if (role !== "admin" && role !== "hr" && role !== "telecaller") redirect("/admin/login?error=not-admin");
+  if (!ROLES.includes(role as StaffRole)) redirect("/admin/login?error=not-admin");
   return { supabase, user, role: role as StaffRole, mustChange: !!me?.must_change_password };
 });
 
@@ -54,10 +62,13 @@ async function requireRole(...roles: StaffRole[]) {
 export const requireAdmin = () => requireRole("admin");
 /** Job openings, the careers page and job applications: admin and HR. */
 export const requireCareers = () => requireRole("admin", "hr");
-/** Website enquiries: admin and telecaller. */
-export const requireEnquiries = () => requireRole("admin", "telecaller");
+/** Website enquiries: admin, telecaller and marketing. */
+export const requireEnquiries = () => requireRole("admin", "telecaller", "marketing");
+/** Blog, projects and the home page: admin, marketing and designer. */
+export const requireContent = () => requireRole("admin", "marketing", "designer");
 
-/** A content section: admins can use all of them, HR only the Careers ones. */
-export async function requireSection(res: Pick<Resource, "group">) {
-  return res.group === "Careers" ? requireCareers() : requireAdmin();
+/** A content section: admins can use all of them, HR only the Careers ones, marketing and designers the blog, projects and home page. */
+export async function requireSection(res: Pick<Resource, "group" | "key" | "home">) {
+  if (res.group === "Careers") return requireCareers();
+  return isContentSection(res) ? requireContent() : requireAdmin();
 }

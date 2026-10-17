@@ -8,11 +8,11 @@ import { CreateLoginForm, ResetPasswordForm } from "./TeamForms";
 export const metadata = { title: "Team logins" };
 
 type Staff = {
-  user_id: string; email: string; name: string | null; role: "hr" | "telecaller";
+  user_id: string; email: string; name: string | null; role: "hr" | "telecaller" | "marketing" | "designer";
   must_change_password: boolean; created_at: string; last_sign_in_at: string | null;
 };
 
-const ROLE = { hr: "HR", telecaller: "Telecaller" } as const;
+const ROLE = { hr: "HR", telecaller: "Telecaller", marketing: "Marketing manager", designer: "Project manager / designer" } as const;
 const when = (iso: string) => new Date(iso).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
 
 export default async function Team() {
@@ -21,7 +21,7 @@ export default async function Team() {
   const rows = (data ?? []) as Staff[];
   return (
     <>
-      <PageHeader icon="users" title="Team logins" subtitle="Create sign-ins for HR and telecallers. You choose the first password; they change it when they first sign in." />
+      <PageHeader icon="users" title="Team logins" subtitle="Create sign-ins for HR, telecallers, marketing managers and project managers / designers. You choose the first password; they change it when they first sign in." />
       <section className="ad-panel">
         <div className="ad-panel-head"><h2><Icon name="user" /> Create a login</h2></div>
         <CreateLoginForm />
@@ -30,7 +30,7 @@ export default async function Team() {
         {!rows.length && (
           <div className="ad-empty">
             <span className="ad-empty-icon"><Icon name="users" size={40} /></span>
-            <h2>No HR or telecaller logins yet</h2>
+            <h2>No team logins yet</h2>
             <p>Create the first one above.</p>
           </div>
         )}

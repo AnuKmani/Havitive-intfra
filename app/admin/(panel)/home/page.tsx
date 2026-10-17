@@ -4,7 +4,7 @@ import PageHeader from "@/components/admin/PageHeader";
 import RecordForm from "@/components/admin/RecordForm";
 import SeoPanel from "@/components/admin/SeoPanel";
 import { saveInline } from "../../actions";
-import { requireAdmin } from "@/lib/admin/auth";
+import { requireContent } from "@/lib/admin/auth";
 import { loadOptions } from "@/lib/admin/options";
 import { getResource, type Resource, type Row } from "@/lib/admin/resources";
 import { SITE } from "@/lib/site";
@@ -26,7 +26,7 @@ const SECTIONS: { key: string; anchor: string; label: string }[] = [
 ];
 
 export default async function HomeEditor() {
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requireContent();
   const options = await loadOptions(supabase);
 
   const singleton = async (res: Resource) => {

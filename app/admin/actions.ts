@@ -2,7 +2,7 @@
 
 import { revalidatePath, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
-import { requireAdmin, requireCareers, requireSection, requireStaff, requireStaffAny } from "@/lib/admin/auth";
+import { requireAdmin, requireCareers, requireContent, requireSection, requireStaff, requireStaffAny } from "@/lib/admin/auth";
 import { altName, getResource, type Field } from "@/lib/admin/resources";
 import { serverClient } from "@/lib/supabase/server";
 
@@ -73,7 +73,7 @@ export async function saveChild(
 ): Promise<ActionState> {
   const child = getResource(resourceKey)?.children?.find((c) => c.key === childKey);
   if (!child) return { ok: false, message: "Unknown section." };
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requireContent();
   let values: Record<string, string | number | null>;
   try {
     values = readValues(child.fields, form, child.table);
@@ -93,7 +93,7 @@ export async function saveChild(
 export async function deleteChild(resourceKey: string, childKey: string, parentId: number, id: number) {
   const child = getResource(resourceKey)?.children?.find((c) => c.key === childKey);
   if (!child) return;
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requireContent();
   await supabase.from(child.table).delete().eq("id", id).eq(child.foreignKey, parentId);
   refreshSite();
   revalidatePath(`/admin/${resourceKey}/${parentId}`);
@@ -171,7 +171,7 @@ export async function addChildrenBulk(resourceKey: string, childKey: string, par
   const child = getResource(resourceKey)?.children?.find((c) => c.key === childKey);
   const imageField = child?.fields.find((f) => f.type === "image");
   if (!child || !imageField || !images.length) return;
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requireContent();
   const { count } = await supabase.from(child.table).select("id", { count: "exact", head: true }).eq(child.foreignKey, parentId);
   const titleField = child.title !== imageField.name ? child.title : null;
   const rows = images
@@ -189,9 +189,13 @@ export async function addChildrenBulk(resourceKey: string, childKey: string, par
 
 const SEO_KEY = /^(page:[a-z-]+|(project|sector|sector-projects|service|team|post|blog-category):\d+)$/;
 
+const CONTENT_SEO_KEY = /^(page:home|(project|post|blog-category):\d+)$/;
+
 export async function saveSeo(key: string, returnTo: string, _: ActionState, form: FormData): Promise<ActionState> {
   if (!SEO_KEY.test(key)) return { ok: false, message: "Unknown page." };
-  const { supabase } = await requireAdmin();
+  const { supabase, role } = await requireContent();
+  // Marketing and designers only handle SEO for the pages they edit: home, projects and blog.
+  if (role !== "admin" && !CONTENT_SEO_KEY.test(key)) return { ok: false, message: "You can't change SEO for that page." };
   const str = (k: string, max: number) => {
     const v = String(form.get(k) ?? "").trim().slice(0, max);
     return v || null;

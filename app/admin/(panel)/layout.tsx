@@ -1,9 +1,11 @@
 import Icon from "@/components/admin/Icon";
 import NavLink from "@/components/admin/NavLink";
 import { homeFor, requireStaff } from "@/lib/admin/auth";
-import { RESOURCES } from "@/lib/admin/resources";
+import { isContentSection, RESOURCES } from "@/lib/admin/resources";
 import { media } from "@/lib/media";
 import { signOut } from "../actions";
+
+const PANEL_NAME = { admin: "Admin panel", hr: "HR panel", telecaller: "Telecaller panel", marketing: "Marketing panel", designer: "Design panel" } as const;
 
 /** Start of the "new this week" window for the enquiries badge. */
 function weekAgo() {
@@ -13,14 +15,17 @@ function weekAgo() {
 export default async function PanelLayout({ children }: { children: React.ReactNode }) {
   const { user, supabase, role } = await requireStaff();
   const isAdmin = role === "admin";
-  const canCareers = role !== "telecaller";
-  const canEnquiries = role !== "hr";
+  const canCareers = role === "admin" || role === "hr";
+  const canEnquiries = role === "admin" || role === "telecaller" || role === "marketing";
+  const canContent = role === "admin" || role === "marketing" || role === "designer";
   const [{ count: newEnquiries }, { count: unreadApplications }, { count: passwordRequests }] = await Promise.all([
     !canEnquiries ? { count: 0 } : supabase.from("applies").select("id", { count: "exact", head: true }).gte("created_at", weekAgo()),
     !canCareers ? { count: 0 } : supabase.from("career_pages").select("id", { count: "exact", head: true }).is("read_at", null),
     !isAdmin ? { count: 0 } : supabase.from("password_requests").select("id", { count: "exact", head: true }).eq("status", "pending"),
   ]);
-  const navResources = RESOURCES.filter((r) => !r.home && (isAdmin || (canCareers && r.group === "Careers")));
+  const navResources = RESOURCES.filter(
+    (r) => !r.home && (isAdmin || (canCareers && r.group === "Careers") || (canContent && isContentSection(r))),
+  );
   const groups = [...new Set(navResources.map((r) => r.group))];
   const meta = (user.user_metadata ?? {}) as { name?: string; photo?: string };
   const initial = (meta.name || user.email || "A").charAt(0).toUpperCase();
@@ -32,7 +37,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
           <img src="/upload/logos/hav.png" alt="" />
           <span>
             Havitive
-            <small>{isAdmin ? "Admin panel" : role === "hr" ? "HR panel" : "Telecaller panel"}</small>
+            <small>{PANEL_NAME[role]}</small>
           </span>
         </a>
         <nav aria-label="Admin">
@@ -43,7 +48,8 @@ export default async function PanelLayout({ children }: { children: React.ReactN
               <NavLink href="/admin/seo" icon="globe" label="SEO manager" />
             </>
           )}
-          <div className="ad-nav-group">Inbox</div>
+          {!isAdmin && canContent && <NavLink href="/admin/home" icon="building" label="Home page" />}
+          {(isAdmin || canEnquiries || canCareers) && <div className="ad-nav-group">Inbox</div>}
           {canEnquiries && (
             <div className="ad-nav-badge-wrap">
               <NavLink href="/admin/enquiries" icon="inbox" label="Enquiries" />

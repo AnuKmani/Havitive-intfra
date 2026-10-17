@@ -19,12 +19,12 @@ export default async function PasswordRequests() {
   const done = rows.filter((r) => r.status === "done").slice(0, 10);
   return (
     <>
-      <PageHeader icon="key" title="Password requests" subtitle={`HR and telecaller logins that forgot their password · ${pending.length} waiting`} />
+      <PageHeader icon="key" title="Password requests" subtitle={`Team logins that forgot their password · ${pending.length} waiting`} />
       {!pending.length && (
         <div className="ad-empty">
           <span className="ad-empty-icon"><Icon name="key" size={40} /></span>
           <h2>No requests waiting</h2>
-          <p>When HR or a telecaller uses “Forgot your password?” on the login page, the request appears here.</p>
+          <p>When a team member uses “Forgot your password?” on the login page, the request appears here.</p>
         </div>
       )}
       <div className="ad-inbox">

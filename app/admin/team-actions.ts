@@ -9,7 +9,7 @@ export type TeamState = { ok: boolean; message: string } | null;
 export async function createStaff(_: TeamState, form: FormData): Promise<TeamState> {
   const { supabase } = await requireAdmin();
   const role = String(form.get("role") ?? "");
-  if (role !== "hr" && role !== "telecaller") return { ok: false, message: "Choose HR or telecaller." };
+  if (!["hr", "telecaller", "marketing", "designer"].includes(role)) return { ok: false, message: "Choose a role for this login." };
   const email = String(form.get("email") ?? "").trim();
   const password = String(form.get("password") ?? "");
   if (password.length < 10) return { ok: false, message: "Use at least 10 characters." };
