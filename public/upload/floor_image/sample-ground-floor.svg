@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 560" width="800" height="560" font-family="Arial, Helvetica, sans-serif">
+  <rect width="800" height="560" fill="#ffffff"/>
+  <g fill="#f4f6f8" stroke="#1c2d37" stroke-width="6">
+    <rect x="60" y="60" width="680" height="440"/>
+  </g>
+  <g fill="none" stroke="#1c2d37" stroke-width="4">
+    <line x1="60" y1="260" x2="400" y2="260"/>
+    <line x1="400" y1="60" x2="400" y2="360"/>
+    <line x1="400" y1="360" x2="740" y2="360"/>
+    <line x1="560" y1="360" x2="560" y2="500"/>
+    <line x1="230" y1="260" x2="230" y2="500"/>
+  </g>
+  <g fill="#ffffff" stroke="#ffffff" stroke-width="10">
+    <line x1="150" y1="260" x2="190" y2="260"/><line x1="400" y1="150" x2="400" y2="190"/>
+    <line x1="230" y1="360" x2="230" y2="400"/><line x1="470" y1="360" x2="510" y2="360"/>
+    <line x1="560" y1="420" x2="560" y2="460"/><line x1="300" y1="500" x2="340" y2="500"/>
+  </g>
+  <g fill="#1c2d37" font-size="20" text-anchor="middle">
+    <text x="230" y="150">Living</text>
+    <text x="570" y="200">Dining</text>
+    <text x="145" y="390">Bedroom</text>
+    <text x="315" y="390">Kitchen</text>
+    <text x="480" y="440">Toilet</text>
+    <text x="650" y="440">Porch</text>
+    <text x="570" y="320" font-size="16" fill="#51606a">Stairs up</text>
+  </g>
+  <text x="400" y="535" text-anchor="middle" font-size="18" fill="#c0392b" font-weight="700">SAMPLE GROUND FLOOR PLAN – REPLACE WITH THE REAL PLAN</text>
+  <text x="400" y="38" text-anchor="middle" font-size="22" fill="#1c2d37" font-weight="700">Ground floor</text>
+</svg>
