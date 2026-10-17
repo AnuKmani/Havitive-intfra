@@ -76,13 +76,6 @@
 
 /* ---------- Home page on phones: tighter, less spacey ---------- */
 @media (max-width: 767px) {
-  /* Smaller logo, so the dark header band and the hero start closer to the top. */
-  header a[href="/"] img { width: 54px !important; height: 54px !important; object-fit: contain; }
-  .hero-1 { padding-top: 82px !important; }
-  .hero-style1 { padding-top: 22px !important; }
-  /* Smaller play button in the hero, and no slider dots anywhere. */
-  .hero-video-wrap { zoom: 0.62; padding-bottom: 30px !important; }
-  .slider-pagination, .swiper-pagination { display: none !important; }
   /* Counters in two columns instead of one long column. */
   .counter-card-wrap { display: grid !important; grid-template-columns: 1fr 1fr; gap: 26px 8px; padding: 34px 0 40px !important; }
   .counter-card-wrap .counter-card { padding: 0 6px !important; text-align: center; }
