@@ -420,3 +420,26 @@
 .ad-gen-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: stretch; }
 .ad-gen-row .ad-pw { flex: 1 1 220px; }
 .ad-signout { width: 100%; justify-content: center; margin-top: 10px; display: inline-flex; align-items: center; gap: 8px; }
+
+/* Projects table: thumbnail, status dropdown, and the "at a glance" strip on the edit page */
+.ad-row-thumb { display: block; width: 84px; height: 56px; object-fit: cover; border-radius: 8px; background: #eef2f7; }
+.ad-th-thumb { width: 110px; }
+.ad-td-thumb { width: 110px; padding-top: 8px; padding-bottom: 8px; }
+.ad-status { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.ad-status-select {
+  appearance: auto; border: 1px solid transparent; border-radius: 999px; padding: 5px 12px; font-size: 13px; font-weight: 600;
+  cursor: pointer; font-family: inherit;
+}
+.ad-status-select:disabled { opacity: .6; cursor: progress; }
+.ad-status-note { color: var(--ad-muted); font-size: 12.5px; }
+.ad-peek { display: flex; gap: 18px; align-items: center; background: var(--ad-card); border: 1px solid var(--ad-line); border-radius: var(--ad-radius); padding: 14px; margin-bottom: 18px; box-shadow: var(--ad-shadow); }
+.ad-peek img { width: 180px; height: 120px; object-fit: cover; border-radius: 10px; background: #eef2f7; flex: 0 0 auto; }
+.ad-peek h2 { margin: 0 0 6px; font-size: 20px; }
+.ad-peek-meta { display: flex; flex-wrap: wrap; gap: 8px 14px; color: var(--ad-muted); font-size: 14px; align-items: center; }
+.ad-table th.ad-keep, .ad-table td.ad-keep { display: table-cell !important; }
+@media (max-width: 800px) {
+  .ad-th-thumb, .ad-td-thumb { width: 72px; }
+  .ad-row-thumb { width: 60px; height: 44px; }
+  .ad-peek { flex-direction: column; align-items: flex-start; }
+  .ad-peek img { width: 100%; height: 180px; }
+}

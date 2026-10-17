@@ -3,9 +3,20 @@ import { routes } from "@/lib/routes";
 export type Option = { value: string; label: string };
 export type OptionSource = "sectors" | "sections" | "amenities" | "blog_categories" | Option[];
 
+/** Where a project is in its life: shown (and changeable) in the admin project list. */
+export const PROJECT_STATUS: { value: string; label: string }[] = [
+  { value: "ongoing", label: "Ongoing" },
+  { value: "handing_over", label: "Handing over" },
+  { value: "completed", label: "Completed" },
+];
+/** Colour of the status pill, by status value. */
+export const STATUS_TONE: Record<string, string> = { ongoing: "pill-amber", handing_over: "pill-blue", completed: "pill-green" };
+
 export type Field = {
   name: string;
   label: string;
+  /** Pre-filled value for a new record. */
+  defaultValue?: string;
   type: "text" | "textarea" | "html" | "image" | "images" | "select" | "multiselect" | "number" | "url" | "email";
   required?: boolean;
   options?: OptionSource;
@@ -42,6 +53,10 @@ export type Resource = {
   children?: Child[];
   /** Fill derived columns before saving. */
   derive?: (values: Record<string, string | null>, isNew: boolean) => Record<string, string | null>;
+  /** List the records as a table (thumbnail, details and a status dropdown) instead of picture cards. */
+  asTable?: boolean;
+  /** A status column that can be changed straight from the list. */
+  statusField?: { name: string; options: Option[] };
   /** Non-admins archive instead of deleting; admins restore or delete archived records for good (needs an archived_at column). */
   archivable?: boolean;
   /** Column that must be unique (case-insensitive); saving a duplicate is refused with a message. */
@@ -146,11 +161,12 @@ export const RESOURCES: Resource[] = [
   },
   {
     key: "projects", unique: { column: "project_name", label: "project" }, seoKey: (r) => `project:${r.id}`, viewUrl: (r) => routes.project({ id: r.id, project_name: r.project_name }), icon: "building", hint: "Completed projects, galleries, floor plans", table: "latest_projects", label: "Projects", singular: "Project", group: "Projects",
-    columns: ["project_name", "project_heading"], thumb: "project_image",
+    columns: ["project_name", "sector_id", "location"], thumb: "project_image", asTable: true, statusField: { name: "status", options: PROJECT_STATUS },
     fields: [
       { name: "project_name", label: "Project name", type: "text", required: true },
       { name: "project_heading", label: "Headline", type: "text" },
       { name: "sector_id", label: "Category", type: "select", options: "sectors" },
+      { name: "status", label: "Status", type: "select", required: true, options: PROJECT_STATUS, defaultValue: "ongoing" },
       { name: "location", label: "Location", type: "text" },
       { name: "project_image", label: "Cover image", type: "image", folder: "project_image", required: true },
       { name: "description", label: "Description", type: "html" },

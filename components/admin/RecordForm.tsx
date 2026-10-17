@@ -30,7 +30,7 @@ export default function RecordForm({ fields, values, options, action, submitLabe
           </label>
           <FieldInput
             field={f}
-            value={values[f.name] === null || values[f.name] === undefined ? "" : String(values[f.name])}
+            value={values[f.name] === null || values[f.name] === undefined ? f.defaultValue ?? "" : String(values[f.name])}
             alt={String(values[altName(f)] ?? "")}
             options={typeof f.options === "string" ? options[f.options] : f.options}
           />

@@ -1,7 +1,9 @@
 import { notFound, redirect } from "next/navigation";
 import Icon from "@/components/admin/Icon";
 import PageHeader from "@/components/admin/PageHeader";
+import StatusSelect from "@/components/admin/StatusSelect";
 import { requireSection } from "@/lib/admin/auth";
+import { loadOptions } from "@/lib/admin/options";
 import { getResource } from "@/lib/admin/resources";
 import ConfirmButton from "@/components/admin/ConfirmButton";
 import { media } from "@/lib/media";
@@ -33,9 +35,19 @@ export default async function ResourceList({ params, searchParams }: {
     redirect(`/admin/${res.key}/new`);
   }
 
+  // Lists that show choices (like a project's category) need the names, not the stored ids.
+  const options = res.asTable ? await loadOptions(supabase) : {};
+  const optionLabel = (col: string, v: unknown) => {
+    const f = res.fields.find((x) => x.name === col);
+    if (!f || f.type !== "select") return null;
+    const list = typeof f.options === "string" ? options[f.options] : f.options;
+    return list?.find((o) => o.value === String(v ?? ""))?.label ?? null;
+  };
   const cell = (v: unknown, col: string) => {
     if (col === "created_at" && v) return new Date(String(v)).toLocaleDateString("en-IN");
     if (col === "id") return `#${v}`;
+    const named = optionLabel(col, v);
+    if (named) return named;
     const s = stripHtml(String(v ?? ""));
     return s.length > 90 ? s.slice(0, 90) + "…" : s || "—";
   };
@@ -80,7 +92,7 @@ export default async function ResourceList({ params, searchParams }: {
           <p>Add the first one and it will appear on the website.</p>
           <a className="ad-btn" href={`/admin/${res.key}/new`}><Icon name="plus" /> Add {res.singular.toLowerCase()}</a>
         </div>
-      ) : res.thumb ? (
+      ) : res.thumb && !res.asTable ? (
         <div className="ad-cards-grid">
           {rows.map((r) => {
             const inner = (
@@ -123,18 +135,27 @@ export default async function ResourceList({ params, searchParams }: {
           <table className="ad-table">
             <thead>
               <tr>
+                {res.asTable && res.thumb && <th className="ad-keep ad-th-thumb">Image</th>}
                 {res.columns.map((c) => <th key={c}>{label(c)}</th>)}
+                {res.asTable && res.statusField && <th className="ad-keep">{label(res.statusField.name)}</th>}
                 <th></th>
               </tr>
             </thead>
             <tbody>
               {rows.map((r) => (
                 <tr key={r.id}>
+                  {res.asTable && res.thumb && (
+                    <td className="ad-keep ad-td-thumb">
+                      <a href={editHref(r.id)} aria-label={`Edit ${cell(r[res.columns[0]], res.columns[0])}`}>
+                        <img className="ad-row-thumb" src={media(r[res.thumb])} alt="" loading="lazy" />
+                      </a>
+                    </td>
+                  )}
                   {res.columns.map((c, i) => (
                     <td key={c}>
                       {i === 0 ? (
                         <a href={editHref(r.id)} className="ad-row-title">
-                          <span className="ad-row-icon"><Icon name={res.icon} size={16} /></span>
+                          {!(res.asTable && res.thumb) && <span className="ad-row-icon"><Icon name={res.icon} size={16} /></span>}
                           {cell(r[c], c)}
                         </a>
                       ) : (
@@ -142,6 +163,16 @@ export default async function ResourceList({ params, searchParams }: {
                       )}
                     </td>
                   ))}
+                  {res.asTable && res.statusField && (
+                    <td className="ad-keep">
+                      <StatusSelect
+                        resourceKey={res.key}
+                        id={r.id}
+                        value={String(r[res.statusField.name] ?? res.statusField.options[0].value)}
+                        options={res.statusField.options}
+                      />
+                    </td>
+                  )}
                   <td className="ad-right">
                     {archivedView ? (
                       <div style={{ display: "inline-flex", gap: 8 }}>

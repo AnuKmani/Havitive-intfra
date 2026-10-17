@@ -14,7 +14,7 @@ export type Project = Timestamps & {
   id: number; project_image_alt?: string | null; meta_title: string | null; meta_descp: string | null; project_name: string | null;
   project_image: string | null; sector_id: number | null; aminities_id: string | null; location: string | null;
   main_content: string | null; main_description: string | null; project_image_one: string | null;
-  project_heading: string | null; description: string | null;
+  project_heading: string | null; description: string | null; status?: string | null;
 };
 export type Floor = Timestamps & { id: number; image_alt?: string | null; project_id: number | null; floor_name: string | null; description: string | null; image: string | null };
 export type Facility = Timestamps & { id: number; facility_image_alt?: string | null; project_id: number | null; facility_name: string | null; facility_description: string | null; facility_image: string | null };

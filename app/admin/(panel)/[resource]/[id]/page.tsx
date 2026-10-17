@@ -7,7 +7,7 @@ import PageHeader from "@/components/admin/PageHeader";
 import SeoPanel from "@/components/admin/SeoPanel";
 import { requireSection } from "@/lib/admin/auth";
 import { loadOptions } from "@/lib/admin/options";
-import { getResource } from "@/lib/admin/resources";
+import { getResource, STATUS_TONE } from "@/lib/admin/resources";
 import { listSitePages } from "@/lib/admin/seo-pages";
 import { media } from "@/lib/media";
 import { addChildrenBulk, deleteChild, deleteRecord, saveChild, saveRecord } from "../../../actions";
@@ -76,6 +76,26 @@ export default async function EditRecord({ params, searchParams }: Props) {
           </>
         }
       />
+
+      {id && res.asTable && res.thumb && (
+        <section className="ad-peek" aria-label="Project at a glance">
+          <img src={media(record[res.thumb] as string | null)} alt="" />
+          <div>
+            <h2>{String(record[res.columns[0]] ?? "")}</h2>
+            <div className="ad-peek-meta">
+              {res.statusField && (
+                <span className={`ad-pill ${STATUS_TONE[String(record[res.statusField.name])] ?? "pill-grey"}`}>
+                  {res.statusField.options.find((o) => o.value === record[res.statusField!.name])?.label ?? "No status"}
+                </span>
+              )}
+              {options.sectors?.find((o) => o.value === String(record.sector_id ?? ""))?.label && (
+                <span>Category: {options.sectors.find((o) => o.value === String(record.sector_id))!.label}</span>
+              )}
+              {!!record.location && <span>Location: {String(record.location)}</span>}
+            </div>
+          </div>
+        </section>
+      )}
 
       {tabs.length > 2 && (
         <nav className="ad-tabs" aria-label="Sections">

@@ -79,6 +79,19 @@ export async function saveRecord(resourceKey: string, id: number | null, _: Acti
   return { ok: true, message: "Saved. The website is updated." };
 }
 
+/** Changes a record's status straight from the list, e.g. a project from Ongoing to Completed. */
+export async function setRecordStatus(resourceKey: string, id: number, value: string): Promise<ActionState> {
+  const res = getResource(resourceKey);
+  if (!res?.statusField) return { ok: false, message: "Unknown section." };
+  if (!res.statusField.options.some((o) => o.value === value)) return { ok: false, message: "Choose a valid status." };
+  const { supabase } = await requireSection(res);
+  const { error } = await supabase.from(res.table).update({ [res.statusField.name]: value, updated_at: new Date().toISOString() }).eq("id", id);
+  if (error) return { ok: false, message: error.message };
+  refreshSite();
+  revalidatePath(`/admin/${res.key}`);
+  return { ok: true, message: "Saved" };
+}
+
 export async function deleteRecord(resourceKey: string, id: number) {
   const res = getResource(resourceKey);
   if (!res || res.singleton) return;
