@@ -37,7 +37,7 @@ export default async function TestimonialsPage() {
         trail={[{ name: "Showcase" }, { name: "Testimonials", href: TESTIMONIALS_PATH }]}
       />
 
-      <section className="space-top space-extra-bottom">
+      <section className={`sc-top${playable.length ? " has-videos" : ""}`}>
         <div className="container">
           <p className="sc-intro">Hear from the people we have built for. Their trust and feedback inspire us to deliver excellence in every project.</p>
 

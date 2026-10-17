@@ -104,3 +104,53 @@ button.fx-win.lit:focus-visible { outline: 3px solid #fff; outline-offset: 2px; 
   .fx-cta { flex-direction: column; align-items: flex-start; padding: 24px 22px; margin-top: 40px; }
   .fx-cta h3 { font-size: 21px; }
 }
+
+/* ---------- Testimonials page: compact sizes ---------- */
+.sc-top { padding: 52px 0 40px; }
+.sc-top .sc-intro { margin: 0 auto; font-size: 17px; }
+.sc-top.has-videos { padding-bottom: 64px; }
+.sc-top.has-videos .sc-intro { margin-bottom: 34px; }
+
+.fx-wallband { padding: 50px 0 54px; border-radius: 36px 36px 0 0; }
+.fx-head { margin-bottom: 28px; }
+.fx-head h2 { font-size: 30px; }
+.fx-head .sc-bar { margin-top: 10px; width: 52px; height: 3px; }
+.fx { max-width: 880px; grid-template-columns: minmax(0, 4fr) minmax(0, 6fr); gap: 36px; }
+.fx-roof { height: 26px; }
+.fx-roof span { font-size: 10px; }
+.fx-wall { gap: 7px; padding: 11px; }
+.fx-win { height: 30px; }
+.fx-door { width: 48px; height: 34px; }
+.fx-hint { margin-top: 10px; font-size: 12px; }
+.fx-panel { padding: 2px 0 2px 26px; }
+.fx-face { width: 52px; height: 52px; margin-bottom: 8px; }
+.fx-stars { font-size: 12px; margin-bottom: 8px; }
+.fx-panel blockquote { font-size: 17px; line-height: 1.55; margin-bottom: 14px; }
+.fx-project { max-height: 110px; border-radius: 10px; margin-bottom: 14px; }
+.fx-who strong { font-size: 16px; }
+.fx-who span { font-size: 11.5px; }
+.fx-nav { margin-top: 14px; }
+.fx-nav button { width: 32px; height: 32px; font-size: 14px; }
+.fx-cta { max-width: 880px; margin-top: 34px; padding: 20px 28px; border-radius: 18px; }
+.fx-cta h3 { font-size: 19px; margin-bottom: 4px; }
+.fx-cta p { font-size: 14px; }
+.fx-btn { padding: 11px 24px; font-size: 14px; }
+.fx-glow { width: 320px; height: 320px; top: -110px; right: -90px; }
+
+@media (max-width: 991px) {
+  .fx-building { max-width: 300px; }
+}
+@media (max-width: 767px) {
+  .sc-top { padding: 34px 0 26px; }
+  .sc-top .sc-intro { font-size: 15px; }
+  .fx-wallband { padding: 36px 0 40px; border-radius: 26px 26px 0 0; }
+  .fx-head { margin-bottom: 20px; }
+  .fx-head h2 { font-size: 23px; }
+  .fx { gap: 20px; }
+  .fx-building { max-width: 260px; }
+  .fx-win { height: 24px; }
+  .fx-wall { gap: 6px; padding: 9px; }
+  .fx-panel { padding: 16px 0 0; }
+  .fx-panel blockquote { font-size: 16px; }
+  .fx-cta { margin-top: 24px; padding: 18px 18px; }
+}
