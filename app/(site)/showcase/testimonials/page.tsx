@@ -6,7 +6,6 @@ import { getShowcase, getTestimonials } from "@/lib/data";
 import { media } from "@/lib/media";
 import { staticPageMetadata } from "@/lib/seo-page";
 import { TESTIMONIALS_PATH } from "@/lib/showcase";
-import type { Testimonial } from "@/lib/types";
 import { toEmbed, youtubeThumb } from "@/lib/video";
 
 export const revalidate = 300;
@@ -15,23 +14,10 @@ export function generateMetadata(): Promise<Metadata> {
   return staticPageMetadata("page:testimonials");
 }
 
-function Person({ t }: { t: Testimonial }) {
-  return (
-    <div className="sw-person">
-      <img src={media(t.client_img)} alt={t.client_img_alt || t.client_name || ""} loading="lazy" />
-      <div>
-        <strong>{t.client_name}</strong>
-        {t.client_designation && <span>{t.client_designation}</span>}
-      </div>
-    </div>
-  );
-}
-
-/** Video testimonials (YouTube links from Admin > Showcase) and written testimonials. */
+/** Video testimonials (YouTube links from Admin > Showcase) and written testimonials as a conversation of speech bubbles. */
 export default async function TestimonialsPage() {
   const [videos, written] = await Promise.all([getShowcase("testimonial-videos"), getTestimonials()]);
   const playable = videos.filter((v) => toEmbed(v.video_url));
-  const [featured, ...others] = written;
 
   return (
     <>
@@ -69,50 +55,40 @@ export default async function TestimonialsPage() {
         </div>
       </section>
 
-      {featured && (
-        <section className="sw-wall">
-          <span className="sw-glow" aria-hidden="true"></span>
+      {written.length > 0 && (
+        <section className="cv-wall">
           <div className="container">
-            <div className="sw-head">
-              <span className="sw-kicker">Testimonials</span>
+            <div className="cv-head">
+              <span className="sc-kicker">Testimonials</span>
               <h2>What our clients say</h2>
-              <span className="sw-bar" aria-hidden="true"></span>
+              <span className="sc-bar" aria-hidden="true"></span>
             </div>
 
-            <figure className={`sw-feature${featured.img ? "" : " no-photo"}`}>
-              {featured.img && (
-                <div className="sw-feature-photo">
-                  <span className="sw-chip">Featured story</span>
-                  <img src={media(featured.img)} alt={featured.img_alt || `Project of ${featured.client_name ?? "our client"}`} loading="lazy" />
-                </div>
-              )}
-              <div className="sw-feature-body">
-                <span className="sw-quote-mark" aria-hidden="true">“</span>
-                <div className="sw-stars" aria-label="5 out of 5 stars">★★★★★</div>
-                <blockquote>{featured.desription}</blockquote>
-                <figcaption><Person t={featured} /></figcaption>
-              </div>
-            </figure>
-
-            {others.length > 0 && (
-              <div className="sw-masonry">
-                {others.map((t) => (
-                  <figure className="sw-card" key={t.id}>
-                    <span className="sw-quote-mark small" aria-hidden="true">“</span>
-                    <div className="sw-stars" aria-label="5 out of 5 stars">★★★★★</div>
+            <div className="cv-thread">
+              {written.map((t, i) => (
+                <div className={`cv-row${i % 2 ? " right" : ""}`} key={t.id}>
+                  <img className="cv-face" src={media(t.client_img)} alt={t.client_img_alt || t.client_name || ""} loading="lazy" />
+                  <figure className="cv-bubble">
+                    <div className="cv-stars" aria-label="5 out of 5 stars">★★★★★</div>
                     <blockquote>{t.desription}</blockquote>
-                    <figcaption><Person t={t} /></figcaption>
+                    {t.img && (
+                      <img className="cv-project" src={media(t.img)} alt={t.img_alt || `Project of ${t.client_name ?? "our client"}`} loading="lazy" />
+                    )}
+                    <figcaption>
+                      <strong>{t.client_name}</strong>
+                      {t.client_designation && <span>{t.client_designation}</span>}
+                    </figcaption>
                   </figure>
-                ))}
-              </div>
-            )}
+                </div>
+              ))}
+            </div>
 
-            <div className="sw-cta">
+            <div className="cv-cta">
               <div>
                 <h3>Planning your own project?</h3>
                 <p>Talk to our architects and engineers. We would love to build the next success story with you.</p>
               </div>
-              <a className="sw-btn" href="/contact">Start your project</a>
+              <a className="cv-btn" href="/contact">Start your project</a>
             </div>
           </div>
         </section>
