@@ -149,3 +149,18 @@
   .hs-news .blog-card.style2 .blog-img img { height: 210px; }
   .hs-news .blog-card.style2 .blog-content { padding: 18px 18px 22px; }
 }
+
+/* News & Articles: smaller cards (three across on wide screens). */
+.hs-news .blog-card.style2 .blog-img img { height: 190px; }
+.hs-news .blog-card.style2 .blog-content { padding: 16px 20px 20px; }
+.hs-news .blog-card.style2 .blog-content .blog-meta { margin-bottom: 8px; font-size: 13px; }
+.hs-news .blog-card.style2 .blog-content .blog-meta a { font-size: 13px; }
+.hs-news .blog-card.style2 .blog-content .box-title { font-size: 18px; line-height: 1.4; margin-bottom: 14px; }
+.hs-news .blog-card.style2 .blog-content .th-btn { padding: 10px 20px; font-size: 14px; }
+.hs-news.space { padding-top: 80px; padding-bottom: 80px; }
+@media (max-width: 767px) {
+  .hs-news .blog-card.style2 .blog-img img { height: 160px; }
+  .hs-news .blog-card.style2 .blog-content { padding: 14px 16px 18px; }
+  .hs-news .blog-card.style2 .blog-content .box-title { font-size: 17px; }
+  .hs-news.space { padding-top: 48px; padding-bottom: 48px; }
+}

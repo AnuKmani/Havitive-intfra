@@ -23,7 +23,7 @@ export default function BlogSlider({ posts }: { posts: BlogPost[] }) {
           </div>
         </div>
         <div className="slider-area blog-slider2">
-          <div className="swiper th-slider" id="blogSlider2" data-slider-options='{"breakpoints":{"0":{"slidesPerView":1},"576":{"slidesPerView":"1"},"768":{"slidesPerView":"2"},"992":{"slidesPerView":"2"},"1200":{"slidesPerView":"2"}}}'>
+          <div className="swiper th-slider" id="blogSlider2" data-slider-options='{"breakpoints":{"0":{"slidesPerView":1},"576":{"slidesPerView":"1"},"768":{"slidesPerView":"2"},"992":{"slidesPerView":"2"},"1200":{"slidesPerView":"3"}}}'>
             <div className="swiper-wrapper">
               {posts.map((p) => (
                 <div className="swiper-slide" key={p.id}>
