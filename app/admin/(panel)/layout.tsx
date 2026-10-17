@@ -14,7 +14,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
   const canEnquiries = role === "admin" || role === "telecaller" || role === "marketing";
   const canContent = role === "admin" || role === "marketing" || role === "designer";
   const [{ count: newEnquiries }, { count: unreadApplications }, { count: passwordRequests }] = await Promise.all([
-    !canEnquiries ? { count: 0 } : supabase.from("applies").select("id", { count: "exact", head: true }).is("read_at", null),
+    !canEnquiries ? { count: 0 } : supabase.from("applies").select("id", { count: "exact", head: true }).is("read_at", null).is("archived_at", null),
     !canCareers ? { count: 0 } : supabase.from("career_pages").select("id", { count: "exact", head: true }).is("read_at", null),
     !isAdmin ? { count: 0 } : supabase.from("password_requests").select("id", { count: "exact", head: true }).eq("status", "pending"),
   ]);

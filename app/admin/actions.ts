@@ -2,7 +2,7 @@
 
 import { revalidatePath, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
-import { requireAdmin, requireCareers, requireContent, requireEnquiries, requireEnquiryDelete, requireSection, requireStaff, requireStaffAny } from "@/lib/admin/auth";
+import { requireAdmin, requireCareers, requireContent, requireEnquiries, requireEnquiryArchive, requireSection, requireStaff, requireStaffAny } from "@/lib/admin/auth";
 import { altName, getResource, type Field, type Resource } from "@/lib/admin/resources";
 import { serverClient } from "@/lib/supabase/server";
 
@@ -120,7 +120,7 @@ export async function deleteChild(resourceKey: string, childKey: string, parentI
 }
 
 export async function deleteSubmission(table: "applies" | "career_pages", id: number) {
-  const { supabase } = await (table === "career_pages" ? requireCareers() : requireEnquiryDelete());
+  const { supabase } = await (table === "career_pages" ? requireCareers() : requireAdmin());
   if (table === "career_pages") {
     const { data } = await supabase.from("career_pages").select("cv_path, cover_letter_path").eq("id", id).maybeSingle();
     const files = [data?.cv_path, data?.cover_letter_path]
@@ -133,10 +133,26 @@ export async function deleteSubmission(table: "applies" | "career_pages", id: nu
   revalidatePath("/admin", "layout"); // refreshes the sidebar badges
 }
 
+/** Moves an enquiry out of the inbox. An admin can restore it or delete it for good. */
+export async function archiveEnquiry(id: number) {
+  const { supabase } = await requireEnquiryArchive();
+  const now = new Date().toISOString();
+  await supabase.from("applies").update({ archived_at: now, read_at: now }).eq("id", id);
+  revalidatePath("/admin/enquiries");
+  revalidatePath("/admin", "layout");
+}
+
+export async function restoreEnquiry(id: number) {
+  const { supabase } = await requireAdmin();
+  await supabase.from("applies").update({ archived_at: null }).eq("id", id);
+  revalidatePath("/admin/enquiries");
+  revalidatePath("/admin", "layout");
+}
+
 /** Marks one enquiry (or all of them, when id is null) as read, so the sidebar number goes down. */
 export async function markEnquiriesRead(id: number | null) {
   const { supabase } = await requireEnquiries();
-  let q = supabase.from("applies").update({ read_at: new Date().toISOString() }).is("read_at", null);
+  let q = supabase.from("applies").update({ read_at: new Date().toISOString() }).is("read_at", null).is("archived_at", null);
   if (id !== null) q = q.eq("id", id);
   await q;
   revalidatePath("/admin/enquiries");
