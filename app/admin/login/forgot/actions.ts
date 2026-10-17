@@ -9,8 +9,8 @@ export type ForgotState = { ok: boolean; message: string } | null;
 const EMAIL = /^[^\s@]{1,64}@[^\s@]{1,190}\.[^\s@]{2,}$/;
 
 /**
- * HR or a telecaller asks the admin for a password. The answer is always the same, so nobody can use this form to find out
- * which emails have accounts. The request itself is recorded by the database (only for real HR accounts).
+ * HR, a telecaller, a marketing manager or a designer asks the admin for a password. The answer is always the same, so nobody
+ * can use this form to find out which emails have accounts. The request itself is recorded by the database (only for real team accounts).
  */
 export async function requestPasswordHelp(_: ForgotState, form: FormData): Promise<ForgotState> {
   const email = String(form.get("email") ?? "").trim().toLowerCase();
