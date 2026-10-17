@@ -13,6 +13,7 @@ const STATUS_VALUES = new Set<string>(APPLICATION_STATUSES.map((s) => s.value));
 
 function refresh(id: number) {
   revalidatePath("/admin/applications");
+  revalidatePath("/admin/talent-network");
   revalidatePath(`/admin/applications/${id}`);
   revalidatePath("/admin", "layout");
 }
@@ -38,9 +39,10 @@ export async function setApplicationStatus(id: number, status: string) {
 
 export async function markUnread(id: number) {
   const { supabase } = await requireCareers();
+  const { data: row } = await supabase.from("career_pages").select("job_id").eq("id", id).maybeSingle();
   await supabase.from("career_pages").update({ read_at: null }).eq("id", id);
   refresh(id);
-  redirect("/admin/applications");
+  redirect(row && row.job_id === null ? "/admin/talent-network" : "/admin/applications");
 }
 
 /** Email the applicant from the admin panel. Without SMTP settings, the reply opens in the admin's own mail app instead. */
@@ -79,7 +81,9 @@ export async function sendReply(id: number, _: ReplyState, form: FormData): Prom
 }
 
 export async function deleteApplication(id: number) {
+  const { supabase } = await requireCareers();
+  const { data: row } = await supabase.from("career_pages").select("job_id").eq("id", id).maybeSingle();
   await deleteSubmission("career_pages", id);
   revalidatePath("/admin", "layout");
-  redirect("/admin/applications");
+  redirect(row && row.job_id === null ? "/admin/talent-network" : "/admin/applications");
 }

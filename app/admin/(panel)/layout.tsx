@@ -16,11 +16,12 @@ export default async function PanelLayout({ children }: { children: React.ReactN
   const archived = (table: string) =>
     !isAdmin ? { count: 0 } : supabase.from(table).select("id", { count: "exact", head: true }).not("archived_at", "is", null);
   const [
-    { count: newEnquiries }, { count: unreadApplications }, { count: passwordRequests },
+    { count: newEnquiries }, { count: unreadApplications }, { count: unreadTalent }, { count: passwordRequests },
     { count: archivedEnquiries }, { count: archivedPosts }, { count: archivedCategories },
   ] = await Promise.all([
     !canEnquiries ? { count: 0 } : supabase.from("applies").select("id", { count: "exact", head: true }).is("read_at", null).is("archived_at", null),
-    !canCareers ? { count: 0 } : supabase.from("career_pages").select("id", { count: "exact", head: true }).is("read_at", null),
+    !canCareers ? { count: 0 } : supabase.from("career_pages").select("id", { count: "exact", head: true }).is("read_at", null).not("job_id", "is", null),
+    !canCareers ? { count: 0 } : supabase.from("career_pages").select("id", { count: "exact", head: true }).is("read_at", null).is("job_id", null),
     !isAdmin ? { count: 0 } : supabase.from("password_requests").select("id", { count: "exact", head: true }).eq("status", "pending"),
     archived("applies"),
     archived("blog_posts"),
@@ -86,6 +87,12 @@ export default async function PanelLayout({ children }: { children: React.ReactN
             <div className="ad-nav-badge-wrap">
               <NavLink href="/admin/applications" icon="briefcase" label="Job applications" />
               {!!unreadApplications && <span className="ad-badge" title="Unread applications">{unreadApplications}</span>}
+            </div>
+          )}
+          {canCareers && (
+            <div className="ad-nav-badge-wrap">
+              <NavLink href="/admin/talent-network" icon="users" label="Talent network" />
+              {!!unreadTalent && <span className="ad-badge" title="Unread CVs sent for future consideration">{unreadTalent}</span>}
             </div>
           )}
           {groups.map((g) => (

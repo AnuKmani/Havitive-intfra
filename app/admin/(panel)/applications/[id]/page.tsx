@@ -52,7 +52,7 @@ export default async function ApplicationDetail({ params }: { params: Promise<{ 
         icon="user"
         title={app.name}
         subtitle={`Applied for ${job ? `${job.title} (${jobCode(job)})` : app.job_id ? "a removed job" : "the talent network"} · ${when(app.created_at)}`}
-        back={{ href: "/admin/applications", label: "Job applications" }}
+        back={app.job_id ? { href: "/admin/applications", label: "Job applications" } : { href: "/admin/talent-network", label: "Talent network" }}
         action={
           <>
             <form action={markUnread.bind(null, id)}><button className="ad-btn ad-btn-light"><Icon name="mail" /> Mark unread</button></form>

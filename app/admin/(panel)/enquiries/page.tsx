@@ -16,7 +16,7 @@ export default async function Enquiries({ searchParams }: { searchParams: Promis
   const { data } = await query;
   const rows = (data ?? []) as Apply[];
   const unread = archivedView ? 0 : rows.filter((r) => !r.read_at).length;
-  const canArchive = role === "admin" || role === "marketing";
+  const canArchive = role === "admin" || role === "marketing" || role === "telecaller";
   return (
     <>
       <PageHeader

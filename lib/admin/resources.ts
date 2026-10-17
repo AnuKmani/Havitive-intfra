@@ -367,9 +367,9 @@ export const RESOURCES: Resource[] = [
   },
 ];
 
-/** Sections marketing managers and designers can edit besides admins: blog, projects and everything on the home page. */
+/** Sections marketing managers and designers can edit besides admins: blog posts (not blog categories, which only admins manage), projects and everything on the home page. */
 export const isContentSection = (res: Pick<Resource, "key" | "home">) =>
-  !!res.home || res.key === "posts" || res.key === "categories" || res.key === "projects";
+  !!res.home || res.key === "posts" || res.key === "projects";
 
 export function getResource(key: string) {
   return RESOURCES.find((r) => r.key === key);

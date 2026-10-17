@@ -64,8 +64,8 @@ export const requireAdmin = () => requireRole("admin");
 export const requireCareers = () => requireRole("admin", "hr");
 /** Website enquiries: admin, telecaller and marketing. */
 export const requireEnquiries = () => requireRole("admin", "telecaller", "marketing");
-/** Archiving website enquiries: admin and marketing. Restoring and deleting for good are admin-only. */
-export const requireEnquiryArchive = () => requireRole("admin", "marketing");
+/** Archiving website enquiries: admin, marketing and telecaller. Restoring and deleting for good are admin-only. */
+export const requireEnquiryArchive = () => requireRole("admin", "marketing", "telecaller");
 /** Blog, projects and the home page: admin, marketing and designer. */
 export const requireContent = () => requireRole("admin", "marketing", "designer");
 
