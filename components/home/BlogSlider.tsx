@@ -6,20 +6,20 @@ import { formatDate, truncateWords } from "@/lib/text";
 export default function BlogSlider({ posts }: { posts: BlogPost[] }) {
   if (!posts.length) return null;
   return (
-    <section className="overflow-hidden space bg-title-dark">
-      <div className="sec-bg-shape2-3 jump shape-mockup d-xl-block d-none text-white" data-bottom="40%" data-right="0%">
+    <section className="overflow-hidden space bg-smokes hs-news">
+      <div className="sec-bg-shape2-3 jump shape-mockup d-xl-block d-none" data-bottom="40%" data-right="0%">
         <img src="/frontend/assets/img/shape/section_shape_2_3.jpg" alt="" />
       </div>
       <div className="container">
         <div className="row justify-content-lg-between justify-content-center align-items-end">
           <div className="col-xl-5 col-lg-6">
             <div className="title-area text-lg-start text-center">
-              <h2 className="sec-title text-white">News &amp; Articles</h2>
-              <p className="text-white">Stay informed with the latest trends, industry updates, and valuable insights. Explore our articles for expert advice and innovative solutions in design and consultancy.</p>
+              <h2 className="sec-title">News &amp; Articles</h2>
+              <p>Stay informed with the latest trends, industry updates, and valuable insights. Explore our articles for expert advice and innovative solutions in design and consultancy.</p>
             </div>
           </div>
           <div className="col-lg-auto">
-            <div className="sec-btn"><a href="/blog" className="th-btn style-border3 th-btn-icon">Browse All Blog</a></div>
+            <div className="sec-btn"><a href="/blog" className="th-btn style-border th-btn-icon">Browse All Blog</a></div>
           </div>
         </div>
         <div className="slider-area blog-slider2">

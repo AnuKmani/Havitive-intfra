@@ -111,3 +111,41 @@
     pointer-events: none;
   }
 }
+
+/* ---------- Home page: Clients (light), Book Business Solutions (dark, white form card), News (light) ---------- */
+.hs-clients { padding: 64px 0; }
+.hs-clients .sec-title { font-size: 30px; margin: 0; }
+.hs-clients .client-card { background: #fff; border-radius: 14px; box-shadow: 0 4px 18px rgba(5, 33, 50, 0.07); padding: 14px 18px; margin: 6px; }
+
+.hs-enquiry { padding-top: 80px; }
+.hs-form-card { background: #fff; border-radius: 24px; padding: 34px; box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28); }
+.hs-form-card .appointment-form { margin-right: 0 !important; }
+.hs-form-card .form-group.style-border3 input,
+.hs-form-card .form-group.style-border3 select,
+.hs-form-card .form-group.style-border3 textarea { background: #f4f7fa; border: 1px solid #d5dde6; color: #1c2d37; }
+.hs-form-card .form-group.style-border3 input::placeholder,
+.hs-form-card .form-group.style-border3 textarea::placeholder { color: #7a8791; }
+.hs-form-card .form-group.style-border3 select { color: #5b6a74; }
+.hs-form-card .form-group.style-border3 i { color: #052132; }
+.hs-form-card .th-btn { background: var(--theme-color2, #e3b94b); color: #052132; }
+.hs-form-card .form-alert.ok { background: #e7f6ec; }
+
+.hs-news .sec-title { color: var(--title-color, #052132); }
+.hs-news .blog-card.style2 { background: #fff; border-radius: 24px; overflow: hidden; box-shadow: 0 8px 28px rgba(5, 33, 50, 0.1); }
+.hs-news .blog-card.style2 .blog-img { border-radius: 0; }
+.hs-news .blog-card.style2 .blog-img img { height: 260px; }
+.hs-news .blog-card.style2 .blog-content { padding: 22px 26px 28px; }
+.hs-news .blog-card.style2 .blog-content .blog-meta a { color: #6b7a85; }
+.hs-news .blog-card.style2 .blog-content .box-title a {
+  color: var(--title-color, #052132);
+  background-image: linear-gradient(to left, var(--title-color, #052132), var(--title-color, #052132));
+}
+
+@media (max-width: 767px) {
+  .hs-clients { padding: 44px 0; }
+  .hs-clients .sec-title { font-size: 24px; }
+  .hs-enquiry { padding-top: 48px; }
+  .hs-form-card { padding: 20px 16px; border-radius: 20px; }
+  .hs-news .blog-card.style2 .blog-img img { height: 210px; }
+  .hs-news .blog-card.style2 .blog-content { padding: 18px 18px 22px; }
+}

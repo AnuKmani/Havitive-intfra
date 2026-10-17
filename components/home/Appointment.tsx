@@ -3,7 +3,7 @@ import EnquiryForm from "@/components/forms/EnquiryForm";
 
 export default function Appointment({ sectors }: { sectors: Sector[] }) {
   return (
-    <div className="space-bottom bg-title-dark overflow-hidden" id="enquiry">
+    <div className="space-bottom hs-enquiry bg-title-dark overflow-hidden" id="enquiry">
       <div className="sec-bg-shape2-1 spin shape-mockup d-xl-block d-none text-white" data-bottom="9%" data-left="34%">
         <img src="/frontend/assets/img/shape/section_shape_2_1.jpg" alt="" />
       </div>
@@ -17,7 +17,9 @@ export default function Appointment({ sectors }: { sectors: Sector[] }) {
           </div>
           <div className="col-lg-7">
             <div className="title-area mb-35"><h2 className="sec-title text-white">Book Business Solutions</h2></div>
-            <EnquiryForm sectors={sectors.map(({ id, sector_name }) => ({ id, sector_name }))} />
+            <div className="hs-form-card">
+              <EnquiryForm light sectors={sectors.map(({ id, sector_name }) => ({ id, sector_name }))} />
+            </div>
           </div>
         </div>
       </div>

@@ -4,9 +4,9 @@ import { media } from "@/lib/media";
 export default function Clients({ clients }: { clients: Client[] }) {
   if (!clients.length) return null;
   return (
-    <div className="client-area-1 space bg-title-dark overflow-hidden">
+    <div className="client-area-1 hs-clients bg-smokes overflow-hidden">
       <div className="container">
-        <h2 className="visually-hidden-focusable">Our clients</h2>
+        <div className="title-area text-center mb-30"><h2 className="sec-title">Our Valued Clients</h2></div>
         <div className="slider-area client-slider1">
           <div className="swiper th-slider has-shadow" id="clientSlider1" data-slider-options='{"breakpoints":{"0":{"slidesPerView":2},"576":{"slidesPerView":"3"},"768":{"slidesPerView":"4"},"992":{"slidesPerView":"5"},"1200":{"slidesPerView":"6"}}}'>
             <div className="swiper-wrapper">
