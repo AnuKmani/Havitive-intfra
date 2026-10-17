@@ -112,7 +112,7 @@ export default async function AboutPage() {
               <p className="sec-text text-title">{a?.chairman_text}</p>
             </div>
             <div className="btn-wrap mb-55">
-              <a href={chairmanLink} className="th-btn style2 btn-mask th-btn-icon" style={{ backgroundColor: "black" }} {...(chairmanExternal ? { target: "_blank", rel: "noopener" } : {})}>
+              <a href={chairmanLink} className="th-btn style2 th-btn-icon" style={{ borderRadius: 50 }} {...(chairmanExternal ? { target: "_blank", rel: "noopener" } : {})}>
                 {a?.chairman_button_text || "Connect"}
               </a>
             </div>
