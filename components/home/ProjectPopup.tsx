@@ -14,6 +14,8 @@ export type PopupProject = {
   client?: string | null;
   date?: string | null;
   location?: string | null;
+  /** Embeddable video address (YouTube / Vimeo), when the project has one. */
+  video?: string | null;
 };
 
 /** A link that opens the project's key details in a popup instead of leaving the page. */
@@ -22,6 +24,7 @@ export default function ProjectPopup({ project, children, className, style, aria
 }) {
   const [open, setOpen] = useState(false);
   const [current, setCurrent] = useState(0);
+  const [playing, setPlaying] = useState(false);
 
   useEffect(() => {
     if (!open) return;
@@ -38,21 +41,28 @@ export default function ProjectPopup({ project, children, className, style, aria
 
   return (
     <>
-      <a href={project.href} className={className} style={style} aria-label={ariaLabel} onClick={(e) => { e.preventDefault(); setCurrent(0); setOpen(true); }}>
+      <a href={project.href} className={className} style={style} aria-label={ariaLabel} onClick={(e) => { e.preventDefault(); setCurrent(0); setPlaying(false); setOpen(true); }}>
         {children}
       </a>
       {open && createPortal(
         <div className="pp-overlay" role="presentation" onClick={(e) => { if (e.target === e.currentTarget) setOpen(false); }}>
           <div className="pp-box" role="dialog" aria-modal="true" aria-label={project.name}>
             <button type="button" className="pp-close" aria-label="Close" onClick={() => setOpen(false)}>&times;</button>
-            <img className="pp-img" src={project.images[current] ?? project.images[0]} alt={project.imageAlt} />
-            {project.images.length > 1 && (
+            {playing && project.video ? (
+              <div className="pp-video"><iframe src={project.video} title={`${project.name} video`} allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen /></div>
+            ) : (
+              <img className="pp-img" src={project.images[current] ?? project.images[0]} alt={project.imageAlt} />
+            )}
+            {(project.images.length > 1 || project.video) && (
               <div className="pp-thumbs">
                 {project.images.map((src, i) => (
-                  <button type="button" key={src + i} className={i === current ? "on" : ""} aria-label={`Show image ${i + 1}`} onClick={() => setCurrent(i)}>
+                  <button type="button" key={src + i} className={i === current && !playing ? "on" : ""} aria-label={`Show image ${i + 1}`} onClick={() => { setCurrent(i); setPlaying(false); }}>
                     <img src={src} alt="" loading="lazy" />
                   </button>
                 ))}
+                {project.video && (
+                  <button type="button" className={`pp-play${playing ? " on" : ""}`} onClick={() => setPlaying(true)} aria-label="Play project video">▶ Video</button>
+                )}
               </div>
             )}
             <h3 className="pp-title">{project.name}</h3>
@@ -75,6 +85,10 @@ export default function ProjectPopup({ project, children, className, style, aria
             .pp-thumbs button{padding:0;border:2px solid transparent;border-radius:10px;overflow:hidden;background:none;cursor:pointer;opacity:.65;width:96px;height:64px}
             .pp-thumbs button.on{border-color:#fff;opacity:1}
             .pp-thumbs img{width:100%;height:100%;object-fit:cover;display:block}
+            .pp-video{position:relative;width:100%;max-width:608px;aspect-ratio:16/9;border-radius:20px;overflow:hidden;background:#000}
+            .pp-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+            .pp-thumbs .pp-play{width:auto;padding:0 16px;height:64px;background:#fff;color:#05202f;font-weight:700;opacity:.9}
+            .pp-thumbs .pp-play.on{border-color:#ffd24a;opacity:1}
             .pp-title{color:#fff;margin:28px 0 12px;font-size:32px}
             .pp-grid{display:flex;gap:40px;flex-wrap:wrap;justify-content:space-between}
             .pp-desc{flex:1 1 320px;margin:0}

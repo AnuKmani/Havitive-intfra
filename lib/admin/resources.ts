@@ -194,13 +194,13 @@ export const RESOURCES: Resource[] = [
       { name: "sector_id", label: "Category", type: "select", options: "sectors" },
       { name: "status", label: "Status", type: "select", required: true, options: PROJECT_STATUS, defaultValue: "ongoing" },
       { name: "location", label: "Location", type: "text" },
+      { name: "main_content", label: "Project video link", type: "url", help: "Paste a YouTube or Vimeo link. It plays in a popup on the project page and in the project popup. Leave empty to show the company video." },
       { name: "client_name", label: "Client name", type: "text", help: "Shown in the project popup." },
       { name: "project_date", label: "Project date", type: "date", help: "Pick from the calendar. Shown in the project popup." },
       { name: "project_image", label: "Cover image", type: "image", folder: "project_image", required: true },
       { name: "description", label: "Description", type: "html" },
       { name: "main_description", label: "Floor plans heading", type: "text" },
-      { name: "main_content", label: "Project video URL", type: "url", help: "YouTube link shown in the Project Video box." },
-      { name: "aminities_id", label: "Amenities", type: "multiselect", options: "amenities" },
+            { name: "aminities_id", label: "Amenities", type: "multiselect", options: "amenities" },
     ],
     children: [
       {
