@@ -55,7 +55,7 @@ export default async function ServicePage({ params }: Props) {
       <Breadcrumb title={name} trail={[{ name, href: routes.service(service) }]} />
       {content ? (
         <>
-          <section className="sv-intro space">
+          <section className="sv-intro">
             <div className="container">
               <div className="sv-intro-grid">
                 <div>
@@ -66,7 +66,7 @@ export default async function ServicePage({ params }: Props) {
               </div>
             </div>
           </section>
-          <section className="sv-included space-bottom">
+          <section className="sv-included">
             <div className="container">
               <h2>What&rsquo;s included</h2>
               <p className="sv-sub">Everything covered under {name.toLowerCase()}.</p>

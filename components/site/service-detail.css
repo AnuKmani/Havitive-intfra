@@ -1,18 +1,19 @@
 /* Service detail page: intro with image, numbered "what's included" cards, contact band */
 
-.sv-intro-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 48px; align-items: center; }
+.sv-intro { padding: 48px 0 36px; }
+.sv-intro-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; align-items: center; }
 .sv-intro p { color: var(--body-color, #4a5866); font-size: 17px; line-height: 1.75; margin: 0 0 16px; }
 .sv-btn {
   display: inline-block; margin-top: 8px; padding: 12px 28px; border-radius: 30px; border: 1px solid #052132;
   color: #052132; font-weight: 600; transition: background-color .2s, color .2s;
 }
 .sv-btn:hover { background: #052132; color: #fff; }
-.sv-img { border-radius: 16px; overflow: hidden; background: #e9eef3; }
-.sv-img img { display: block; width: 100%; max-height: 380px; object-fit: cover; }
+.sv-img { border-radius: 16px; overflow: hidden; background: #fff; }
+.sv-img img { display: block; width: 100%; height: auto; }
 
-.sv-included { padding-top: 0; }
+.sv-included { padding: 0 0 56px; }
 .sv-included h2 { font-size: 30px; margin: 0 0 8px; color: var(--theme-color); }
-.sv-included .sv-sub { margin: 0 0 28px; color: #5d6b78; }
+.sv-included .sv-sub { margin: 0 0 22px; color: #5d6b78; }
 .sv-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
 .sv-card { display: flex; gap: 16px; padding: 20px; border: 1px solid #e3e8ee; border-radius: 14px; background: #fff; transition: border-color .2s, box-shadow .2s; }
 .sv-card:hover { border-color: #eed26e; box-shadow: 0 6px 20px rgba(5, 33, 50, .07); }
@@ -26,7 +27,7 @@
 .sv-outro p { color: #5d6b78; margin: 0 0 12px; }
 
 .sv-cta {
-  margin-top: 40px; padding: 28px 32px; border-radius: 16px; background: #052132;
+  margin-top: 32px; padding: 26px 32px; border-radius: 16px; background: #052132;
   display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
 }
 .sv-cta h3 { margin: 0 0 4px; color: #fff; font-size: 22px; }
@@ -38,8 +39,9 @@
 .sv-cta a:hover { background: #fff; color: #052132; }
 
 @media (max-width: 991px) {
-  .sv-intro-grid { grid-template-columns: 1fr; gap: 28px; }
-  .sv-img img { max-height: 320px; }
+  .sv-intro { padding: 36px 0 28px; }
+  .sv-intro-grid { grid-template-columns: 1fr; gap: 24px; }
+  .sv-included { padding-bottom: 44px; }
 }
 @media (max-width: 767px) {
   .sv-cards { grid-template-columns: 1fr; }
