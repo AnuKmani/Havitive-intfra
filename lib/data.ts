@@ -30,7 +30,8 @@ export const getSectors = cache(() => rows<T.Sector>(db().from("sectors").select
 export const getSector = cache((id: number) => one<T.Sector>(db().from("sectors").select("*").eq("id", id).maybeSingle()));
 export const getServices = cache(() => rows<T.Service>(db().from("services").select("*").order("created_at", latest)));
 export const getService = cache((id: number) => one<T.Service>(db().from("services").select("*").eq("id", id).maybeSingle()));
-export const getSections = cache(() => rows<T.Section>(db().from("sections").select("*").order("created_at", latest)));
+export const getAboutPage = cache(() => one<T.AboutPage>(db().from("about_page").select("*").order("id").limit(1).maybeSingle()));
+export const getAboutStrengths = cache(() => rows<T.AboutStrength>(db().from("about_strengths").select("*").order("id")));
 export const getBanners = cache(() => rows<T.HomeBanner>(db().from("home_banners").select("*").order("created_at", latest)));
 export const getCounters = cache(() => rows<T.Counter>(db().from("counters").select("*").order("id")));
 export const getHome = cache((category: string) => one<T.Home>(db().from("homes").select("*").eq("category", category).order("created_at", latest).limit(1).maybeSingle()));

@@ -1,7 +1,7 @@
 import { routes } from "@/lib/routes";
 
 export type Option = { value: string; label: string };
-export type OptionSource = "sectors" | "sections" | "amenities" | "blog_categories" | Option[];
+export type OptionSource = "sectors" | "amenities" | "blog_categories" | Option[];
 
 /** Where a project is in its life: shown (and changeable) in the admin project list. */
 export const PROJECT_STATUS: { value: string; label: string }[] = [
@@ -243,16 +243,47 @@ export const RESOURCES: Resource[] = [
       { name: "name", label: "Service name", type: "text", required: true },
       { name: "img", label: "Image", type: "image", folder: "service" },
       { name: "description", label: "Description", type: "html" },
-      { name: "section_id", label: "Strength cards", type: "multiselect", options: "sections" },
     ],
   },
   {
-    key: "sections", viewUrl: () => "/", icon: "grid", hint: "Cards on service pages", table: "sections", label: "Service strength cards", singular: "Card", group: "Company",
-    columns: ["section_name"], thumb: "img",
+    key: "about-page", viewUrl: () => "/about", seoKey: () => "page:about", icon: "info", hint: "Every text and picture on the About page, the “Why Havitive” cards and SEO",
+    table: "about_page", label: "About page", singular: "About page", group: "Company", singleton: true, columns: ["mission_title"],
     fields: [
-      { name: "section_name", label: "Title", type: "text", required: true },
-      { name: "img", label: "Image", type: "image", folder: "service_sections" },
-      { name: "icon", label: "Icon", type: "image", folder: "service_sections", size: "icon" },
+      { name: "mission_title", label: "Vision & mission heading", type: "text", required: true },
+      { name: "mission_text", label: "Vision text", type: "textarea", help: "Leave a blank line between paragraphs." },
+      { name: "mission_image", label: "Vision picture (top right)", type: "image", folder: "about" },
+      { name: "vision_image", label: "Mission picture (bottom left)", type: "image", folder: "about" },
+      { name: "vision_text", label: "Mission text", type: "textarea", help: "Leave a blank line between paragraphs." },
+      { name: "companies_kicker", label: "Group of companies: big background word", type: "text", help: "Faint word behind the heading, e.g. Havitive." },
+      { name: "companies_title", label: "Group of companies: heading", type: "text" },
+      { name: "companies_text", label: "Group of companies: text", type: "textarea", help: "The companies themselves are in Group companies." },
+      { name: "why_title", label: "“Why Havitive” heading", type: "text", help: "The cards are added below, after saving." },
+      { name: "why_text", label: "“Why Havitive” text", type: "textarea" },
+      { name: "chairman_title", label: "Chairman message: heading", type: "text" },
+      { name: "chairman_text", label: "Chairman message: text", type: "textarea" },
+      { name: "chairman_button_text", label: "Chairman message: button text", type: "text", help: "e.g. Connect." },
+      { name: "chairman_button_link", label: "Chairman message: button link", type: "url", help: "Use a full address starting with https://." },
+      { name: "chairman_name", label: "Chairman name", type: "text" },
+      { name: "chairman_role", label: "Chairman role", type: "text" },
+      { name: "chairman_photo", label: "Chairman photo", type: "image", folder: "team" },
+      { name: "management_kicker", label: "Management team: big background word", type: "text" },
+      { name: "management_title", label: "Management team: heading", type: "text" },
+      { name: "management_text", label: "Management team: text", type: "textarea", help: "The people are in Management team." },
+      { name: "employees_title", label: "Employees: heading", type: "text" },
+      { name: "employees_text", label: "Employees: text", type: "textarea", help: "The people are in Team members." },
+      { name: "invest_kicker", label: "“Invest with us”: big background word", type: "text" },
+      { name: "invest_title", label: "“Invest with us”: heading", type: "text" },
+      { name: "invest_text", label: "“Invest with us”: text", type: "textarea" },
+      { name: "invest_image", label: "“Invest with us”: picture", type: "image", folder: "about" },
+    ],
+    children: [
+      {
+        key: "strengths", table: "about_strengths", label: "Why Havitive cards", foreignKey: "page_id", title: "title",
+        fields: [
+          { name: "title", label: "Title", type: "text", required: true },
+          { name: "icon", label: "Icon", type: "image", folder: "about", size: "icon", required: true },
+        ],
+      },
     ],
   },
   {

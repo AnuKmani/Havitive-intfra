@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import { staticPageMetadata } from "@/lib/seo-page";
 import Breadcrumb from "@/components/site/Breadcrumb";
 import Strengths from "@/components/site/Strengths";
-import { getCompanies, getTeam } from "@/lib/data";
+import { getAboutPage, getAboutStrengths, getCompanies, getTeam } from "@/lib/data";
 import { media } from "@/lib/media";
 import { routes } from "@/lib/routes";
 import { SITE } from "@/lib/site";
+import { richText } from "@/lib/text";
 
 export const revalidate = 300;
 
@@ -13,8 +14,15 @@ export function generateMetadata(): Promise<Metadata> {
   return staticPageMetadata("page:about");
 }
 
+/** The wording of every block comes from Admin > About page. */
 export default async function AboutPage() {
-  const [companies, management, team] = await Promise.all([getCompanies(), getTeam("management"), getTeam("team")]);
+  const [page, strengths, companies, management, team] = await Promise.all([
+    getAboutPage(), getAboutStrengths(), getCompanies(), getTeam("management"), getTeam("team"),
+  ]);
+  const a = page;
+  const chairmanLink = a?.chairman_button_link?.trim() || SITE.social.instagram;
+  const chairmanExternal = /^https?:\/\//.test(chairmanLink);
+
   return (
     <>
       <Breadcrumb title="About Us" trail={[{ name: "About Us", href: "/about" }]} />
@@ -28,14 +36,13 @@ export default async function AboutPage() {
             <div className="row gy-40 justify-content-between align-items-center">
               <div className="col-lg-6">
                 <div className="title-area mb-0">
-                  <h2 className="sec-title text-theme mb-2">Havitive Vision &amp; Mission</h2>
-                  <p className="mb-0 text-theme">Our vision is to redefine the standards of excellence in the design consultancy industry by becoming a trusted leader known for our innovation, integrity, and dedication to quality. We aspire to be the preferred partner for clients seeking unique, sustainable, and functional designs.</p>
-                  <p className="text-theme">Through continuous growth, collaboration, and the pursuit of perfection, we aim to foster long-term relationships built on trust and mutual success. Our goal is to empower businesses, communities, and individuals by delivering design solutions that enhance their spaces and elevate their experiences.</p>
+                  <h2 className="sec-title text-theme mb-2">{a?.mission_title || "Havitive Vision & Mission"}</h2>
+                  <div className="text-theme rich-text" dangerouslySetInnerHTML={{ __html: richText(a?.mission_text) }} />
                 </div>
               </div>
               <div className="col-lg-5">
                 <div className="img-box3">
-                  <div className="img1"><img src="/upload/logos/mission.png" alt="Havitive mission" /></div>
+                  <div className="img1"><img src={media(a?.mission_image)} alt={a?.mission_image_alt || "Havitive mission"} /></div>
                   <div className="about-tag">
                     <div className="about-experience-tag"><span className="circle-title-anime">Havitive Infra Pvt Ltd</span></div>
                     <a href={SITE.video} className="play-btn popup-video" aria-label="Play video"><i className="fa-sharp fa-solid fa-play"></i></a>
@@ -43,11 +50,10 @@ export default async function AboutPage() {
                 </div>
               </div>
               <div className="col-lg-5">
-                <div className="img-box3"><div className="img1"><img src="/upload/logos/vision.jpg" alt="Havitive vision" loading="lazy" /></div></div>
+                <div className="img-box3"><div className="img1"><img src={media(a?.vision_image)} alt={a?.vision_image_alt || "Havitive vision"} loading="lazy" /></div></div>
               </div>
               <div className="col-lg-6">
-                <p className="text-theme">At Havitive, we are passionate about delivering design solutions that combine innovation, quality, and sustainability. Our mission is to transform visions into impactful realities by crafting designs that inspire and endure.</p>
-                <p className="text-theme">With a focus on creativity and precision, we strive to meet and exceed client expectations, ensuring that every project reflects our commitment to excellence. By integrating eco-friendly practices and cutting-edge technologies, we create solutions that not only meet today&rsquo;s needs but also contribute to a better tomorrow.</p>
+                <div className="text-theme rich-text" dangerouslySetInnerHTML={{ __html: richText(a?.vision_text) }} />
               </div>
             </div>
           </div>
@@ -59,9 +65,9 @@ export default async function AboutPage() {
           <div className="row justify-content-between align-items-center">
             <div className="col-lg-6">
               <div className="title-area">
-                <span className="shadow-title">Havitive</span>
-                <h2 className="sec-title text-white">Group of Companies</h2>
-                <p className="sec-text text-white">Our group spans diverse sectors, offering innovative and reliable solutions across industries, driven by creativity and excellence.</p>
+                {a?.companies_kicker && <span className="shadow-title">{a.companies_kicker}</span>}
+                <h2 className="sec-title text-white">{a?.companies_title || "Group of Companies"}</h2>
+                <p className="sec-text text-white">{a?.companies_text}</p>
               </div>
             </div>
           </div>
@@ -90,35 +96,32 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      <Strengths
-        heading="Why Havitive Infra Pvt Ltd?"
-        intro="Our experienced team ensures every project is crafted with precision, completed on time, and exceeds industry standards."
-        items={[
-          { title: "Proven expertise in design consultancy.", icon: "/frontend/assets/img/icon/design.png" },
-          { title: "Best-in-class tools and technology.", icon: "/frontend/assets/img/icon/technology.png" },
-          { title: "Creative and dedicated team.", icon: "/frontend/assets/img/icon/team.png" },
-          { title: "Timely project delivery.", icon: "/frontend/assets/img/icon/deadline.png" },
-          { title: "Exceptional attention to detail.", icon: "/frontend/assets/img/icon/efficient.png" },
-          { title: "Unparalleled client satisfaction.", icon: "/frontend/assets/img/icon/satisfaction.png" },
-        ]}
-      />
+      {strengths.length > 0 && (
+        <Strengths
+          heading={a?.why_title || "Why Havitive Infra Pvt Ltd?"}
+          intro={a?.why_text ?? ""}
+          items={strengths.map((s) => ({ title: s.title ?? "", icon: media(s.icon) }))}
+        />
+      )}
 
       <div className="container">
         <div className="video-area-1">
           <div className="vido_detailss">
             <div className="title-area mb-45">
-              <h2 className="sec-title">Message from the Chairman</h2>
-              <p className="sec-text text-title">At Havitive, we are passionate about creating innovative and sustainable designs that inspire and add value. We prioritize trust, precision, and creativity in every project. Together, let&rsquo;s shape the future of design.</p>
+              <h2 className="sec-title">{a?.chairman_title || "Message from the Chairman"}</h2>
+              <p className="sec-text text-title">{a?.chairman_text}</p>
             </div>
             <div className="btn-wrap mb-55">
-              <a href={SITE.social.instagram} className="th-btn style2 btn-mask th-btn-icon" style={{ backgroundColor: "black" }}>Connect</a>
+              <a href={chairmanLink} className="th-btn style2 btn-mask th-btn-icon" style={{ backgroundColor: "black" }} {...(chairmanExternal ? { target: "_blank", rel: "noopener" } : {})}>
+                {a?.chairman_button_text || "Connect"}
+              </a>
             </div>
             <div className="author-grid">
               <div className="author-profile">
-                <div className="avater"><img src="/upload/Management_team/mohan.jpeg" alt="Er. S Mohan" style={{ width: 57, height: 77, objectFit: "cover" }} /></div>
+                <div className="avater"><img src={media(a?.chairman_photo)} alt={a?.chairman_photo_alt || a?.chairman_name || "Chairman"} style={{ width: 57, height: 77, objectFit: "cover" }} /></div>
                 <div className="media-body">
-                  <h3 className="author-profile-name h5">Er. Mohan S</h3>
-                  <p className="author-desig">Chairman of Havitive</p>
+                  <h3 className="author-profile-name h5">{a?.chairman_name}</h3>
+                  <p className="author-desig">{a?.chairman_role}</p>
                 </div>
               </div>
             </div>
@@ -131,14 +134,14 @@ export default async function AboutPage() {
           <div className="row justify-content-between align-items-center">
             <div className="col-xl-5 col-lg-7">
               <div className="title-area">
-                <span className="shadow-title">Team</span>
-                <h2 className="sec-title text-white">Our Management Team</h2>
-                <p className="sec-text text-white">Havitive is guided by a visionary management team led by industry experts who bring years of experience and innovation to every project. Our leadership drives creativity, sustainability, and excellence, ensuring every design exceeds expectations.</p>
+                {a?.management_kicker && <span className="shadow-title">{a.management_kicker}</span>}
+                <h2 className="sec-title text-white">{a?.management_title || "Our Management Team"}</h2>
+                <p className="sec-text text-white">{a?.management_text}</p>
               </div>
             </div>
           </div>
           <div className="slider-area team-slider3">
-            <div className="swiper th-slider" id="teamSlider3" data-slider-options='{"breakpoints":{"0":{"slidesPerView":1},"576":{"slidesPerView":"1"},"768":{"slidesPerView":"2"},"992":{"slidesPerView":"3"},"1400":{"slidesPerView":"3"}}}'>
+            <div className="swiper th-slider" id="teamSlider3" data-slider-options='{"breakpoints":{"0":{"slidesPerView":1},"576":{"slidesPerView":"2"},"768":{"slidesPerView":"3"},"992":{"slidesPerView":"4"},"1400":{"slidesPerView":"4"}}}'>
               <div className="swiper-wrapper">
                 {management.map((m) => (
                   <div className="swiper-slide" key={m.id}>
@@ -175,19 +178,19 @@ export default async function AboutPage() {
           <div className="row justify-content-lg-between align-items-center">
             <div className="col-lg-6">
               <div className="title-area" id="employee">
-                <h2 className="sec-title text-white">Our Employees</h2>
-                <p className="text-light">Our team consists of skilled architects, designers, and consultants dedicated to delivering innovative, sustainable, and cost-effective solutions. Through continuous training and teamwork, our professionals uphold our commitment to precision and client satisfaction in every project.</p>
+                <h2 className="sec-title text-white">{a?.employees_title || "Our Employees"}</h2>
+                <p className="text-light">{a?.employees_text}</p>
               </div>
             </div>
           </div>
-          <div className="swiper th-slider team-slider1" id="teamSlider1" data-slider-options='{"breakpoints":{"0":{"slidesPerView":1},"576":{"slidesPerView":"1"},"768":{"slidesPerView":"2"},"992":{"slidesPerView":"2"},"1200":{"slidesPerView":"3"}}}'>
+          <div className="swiper th-slider team-slider1" id="teamSlider1" data-slider-options='{"breakpoints":{"0":{"slidesPerView":1},"576":{"slidesPerView":"2"},"768":{"slidesPerView":"3"},"992":{"slidesPerView":"4"},"1200":{"slidesPerView":"4"}}}'>
             <div className="swiper-wrapper">
               {team.map((m) => (
                 <div className="swiper-slide" key={m.id}>
                   <div className="th-team team-card">
                     <div className="img-wrap">
                       <div className="team-img" data-mask-src="/frontend/assets/img/theme-img/team-shape1.png">
-                        <img src={media(m.img)} alt={m.img_alt || m.name || "Team member"} loading="lazy" style={{ width: 416, height: 550, objectFit: "cover" }} />
+                        <img src={media(m.img)} alt={m.img_alt || m.name || "Team member"} loading="lazy" />
                       </div>
                     </div>
                     <div className="team-card-content">
@@ -222,15 +225,15 @@ export default async function AboutPage() {
           <div className="row gy-80 gx-40 align-items-center">
             <div className="col-xl-6">
               <div className="cta-thumb img-shine" data-mask-src="/frontend/assets/img/shape/cta_1_1-img-mask.png">
-                <img src="/upload/logos/havitive.jpeg" alt="Havitive team at work" loading="lazy" style={{ width: 526, height: 370, borderRadius: 30, objectFit: "cover" }} />
+                <img src={media(a?.invest_image)} alt={a?.invest_image_alt || "Havitive team at work"} loading="lazy" style={{ width: 526, height: 370, borderRadius: 30, objectFit: "cover" }} />
               </div>
             </div>
             <div className="col-xl-6">
               <div className="me-xxl-5 pe-xxl-5">
                 <div className="title-area">
-                  <span className="shadow-title">CONSULTING</span>
-                  <h2 className="sec-title text-white">Invest With Us</h2>
-                  <p className="sec-text text-white">Let us bring your vision to life with creative, reliable, and sustainable design solutions to your unique needs.</p>
+                  {a?.invest_kicker && <span className="shadow-title">{a.invest_kicker}</span>}
+                  <h2 className="sec-title text-white">{a?.invest_title || "Invest With Us"}</h2>
+                  <p className="sec-text text-white">{a?.invest_text}</p>
                 </div>
                 <div className="btn-wrap">
                   <a href={`mailto:${SITE.email}`} className="th-btn btn-mask th-btn-icon">Get Started</a>

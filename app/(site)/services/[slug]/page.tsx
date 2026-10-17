@@ -2,13 +2,12 @@ import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo-page";
 import { defaults } from "@/lib/seo";
 import Breadcrumb from "@/components/site/Breadcrumb";
-import Strengths from "@/components/site/Strengths";
 import LatestProjects from "@/components/home/LatestProjects";
 import CompletedProjects from "@/components/home/CompletedProjects";
 import JsonLd from "@/components/site/JsonLd";
-import { getAllGalleries, getCompletedProjects, getHome, getProjects, getSectors, getSections, getService, getServices } from "@/lib/data";
+import { getAllGalleries, getCompletedProjects, getHome, getProjects, getSectors, getService, getServices } from "@/lib/data";
 import { loadBySlug } from "@/lib/canonical";
-import { media, splitList } from "@/lib/media";
+import { media } from "@/lib/media";
 import { routes } from "@/lib/routes";
 import { SITE } from "@/lib/site";
 import { parseServiceContent } from "@/lib/serviceContent";
@@ -33,9 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ServicePage({ params }: Props) {
   const { slug } = await params;
   const service = await loadBySlug(slug, getService, routes.service);
-  const [sections, projects, completed, completedHome, sectors, galleries] = await Promise.all([getSections(), getProjects(), getCompletedProjects(), getHome("projects"), getSectors(), getAllGalleries()]);
-  const ids = splitList(service.section_id).map(Number);
-  const serviceSections = sections.filter((s) => ids.includes(s.id));
+  const [projects, completed, completedHome, sectors, galleries] = await Promise.all([getProjects(), getCompletedProjects(), getHome("projects"), getSectors(), getAllGalleries()]);
   const name = titleCase(service.name);
   const content = parseServiceContent(service.description);
 
@@ -109,13 +106,6 @@ export default async function ServicePage({ params }: Props) {
         </div>
       )}
       <LatestProjects projects={projects} sectors={sectors} galleries={galleries} />
-      {serviceSections.length > 0 && (
-        <Strengths
-          heading="Design Solutions for Every Need"
-          intro="Our expertise ensures outstanding results for both residential and commercial sectors, delivering creative excellence in every detail."
-          items={serviceSections.map((s) => ({ title: s.section_name ?? "", icon: media(s.icon), img: media(s.img), imgAlt: s.img_alt }))}
-        />
-      )}
       <CompletedProjects projects={completed} home={completedHome} sectors={sectors} galleries={galleries} />
     </>
   );

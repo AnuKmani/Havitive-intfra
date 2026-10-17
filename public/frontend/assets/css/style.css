@@ -22891,3 +22891,29 @@ span.select2-selection.select2-selection--single:focus {
       padding: 27px;
   }
 } 
+/* Smaller team cards: management photos and employee cards stay compact. */
+.team-card.style3 .team-img img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  object-position: top center;
+}
+.team-card.style3 .team-card-content { padding: 16px 18px; }
+.team-card.style3 .box-title { font-size: 18px; }
+.team-card.style3 .team-desig { font-size: 14px; }
+
+.team-card .team-img img {
+  width: 100%;
+  height: 340px;
+  object-fit: cover;
+  object-position: top center;
+}
+
+.team-card .team-card-content { top: 235px; bottom: 16px; left: 16px; right: 16px; padding: 14px 18px; }
+.team-card .box-title { font-size: 18px; }
+.team-card .team-desig { font-size: 14px; }
+.team-card:hover .team-card-content { top: 16px; }
+@media (max-width: 575px) {
+  .team-card .team-card-content { top: 235px; bottom: 12px; left: 12px; right: 12px; }
+  .team-card:hover .team-card-content { top: 12px; }
+}

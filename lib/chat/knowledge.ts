@@ -2,7 +2,7 @@ import "server-only";
 import { unstable_cache } from "next/cache";
 import {
   getAllTeam, getBlogCategories, getCompanies, getCounters, getHome, getJobs, getPosts, getProjects,
-  getSections, getSectors, getServices, getFloors,
+  getSectors, getServices, getFloors,
 } from "@/lib/data";
 import { PROJECT_STATUS } from "@/lib/admin/resources";
 import { routes } from "@/lib/routes";
@@ -14,9 +14,9 @@ import { stripHtml, titleCase } from "@/lib/text";
  * The text must be deterministic (stable ordering, no timestamps) so the prompt cache keeps hitting.
  */
 async function build(): Promise<string> {
-  const [about, service, counters, sectors, services, sections, projects, companies, team, posts, categories, jobs] =
+  const [about, service, counters, sectors, services, projects, companies, team, posts, categories, jobs] =
     await Promise.all([
-      getHome("about"), getHome("service"), getCounters(), getSectors(), getServices(), getSections(), getProjects(),
+      getHome("about"), getHome("service"), getCounters(), getSectors(), getServices(), getProjects(),
       getCompanies(), getAllTeam(), getPosts(), getBlogCategories(), getJobs(),
     ]);
   const byId = <T extends { id: number }>(a: T[]) => [...a].sort((x, y) => x.id - y.id);
@@ -55,11 +55,7 @@ Chairman's message: "We are passionate about creating innovative and sustainable
     .join("\n")}`);
 
   out.push(`# Services\n${byId(services)
-    .map((s) => {
-      const ids = (s.section_id ?? "").split(",").map(Number);
-      const secs = sections.filter((x) => ids.includes(x.id)).map((x) => x.section_name).join(", ");
-      return `- ${titleCase(s.name)} – ${SITE.url}${routes.service(s)}\n  ${t(s.description)}${secs ? `\n  Includes: ${secs}` : ""}`;
-    })
+    .map((s) => `- ${titleCase(s.name)} – ${SITE.url}${routes.service(s)}\n  ${t(s.description)}`)
     .join("\n")}`);
 
   out.push(`# Completed / featured projects\n${byId(projects)

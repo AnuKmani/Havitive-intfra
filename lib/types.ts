@@ -8,6 +8,19 @@ export type Home = Timestamps & {
 };
 export type OfferCard = Timestamps & { id: number; title: string | null; text: string | null; img: string | null; img_alt: string | null };
 export type ChooseCard = OfferCard;
+export type AboutPage = Timestamps & {
+  id: number;
+  mission_title: string | null; mission_text: string | null; mission_image: string | null; mission_image_alt?: string | null;
+  vision_text: string | null; vision_image: string | null; vision_image_alt?: string | null;
+  companies_kicker: string | null; companies_title: string | null; companies_text: string | null;
+  why_title: string | null; why_text: string | null;
+  chairman_title: string | null; chairman_text: string | null; chairman_button_text: string | null; chairman_button_link: string | null;
+  chairman_name: string | null; chairman_role: string | null; chairman_photo: string | null; chairman_photo_alt?: string | null;
+  management_kicker: string | null; management_title: string | null; management_text: string | null;
+  employees_title: string | null; employees_text: string | null;
+  invest_kicker: string | null; invest_title: string | null; invest_text: string | null; invest_image: string | null; invest_image_alt?: string | null;
+};
+export type AboutStrength = Timestamps & { id: number; page_id: number | null; title: string | null; icon: string | null; icon_alt?: string | null };
 export type HomeBanner =Timestamps & { id: number; home_images_alt?: string | null; home_images: string | null; heading: string | null; description: string | null };
 export type Counter = Timestamps & { id: number; counter_name: string | null; counter: string | null };
 export type Sector = Timestamps & { id: number; sector_name: string | null; category: number | null };

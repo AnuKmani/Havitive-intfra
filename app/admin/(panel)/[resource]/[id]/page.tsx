@@ -115,7 +115,7 @@ export default async function EditRecord({ params, searchParams }: Props) {
       </section>
 
       {isNew && (res.children?.length || res.seoKey) ? (
-        <div className="ad-note"><Icon name="info" /> Save first. Then you can add {res.children?.length ? "gallery images, floor plans, facilities and " : ""}SEO settings.</div>
+        <div className="ad-note"><Icon name="info" /> Save first. Then you can add {res.children?.length ? (res.key === "about-page" ? "the “Why Havitive” cards and " : "gallery images, floor plans, facilities and ") : ""}SEO settings.</div>
       ) : null}
 
       {children.map(({ child, rows }) => (
@@ -155,7 +155,7 @@ export default async function EditRecord({ params, searchParams }: Props) {
               <summary><Icon name="plus" /> Add {child.key === "gallery" ? "image" : child.key === "floors" ? "plan" : child.label.toLowerCase().replace(/ies$/, "y").replace(/s$/, "")}</summary>
               <RecordForm compact fields={child.fields} values={{}} options={options} action={saveChild.bind(null, res.key, child.key, id!, null)} submitLabel="Add" />
             </details>
-            {child.key !== "facilities" && (
+            {child.key !== "facilities" && child.key !== "strengths" && (
               <BulkImageAdd
                 label={child.key === "floors" ? "Add several plans at once" : "Upload several images at once"}
                 folder={child.fields.find((f) => f.type === "image")?.folder ?? "misc"}
