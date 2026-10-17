@@ -5,8 +5,6 @@ import { titleCase } from "@/lib/text";
 
 export default async function Header() {
   const [sectors, services] = await Promise.all([getSectors(), getServices()]);
-  const government = sectors.filter((s) => s.category === 0);
-  const privateSectors = sectors.filter((s) => s.category === 1);
 
   return (
     <header className="th-header header-layout1">
@@ -32,27 +30,6 @@ export default async function Header() {
                         <li><a href="/about#group-of-companies">Group Of Companies</a></li>
                         <li><a href="/about#leadership">Management Team</a></li>
                         <li><a href="/about#employee">Team Members</a></li>
-                      </ul>
-                    </li>
-                    <li className="menu-item-has-children">
-                      <a href="#">Sectors</a>
-                      <ul className="sub-menu">
-                        <li className="menu-item-has-children">
-                          <a href="#">Government</a>
-                          <ul className="sub-menu">
-                            {government.map((s) => (
-                              <li key={s.id}><a href={routes.sector(s)}>{s.sector_name}</a></li>
-                            ))}
-                          </ul>
-                        </li>
-                        <li className="menu-item-has-children">
-                          <a href="#">Private</a>
-                          <ul className="sub-menu">
-                            {privateSectors.map((s) => (
-                              <li key={s.id}><a href={routes.sector(s)}>{s.sector_name}</a></li>
-                            ))}
-                          </ul>
-                        </li>
                       </ul>
                     </li>
                     <li className="menu-item-has-children">
@@ -120,27 +97,6 @@ export async function MobileMenu() {
                 <li><a href="/about#group-of-companies">Group Of Companies</a></li>
                 <li><a href="/about#leadership">Management Team</a></li>
                 <li><a href="/about#employee">Team Members</a></li>
-              </ul>
-            </li>
-            <li className="menu-item-has-children">
-              <a href="#">Sectors</a>
-              <ul className="sub-menu">
-                <li className="menu-item-has-children">
-                  <a href="#">Government</a>
-                  <ul className="sub-menu">
-                    {sectors.filter((s) => s.category === 0).map((s) => (
-                      <li key={s.id}><a href={routes.sector(s)}>{s.sector_name}</a></li>
-                    ))}
-                  </ul>
-                </li>
-                <li className="menu-item-has-children">
-                  <a href="#">Private</a>
-                  <ul className="sub-menu">
-                    {sectors.filter((s) => s.category === 1).map((s) => (
-                      <li key={s.id}><a href={routes.sector(s)}>{s.sector_name}</a></li>
-                    ))}
-                  </ul>
-                </li>
               </ul>
             </li>
             <li className="menu-item-has-children">

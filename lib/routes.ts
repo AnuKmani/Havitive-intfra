@@ -5,7 +5,6 @@ type Named = { id: number };
 export const routes = {
   home: () => "/",
   about: () => "/about",
-  sector: (s: Named & { sector_name: string | null }) => `/sectors/${slugWithId(s.sector_name, s.id)}`,
   sectorProjects: (s: Named & { sector_name: string | null }) => `/projects/${slugWithId(s.sector_name, s.id)}`,
   project: (p: Named & { project_name: string | null }) => `/project/${slugWithId(p.project_name, p.id)}`,
   service: (s: Named & { name: string | null }) => `/services/${slugWithId(s.name, s.id)}`,

@@ -40,14 +40,6 @@ export const STATIC_PAGES: Record<string, SeoDefaults & { label: string }> = {
 };
 
 export const defaults = {
-  sector: (s: T.Sector): SeoDefaults => {
-    const name = s.sector_name ?? "Sector";
-    return {
-      path: routes.sector(s),
-      title: `${name} in Kerala`,
-      description: `${name} by Havitive Infra Pvt Ltd – architecture, structural engineering and construction for ${name.toLowerCase()} across Kerala. View our work and schedule a site visit.`,
-    };
-  },
   sectorProjects: (s: T.Sector): SeoDefaults => ({
     path: routes.sectorProjects(s),
     title: `${s.sector_name} – All Projects`,

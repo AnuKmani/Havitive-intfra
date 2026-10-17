@@ -49,6 +49,8 @@ const nextConfig: NextConfig = {
       { source: "/residence", destination: "/", permanent: true },
       { source: "/engineering", destination: "/", permanent: true },
       { source: "/login", destination: "/admin/login", permanent: true },
+      // The separate Sectors pages were removed; their address now opens the same category's project list.
+      { source: "/sectors/:slug", destination: "/projects/:slug", permanent: true },
     ];
   },
   async headers() {

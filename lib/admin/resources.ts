@@ -64,7 +64,7 @@ const slug = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").r
 
 const SHOWCASE_FIELDS: Field[] = [
   { name: "project_heading", label: "Project name", type: "text", required: true },
-  { name: "sector_id", label: "Sector", type: "select", options: "sectors" },
+  { name: "sector_id", label: "Category", type: "select", options: "sectors" },
   { name: "main_content", label: "Section heading", type: "text", help: "Shown as the sector page heading." },
   { name: "main_description", label: "Section intro", type: "textarea" },
   { name: "project_descp", label: "Description", type: "textarea" },
@@ -150,7 +150,7 @@ export const RESOURCES: Resource[] = [
     fields: [
       { name: "project_name", label: "Project name", type: "text", required: true },
       { name: "project_heading", label: "Headline", type: "text" },
-      { name: "sector_id", label: "Sector", type: "select", options: "sectors" },
+      { name: "sector_id", label: "Category", type: "select", options: "sectors" },
       { name: "location", label: "Location", type: "text" },
       { name: "project_image", label: "Cover image", type: "image", folder: "project_image", required: true },
       { name: "description", label: "Description", type: "html" },
@@ -182,14 +182,12 @@ export const RESOURCES: Resource[] = [
     ],
   },
   {
-    key: "sectors", seoKey: (r) => `sector:${r.id}`, viewUrl: (r) => routes.sector({ id: r.id, sector_name: r.sector_name }), icon: "layers", hint: "Project categories in the menu", table: "sectors", label: "Sectors", singular: "Sector", group: "Projects",
-    columns: ["sector_name", "category"],
+    key: "sectors", unique: { column: "sector_name", label: "project category" }, seoKey: (r) => `sector-projects:${r.id}`, viewUrl: (r) => routes.sectorProjects({ id: r.id, sector_name: r.sector_name }), icon: "layers", hint: "Categories in the Project menu", table: "sectors", label: "Project categories", singular: "Category", group: "Projects",
+    columns: ["sector_name"],
     fields: [
-      { name: "sector_name", label: "Sector name", type: "text", required: true },
-      { name: "category", label: "Menu group", type: "select", required: true, options: [{ value: "0", label: "Government" }, { value: "1", label: "Private" }] },
+      { name: "sector_name", label: "Category name", type: "text", required: true },
     ],
   },
-  { key: "showcase", unique: { column: "project_heading", label: "showcase project" }, viewUrl: (r) => (r.sector_id ? `/sectors/${r.sector_id}` : "/"), icon: "star", hint: "Featured work on sector pages", table: "residenceprojects", label: "Sector showcase", singular: "Showcase project", group: "Projects", columns: ["project_heading", "client_name"], thumb: "residence_image_one", fields: SHOWCASE_FIELDS },
   { key: "upcoming", unique: { column: "project_heading", label: "upcoming project" }, home: true, viewUrl: () => "/#upcoming", icon: "clock", hint: "“Our Future Projects” slider", table: "upcomming_projects", label: "Upcoming projects", singular: "Upcoming project", group: "Projects", columns: ["project_heading", "location"], thumb: "residence_image_one", fields: SHOWCASE_FIELDS },
   {
     key: "amenities", viewUrl: () => "/", icon: "check", hint: "Amenities you can tag on projects", table: "project_aminities", label: "Amenities", singular: "Amenity", group: "Projects",

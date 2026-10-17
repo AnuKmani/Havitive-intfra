@@ -35,7 +35,6 @@ export default async function ResourceList({ params, searchParams }: {
 
   const cell = (v: unknown, col: string) => {
     if (col === "created_at" && v) return new Date(String(v)).toLocaleDateString("en-IN");
-    if (res.key === "sectors" && col === "category") return v === 0 ? "Government" : "Private";
     if (col === "id") return `#${v}`;
     const s = stripHtml(String(v ?? ""));
     return s.length > 90 ? s.slice(0, 90) + "…" : s || "—";
@@ -138,8 +137,6 @@ export default async function ResourceList({ params, searchParams }: {
                           <span className="ad-row-icon"><Icon name={res.icon} size={16} /></span>
                           {cell(r[c], c)}
                         </a>
-                      ) : res.key === "sectors" && c === "category" ? (
-                        <span className={`ad-pill ${r[c] === 0 ? "pill-blue" : "pill-green"}`}>{cell(r[c], c)}</span>
                       ) : (
                         cell(r[c], c)
                       )}

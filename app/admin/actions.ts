@@ -17,7 +17,7 @@ function readValues(fields: Field[], form: FormData, table: string) {
       f.type === "multiselect" ? form.getAll(f.name).map(String).filter(Boolean).join(",") : String(form.get(f.name) ?? "").trim();
     if (v === "") v = null;
     if (f.required && v === null) throw new Error(`${f.label} is required.`);
-    values[f.name] = v !== null && (INT_COLUMNS.has(f.name) || (table === "sectors" && f.name === "category")) ? Number(v) : v;
+    values[f.name] = v !== null && INT_COLUMNS.has(f.name) ? Number(v) : v;
     if (f.type === "image" || f.type === "images") {
       const alt = String(form.get(altName(f)) ?? "").trim();
       values[altName(f)] = alt || null;
@@ -268,7 +268,7 @@ export async function addChildrenBulk(resourceKey: string, childKey: string, par
   revalidatePath(`/admin/${resourceKey}/${parentId}`);
 }
 
-const SEO_KEY = /^(page:[a-z-]+|(project|sector|sector-projects|service|team|post|blog-category):\d+)$/;
+const SEO_KEY = /^(page:[a-z-]+|(project|sector-projects|service|team|post|blog-category):\d+)$/;
 
 const CONTENT_SEO_KEY = /^(page:home|(project|post|blog-category):\d+)$/;
 

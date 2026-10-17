@@ -37,7 +37,7 @@ export default async function SectorProjectsPage({ params, searchParams }: Props
     <>
       <Breadcrumb
         title={`${sector.sector_name}`}
-        trail={[{ name: sector.sector_name ?? "", href: routes.sector(sector) }, { name: "All Projects", href: routes.sectorProjects(sector) }]}
+        trail={[{ name: "All Projects", href: routes.sectorProjects(sector) }]}
       />
       <section className="space-top space-extra-bottom">
         <div className="container">

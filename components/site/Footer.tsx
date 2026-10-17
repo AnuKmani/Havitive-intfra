@@ -43,11 +43,11 @@ export default async function Footer() {
               </div>
               <div className="col-md-6 col-xl-auto">
                 <div className="widget widget_nav_menu footer-widget">
-                  <h3 className="widget_title">Sectors</h3>
+                  <h3 className="widget_title">Projects</h3>
                   <div className="menu-all-pages-container">
                     <ul className="menu">
                       {sectors.map((s) => (
-                        <li key={s.id}><a href={routes.sector(s)}>{s.sector_name}</a></li>
+                        <li key={s.id}><a href={routes.sectorProjects(s)}>{s.sector_name}</a></li>
                       ))}
                     </ul>
                   </div>

@@ -50,7 +50,6 @@ export const getFacilities = cache((projectId: number) => rows<T.Facility>(db().
 export const getGallery = cache((projectId: number) => rows<T.Gallery>(db().from("galleries").select("*").eq("project_id", projectId).order("id")));
 export const getAmenities = cache(() => rows<T.Amenity>(db().from("project_aminities").select("*").order("id")));
 
-export const getShowcaseBySector = cache((sectorId: number) => rows<T.ShowcaseProject>(db().from("residenceprojects").select("*").eq("sector_id", sectorId).order("created_at", latest)));
 export const getUpcoming = cache(() => rows<T.ShowcaseProject>(db().from("upcomming_projects").select("*").order("created_at", latest)));
 
 export const getBlogCategories = cache(() => rows<T.BlogCategory>(db().from("blog_categories").select("*").order("id")));

@@ -27,7 +27,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     u("/contact", null, 0.8, "page:contact"),
     u("/careers", null, 0.5, "page:careers"),
     u("/blog", null, 0.6, "page:blog"),
-    ...sectors.flatMap((s) => [u(routes.sector(s), s.updated_at, 0.8, `sector:${s.id}`), u(routes.sectorProjects(s), s.updated_at, 0.7, `sector-projects:${s.id}`)]),
+    ...sectors.map((s) => u(routes.sectorProjects(s), s.updated_at, 0.8, `sector-projects:${s.id}`)),
     ...projects.map((p) => u(routes.project(p), p.updated_at, 0.8, `project:${p.id}`)),
     ...services.map((s) => u(routes.service(s), s.updated_at, 0.8, `service:${s.id}`)),
     ...posts.map((p) => u(routes.post(p), p.updated_at ?? p.created_at, 0.6, `post:${p.id}`)),

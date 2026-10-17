@@ -48,8 +48,8 @@ Chairman's message: "We are passionate about creating innovative and sustainable
 
   out.push(`# Group of companies\n${byId(companies).map((c) => `- ${c.company_name}: ${t(c.company_description)}`).join("\n")}`);
 
-  out.push(`# Sectors\n${byId(sectors)
-    .map((s) => `- ${s.sector_name} (${s.category === 0 ? "Government" : "Private"}) – ${SITE.url}${routes.sector(s)}`)
+  out.push(`# Project categories\n${byId(sectors)
+    .map((s) => `- ${s.sector_name} – ${SITE.url}${routes.sectorProjects(s)}`)
     .join("\n")}`);
 
   out.push(`# Services\n${byId(services)
@@ -63,7 +63,7 @@ Chairman's message: "We are passionate about creating innovative and sustainable
   out.push(`# Completed / featured projects\n${byId(projects)
     .map((p, i) => {
       const f = floors[i].map((x) => `${x.floor_name}: ${t(x.description)}`).join("; ");
-      return `- ${p.project_name} (sector: ${sectorName(p.sector_id)}) – ${SITE.url}${routes.project(p)}
+      return `- ${p.project_name} (category: ${sectorName(p.sector_id)}) – ${SITE.url}${routes.project(p)}
   ${t(p.project_heading)}. ${t(p.description)}${p.location ? ` Location: ${p.location}.` : ""}${f ? `\n  Floors: ${f}` : ""}`;
     })
     .join("\n")}`);

@@ -17,8 +17,7 @@ export async function listSitePages(supabase: SupabaseClient): Promise<SitePage[
   ]);
   const pages: SitePage[] = Object.entries(STATIC_PAGES).map(([key, p]) => ({ key, type: "Page", ...p, editHref: key === "page:home" ? "/admin/home" : undefined }));
   for (const s of (sectors.data ?? []) as T.Sector[]) {
-    pages.push({ key: `sector:${s.id}`, label: s.sector_name ?? `Sector ${s.id}`, type: "Sector", ...defaults.sector(s), editHref: `/admin/sectors/${s.id}` });
-    pages.push({ key: `sector-projects:${s.id}`, label: `${s.sector_name} – all projects`, type: "Sector projects", ...defaults.sectorProjects(s) });
+    pages.push({ key: `sector-projects:${s.id}`, label: `${s.sector_name} – all projects`, type: "Project category", ...defaults.sectorProjects(s), editHref: `/admin/sectors/${s.id}` });
   }
   for (const p of (projects.data ?? []) as T.Project[]) pages.push({ key: `project:${p.id}`, label: p.project_name ?? `Project ${p.id}`, type: "Project", ...defaults.project(p), editHref: `/admin/projects/${p.id}` });
   for (const s of (services.data ?? []) as T.Service[]) pages.push({ key: `service:${s.id}`, label: s.name ?? `Service ${s.id}`, type: "Service", ...defaults.service(s), editHref: `/admin/services/${s.id}` });
