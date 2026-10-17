@@ -1,7 +1,7 @@
 import { routes } from "@/lib/routes";
 
 export type Option = { value: string; label: string };
-export type OptionSource = "sectors" | "amenities" | "blog_categories" | Option[];
+export type OptionSource = "sectors" | "blog_categories" | Option[];
 
 /** Where a project is in its life: shown (and changeable) in the admin project list. */
 export const PROJECT_STATUS: { value: string; label: string }[] = [
@@ -199,8 +199,6 @@ export const RESOURCES: Resource[] = [
       { name: "project_date", label: "Project date", type: "date", help: "Pick from the calendar. Shown in the project popup." },
       { name: "project_image", label: "Cover image", type: "image", folder: "project_image", required: true },
       { name: "description", label: "Description", type: "html" },
-      { name: "main_description", label: "Floor plans heading", type: "text" },
-            { name: "aminities_id", label: "Amenities", type: "multiselect", options: "amenities" },
     ],
     children: [
       {
@@ -231,10 +229,6 @@ export const RESOURCES: Resource[] = [
     fields: [
       { name: "sector_name", label: "Category name", type: "text", required: true },
     ],
-  },
-  {
-    key: "amenities", viewUrl: () => "/", icon: "check", hint: "Amenities you can tag on projects", table: "project_aminities", label: "Amenities", singular: "Amenity", group: "Projects",
-    columns: ["aminity_name"], fields: [{ name: "aminity_name", label: "Amenity", type: "text", required: true }],
   },
   {
     key: "services", seoKey: (r) => `service:${r.id}`, viewUrl: (r) => routes.service({ id: r.id, name: r.name }), icon: "tool", hint: "Services and their detail pages", table: "services", label: "Services", singular: "Service", group: "Company",
