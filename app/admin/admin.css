@@ -427,9 +427,12 @@
 .ad-td-thumb { width: 110px; padding-top: 8px; padding-bottom: 8px; }
 .ad-status { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .ad-status-select {
-  appearance: auto; border: 1px solid transparent; border-radius: 999px; padding: 5px 12px; font-size: 13px; font-weight: 600;
-  cursor: pointer; font-family: inherit;
+  -webkit-appearance: none; appearance: none; border: 1px solid rgba(15, 29, 41, .08); border-radius: 999px; padding: 6px 30px 6px 14px;
+  font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; line-height: 1.3;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
 }
+.ad-status-select:focus { outline: none; box-shadow: 0 0 0 3px rgba(21, 101, 192, .18); }
 .ad-status-select:disabled { opacity: .6; cursor: progress; }
 .ad-status-note { color: var(--ad-muted); font-size: 12.5px; }
 .ad-peek { display: flex; gap: 18px; align-items: center; background: var(--ad-card); border: 1px solid var(--ad-line); border-radius: var(--ad-radius); padding: 14px; margin-bottom: 18px; box-shadow: var(--ad-shadow); }
@@ -443,9 +446,35 @@
   .ad-peek { flex-direction: column; align-items: flex-start; }
   .ad-peek img { width: 100%; height: 180px; }
 }
-.ad-filter { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 0 0 18px; }
-.ad-filter input[type="search"] { flex: 1 1 260px; min-width: 0; }
-.ad-filter select { flex: 0 1 190px; }
+.ad-filter {
+  display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 0 0 18px; padding: 12px;
+  background: var(--ad-card); border: 1px solid var(--ad-line); border-radius: var(--ad-radius); box-shadow: var(--ad-shadow);
+}
+.ad-filter input[type="search"], .ad-filter select {
+  height: 44px; border: 1px solid #cfd8e3; border-radius: 10px; background-color: #fbfcfe; color: var(--ad-ink);
+  font: inherit; font-size: 14.5px; transition: border-color .15s, box-shadow .15s, background-color .15s;
+}
+.ad-filter input[type="search"] {
+  flex: 1 1 260px; min-width: 0; padding: 0 14px 0 42px; -webkit-appearance: none; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 21l-4.3-4.3M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: 14px 50%;
+}
+.ad-filter input[type="search"]::placeholder { color: #94a3b8; }
+.ad-filter input[type="search"]::-webkit-search-cancel-button { cursor: pointer; }
+.ad-filter select {
+  flex: 0 1 200px; padding: 0 38px 0 14px; cursor: pointer; -webkit-appearance: none; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center;
+}
+.ad-filter input[type="search"]:hover, .ad-filter select:hover { border-color: #b4c2d2; }
+.ad-filter input[type="search"]:focus, .ad-filter select:focus {
+  outline: none; border-color: var(--ad-accent); background-color: #fff; box-shadow: 0 0 0 4px rgba(21, 101, 192, .12);
+}
+.ad-filter .ad-btn { height: 44px; padding-top: 0; padding-bottom: 0; }
+@media (max-width: 640px) {
+  .ad-filter input[type="search"] { flex-basis: 100%; }
+  .ad-filter select { flex: 1 1 auto; }
+}
 .ad-pager { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
 .ad-pager-links { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
 .ad-pager-links a, .ad-pager-gap { display: inline-flex; align-items: center; justify-content: center; min-width: 36px; height: 36px; padding: 0 12px; border: 1px solid var(--ad-line); border-radius: 10px; background: var(--ad-card); color: var(--ad-ink, #1f2937) !important; font-size: 14px; font-weight: 600; }
