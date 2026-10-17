@@ -117,7 +117,7 @@ export async function MobileMenu() {
             </li>
             <li><a href="/blog">Blog</a></li>
             <li><a href="/careers">Career</a></li>
-            <li><a href={SITE.whatsapp}>Contact Us</a></li>
+            <li><a href="/contact">Contact Us</a></li>
           </ul>
         </div>
       </div>
