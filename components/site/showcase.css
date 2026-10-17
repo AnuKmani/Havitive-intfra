@@ -80,3 +80,7 @@
   .sw-feature-body { padding: 28px 22px; }
   .sw-card { padding: 22px 20px; }
 }
+
+/* Plain quotes: switch off the theme's default blockquote icon, indent and background. */
+.sw-wall blockquote { padding: 0 !important; border: 0 !important; background: none !important; position: static; }
+.sw-wall blockquote:before, .sw-wall blockquote:after { content: none !important; display: none !important; }
