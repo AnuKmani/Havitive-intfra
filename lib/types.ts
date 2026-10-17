@@ -49,6 +49,7 @@ export type TeamMember = Timestamps & {
 };
 export type Section = Timestamps & { id: number; img_alt?: string | null; icon_alt?: string | null; section_name: string | null; img: string | null; icon: string | null };
 export type Service = Timestamps & { id: number; img_alt?: string | null; name: string | null; section_id: string | null; description: string | null; img: string | null; section: string | null };
+export type ShowcaseItem = Timestamps & { id: number; section: string; title: string; description: string | null; image: string | null; image_alt: string | null; video_url: string | null; link_url: string | null; event_date: string | null };
 export type Testimonial = Timestamps & { id: number; img_alt?: string | null; client_img_alt?: string | null; img: string | null; desription: string | null; client_img: string | null; client_name: string | null; client_designation: string | null };
 export type Client = Timestamps & { id: number; img_alt?: string | null; img: string | null };
 export type BlogCategory = Timestamps & { id: number; category_name: string; category_slug: string };

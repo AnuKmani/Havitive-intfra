@@ -33,6 +33,30 @@ export const STATIC_PAGES: Record<string, SeoDefaults & { label: string }> = {
     label: "Careers", path: "/careers", title: "Careers – Jobs at Havitive",
     description: "Join Havitive Infra Pvt Ltd in Thiruvananthapuram. See open positions for architects, engineers, draughtsmen and designers, and apply online.",
   },
+  "page:testimonials": {
+    label: "Testimonials", path: "/showcase/testimonials", title: "Client Testimonials",
+    description: "Video and written testimonials from clients of Havitive Infra Pvt Ltd, Thiruvananthapuram.",
+  },
+  "page:csr-activities": {
+    label: "CSR activities", path: "/showcase/csr-activities", title: "CSR Activities",
+    description: "Community and social responsibility initiatives of Havitive Infra Pvt Ltd.",
+  },
+  "page:handing-over-events": {
+    label: "Handing over events", path: "/showcase/handing-over-events", title: "Handing Over Events",
+    description: "Project handing over ceremonies and moments from Havitive Infra Pvt Ltd.",
+  },
+  "page:awards-and-recognition": {
+    label: "Awards & recognition", path: "/showcase/awards-and-recognition", title: "Awards & Recognition",
+    description: "Awards and recognition received by Havitive Infra Pvt Ltd for architecture, engineering and construction work.",
+  },
+  "page:media": {
+    label: "Media", path: "/showcase/media", title: "Havitive in the Media",
+    description: "News coverage, features and interviews about Havitive Infra Pvt Ltd.",
+  },
+  "page:project-videos": {
+    label: "Project videos", path: "/showcase/project-videos", title: "Project Videos",
+    description: "Watch walkthroughs and films of projects by Havitive Infra Pvt Ltd.",
+  },
   "page:blog": {
     label: "Blog", path: "/blog", title: "Blog – Architecture, Construction & Design Insights",
     description: "News and articles from Havitive Infra Pvt Ltd on architecture, construction, engineering and interior design trends in Kerala.",

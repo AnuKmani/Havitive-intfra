@@ -3,16 +3,7 @@ import type { PopupProject } from "@/components/home/ProjectPopup";
 import { media } from "@/lib/media";
 import { routes } from "@/lib/routes";
 import { formatDate, truncate } from "@/lib/text";
-
-/** YouTube / Vimeo link → address that can be shown in an iframe; null for anything else. */
-export function toEmbed(url?: string | null): string | null {
-  const u = (url ?? "").trim();
-  const yt = /(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/.exec(u);
-  if (yt) return `https://www.youtube.com/embed/${yt[1]}?autoplay=1&rel=0`;
-  const vm = /vimeo\.com\/(?:video\/)?(\d+)/.exec(u);
-  if (vm) return `https://player.vimeo.com/video/${vm[1]}?autoplay=1`;
-  return null;
-}
+import { toEmbed } from "@/lib/video";
 
 /** The details a project card shows in its popup: cover image first, then the gallery. */
 export function toPopup(p: Project, sectors: Sector[] = [], galleries: Gallery[] = []): PopupProject {

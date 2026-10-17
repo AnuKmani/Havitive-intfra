@@ -36,7 +36,7 @@ export type Resource = {
   table: string;
   label: string;
   singular: string;
-  group: "Home page" | "Projects" | "Company" | "Content" | "Careers";
+  group: "Home page" | "Projects" | "Company" | "Showcase" | "Content" | "Careers";
   /** Icon name from components/admin/Icon. */
   icon: string;
   /** One-line hint shown on the dashboard. */
@@ -294,7 +294,7 @@ export const RESOURCES: Resource[] = [
   { key: "management", seoKey: (r) => `team:${r.id}`, viewUrl: (r) => routes.team({ id: r.id, name: r.name }), icon: "users", hint: "Directors and leadership", table: "teams", label: "Management team", singular: "Manager", group: "Company", fixed: { category: "management" }, columns: ["name", "designation"], thumb: "img", fields: TEAM_FIELDS },
   { key: "team", seoKey: (r) => `team:${r.id}`, viewUrl: (r) => routes.team({ id: r.id, name: r.name }), icon: "user", hint: "Architects, engineers and staff", table: "teams", label: "Team members", singular: "Team member", group: "Company", fixed: { category: "team" }, columns: ["name", "designation"], thumb: "img", fields: TEAM_FIELDS },
   {
-    key: "testimonials", home: true, viewUrl: () => "/#testimonials", icon: "quote", hint: "Client reviews", table: "testimonials", label: "Testimonials", singular: "Testimonial", group: "Company",
+    key: "testimonials", viewUrl: () => "/showcase/testimonials", icon: "quote", hint: "Written client reviews, shown on the Testimonials page", table: "testimonials", label: "Written testimonials", singular: "Testimonial", group: "Showcase",
     columns: ["client_name", "client_designation"], thumb: "client_img",
     fields: [
       { name: "client_name", label: "Client name", type: "text", required: true },
@@ -302,6 +302,71 @@ export const RESOURCES: Resource[] = [
       { name: "desription", label: "Testimonial", type: "textarea", required: true },
       { name: "client_img", label: "Client photo", type: "image", folder: "testimonial", size: "photo" },
       { name: "img", label: "Project image", type: "image", folder: "testimonial" },
+    ],
+  },
+  {
+    key: "testimonial-videos", viewUrl: () => "/showcase/testimonials", icon: "play", hint: "YouTube links shown as video boxes on the Testimonials page", table: "showcase_items", label: "Video testimonials", singular: "Video testimonial", group: "Showcase",
+    fixed: { section: "testimonial-videos" }, columns: ["title"], thumb: "image",
+    fields: [
+      { name: "title", label: "Client name", type: "text", required: true, help: "Shown under the video." },
+      { name: "video_url", label: "YouTube video link", type: "url", required: true, help: "Paste the YouTube link. The video plays inside its box when a visitor presses play." },
+      { name: "description", label: "Role or project", type: "textarea" },
+      { name: "image", label: "Picture", type: "image", folder: "showcase", help: "Optional. Leave empty to use the YouTube thumbnail." },
+    ],
+  },
+  {
+    key: "csr", viewUrl: () => "/showcase/csr-activities", icon: "heart", hint: "Community and social initiatives", table: "showcase_items", label: "CSR activities", singular: "CSR activity", group: "Showcase",
+    fixed: { section: "csr" }, columns: ["title", "event_date"], thumb: "image",
+    fields: [
+      { name: "title", label: "Title", type: "text", required: true },
+      { name: "event_date", label: "Date", type: "date", help: "Optional. Shown on the card." },
+      { name: "description", label: "Description", type: "textarea" },
+      { name: "image", label: "Picture", type: "image", folder: "showcase", required: true },
+      { name: "video_url", label: "YouTube video link", type: "url", help: "Optional. Adds a play button that plays in the card." },
+    ],
+  },
+  {
+    key: "handover", viewUrl: () => "/showcase/handing-over-events", icon: "key", hint: "Project handing over events", table: "showcase_items", label: "Handing over events", singular: "Event", group: "Showcase",
+    fixed: { section: "handover" }, columns: ["title", "event_date"], thumb: "image",
+    fields: [
+      { name: "title", label: "Title", type: "text", required: true, help: "e.g. Handing over of the Rejayi Residence" },
+      { name: "event_date", label: "Date", type: "date", help: "Optional. Shown on the card." },
+      { name: "description", label: "Description", type: "textarea" },
+      { name: "image", label: "Picture", type: "image", folder: "showcase", required: true },
+      { name: "video_url", label: "YouTube video link", type: "url", help: "Optional. Adds a play button that plays in the card." },
+    ],
+  },
+  {
+    key: "awards", viewUrl: () => "/showcase/awards-and-recognition", icon: "award", hint: "Awards and recognition received", table: "showcase_items", label: "Awards & recognition", singular: "Award", group: "Showcase",
+    fixed: { section: "awards" }, columns: ["title", "event_date"], thumb: "image",
+    fields: [
+      { name: "title", label: "Award", type: "text", required: true },
+      { name: "event_date", label: "Date", type: "date", help: "Optional. Shown on the card." },
+      { name: "description", label: "Description", type: "textarea" },
+      { name: "image", label: "Picture", type: "image", folder: "showcase", required: true, help: "A photo of the award or certificate." },
+    ],
+  },
+  {
+    key: "media", viewUrl: () => "/showcase/media", icon: "globe", hint: "News coverage, features and interviews", table: "showcase_items", label: "Media", singular: "Media item", group: "Showcase",
+    fixed: { section: "media" }, columns: ["title", "event_date"], thumb: "image",
+    fields: [
+      { name: "title", label: "Headline", type: "text", required: true, help: "e.g. the title of the article" },
+      { name: "event_date", label: "Date", type: "date", help: "Optional. Shown on the card." },
+      { name: "description", label: "Newspaper / channel and a short summary", type: "textarea" },
+      { name: "image", label: "Picture", type: "image", folder: "showcase" },
+      { name: "link_url", label: "Article link", type: "url", help: "Link to the news article. Shown as “Read more”." },
+      { name: "video_url", label: "YouTube video link", type: "url", help: "Optional. For a TV or online interview." },
+    ],
+  },
+  {
+    key: "project-videos", viewUrl: () => "/showcase/project-videos", icon: "play", hint: "YouTube videos of projects", table: "showcase_items", label: "Project videos", singular: "Project video", group: "Showcase",
+    fixed: { section: "project-videos" }, columns: ["title", "event_date"], thumb: "image",
+    fields: [
+      { name: "title", label: "Title", type: "text", required: true, help: "e.g. Walkthrough of the Shiljith Residence" },
+      { name: "video_url", label: "YouTube video link", type: "url", required: true, help: "Paste the YouTube link. The video plays inside its box when a visitor presses play." },
+      { name: "description", label: "Description", type: "textarea" },
+      { name: "image", label: "Picture", type: "image", folder: "showcase", help: "Optional. Leave empty to use the YouTube thumbnail." },
+      { name: "event_date", label: "Date", type: "date", help: "Optional. Shown on the card." },
     ],
   },
   {
@@ -368,8 +433,8 @@ export const RESOURCES: Resource[] = [
 ];
 
 /** Sections marketing managers and designers can edit besides admins: blog posts (not blog categories, which only admins manage), projects and everything on the home page. */
-export const isContentSection = (res: Pick<Resource, "key" | "home">) =>
-  !!res.home || res.key === "posts" || res.key === "projects";
+export const isContentSection = (res: Pick<Resource, "key" | "home"> & { group?: Resource["group"] }) =>
+  !!res.home || res.group === "Showcase" || res.key === "posts" || res.key === "projects";
 
 export function getResource(key: string) {
   return RESOURCES.find((r) => r.key === key);

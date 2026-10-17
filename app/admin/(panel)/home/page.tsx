@@ -25,7 +25,6 @@ const SECTIONS: { key: string; anchor: string; label: string }[] = [
   { key: "home-choose", anchor: "choose", label: "Why choose us" },
   { key: "choose-cards", anchor: "choose-cards", label: "Why choose us cards" },
   { key: "clients", anchor: "clients", label: "Client logos" },
-  { key: "testimonials", anchor: "testimonials", label: "Testimonials" },
   { key: "home-residence", anchor: "residence", label: "Residence section" },
 ];
 
