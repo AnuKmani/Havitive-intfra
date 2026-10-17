@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { pageMetadata } from "@/lib/seo-page";
 import { defaults } from "@/lib/seo";
 import Breadcrumb from "@/components/site/Breadcrumb";
+import ProjectBannerSync from "@/components/site/ProjectBannerSync";
 import JsonLd from "@/components/site/JsonLd";
 import RecentPosts from "@/components/site/RecentPosts";
 import { getFacilities, getFloors, getGallery, getPosts, getProject, getProjects, getSector } from "@/lib/data";
@@ -59,6 +60,7 @@ export default async function ProjectPage({ params }: Props) {
         ]}
       />
       <section className="space-extra-bottom project-banner-section">
+        <ProjectBannerSync />
         <div className="slider-area property-slider1 project-banner">
           <div className="swiper th-slider" id="propertySlider" data-slider-options='{"effect":"fade","loop":true,"thumbs":{"swiper":".property-thumb-slider"},"autoplayDisableOnInteraction":"true"}'>
             <div className="swiper-wrapper">
