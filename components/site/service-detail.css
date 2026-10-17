@@ -8,8 +8,9 @@
   color: #052132; font-weight: 600; transition: background-color .2s, color .2s;
 }
 .sv-btn:hover { background: #052132; color: #fff; }
-.sv-img { border-radius: 16px; overflow: hidden; background: #fff; }
-.sv-img img { display: block; width: 100%; height: auto; }
+.sv-img { text-align: center; }
+/* The whole image is always shown (never cropped); on short screens it shrinks so it fits without scrolling. */
+.sv-img img { display: inline-block; width: auto; height: auto; max-width: 100%; max-height: min(78vh, 640px); border-radius: 16px; }
 
 .sv-included { padding: 0 0 56px; }
 .sv-included h2 { font-size: 30px; margin: 0 0 8px; color: var(--theme-color); }
