@@ -154,3 +154,14 @@ button.fx-win.lit:focus-visible { outline: 3px solid #fff; outline-offset: 2px; 
   .fx-panel blockquote { font-size: 16px; }
   .fx-cta { margin-top: 24px; padding: 18px 18px; }
 }
+
+/* Tablets and phones: building on top, story underneath (must come after the compact rules above). */
+@media (max-width: 991px) {
+  .fx { grid-template-columns: minmax(0, 1fr); gap: 26px; }
+  .fx-building { max-width: 320px; margin: 0 auto; width: 100%; }
+  .fx-panel { border-left: 0; border-top: 3px solid var(--theme-color2, #eed26e); padding: 20px 0 0; }
+}
+@media (max-width: 767px) {
+  .fx-building { max-width: 280px; }
+  .fx-panel { padding-top: 16px; }
+}
