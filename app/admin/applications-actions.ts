@@ -76,8 +76,8 @@ export async function sendReply(id: number, _: ReplyState, form: FormData): Prom
   if (sent) return { ok: true, message: `Email sent to ${app.email}.` };
   const mailto = `mailto:${app.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   return error
-    ? { ok: false, message: `The email could not be sent (${error}). Opening your mail app instead…`, mailto }
-    : { ok: true, message: "Saved to the history. Opening your mail app to send it…", mailto };
+    ? { ok: false, message: `The email could not be sent (${error}). Gmail opened in a new tab so you can send it from your HR mailbox.`, mailto }
+    : { ok: true, message: "Saved to the history. Gmail opened in a new tab: press Send there to email it from your HR mailbox.", mailto };
 }
 
 export async function deleteApplication(id: number) {

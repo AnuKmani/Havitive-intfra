@@ -102,10 +102,10 @@ export default async function ApplicationDetail({ params }: { params: Promise<{ 
             </div>
             {!emailReady && (
               <p className="ad-muted ad-panel-hint">
-                Email sending isn&apos;t connected yet, so the reply is saved here and opens in your mail app to send.
+                Email sending isn&apos;t connected yet. The button opens Gmail in a new tab with this reply filled in; press Send there to send it from your HR mailbox. The reply is also saved in the history below.
               </p>
             )}
-            <ReplyComposer action={sendReply.bind(null, id)} name={app.name} position={position} emailReady={emailReady} />
+            <ReplyComposer action={sendReply.bind(null, id)} name={app.name} position={position} emailReady={emailReady} to={app.email} />
           </section>
 
           <section className="ad-panel">

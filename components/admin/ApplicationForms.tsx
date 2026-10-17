@@ -28,21 +28,32 @@ export function StatusForm({ action, status, notes }: { action: Action; status: 
   );
 }
 
-export function ReplyComposer({ action, name, position, emailReady }: { action: Action; name: string; position: string; emailReady: boolean }) {
+/** Gmail compose window pre-filled with the reply, so HR can press Send from their own mailbox. */
+function gmailCompose(to: string, subject: string, body: string) {
+  const q = (v: string) => encodeURIComponent(v);
+  return `https://mail.google.com/mail/?view=cm&fs=1&to=${q(to)}&su=${q(subject)}&body=${q(body)}`;
+}
+
+export function ReplyComposer({ action, name, position, emailReady, to }: { action: Action; name: string; position: string; emailReady: boolean; to: string }) {
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
   const [setStatus, setSetStatus] = useState("");
   const [state, formAction, pending] = useActionState<ReplyState, FormData>(async (prev, fd) => {
     const result = await action(prev, fd);
-    // Without SMTP settings the reply is handed to the admin's own mail app.
-    if (result?.mailto) window.location.href = result.mailto;
     if (result?.ok) { setSubject(""); setBody(""); setSetStatus(""); }
     return result;
   }, null);
   const fill = (s: string) => s.replaceAll("{name}", name.split(" ")[0] || name).replaceAll("{position}", position);
 
   return (
-    <form action={formAction} className="ad-form ad-form-1">
+    <form
+      action={formAction}
+      className="ad-form ad-form-1"
+      onSubmit={() => {
+        // Email sending is not connected: open Gmail in a new tab (from the click, so it is not blocked) to send from the HR mailbox.
+        if (!emailReady && subject.trim() && body.trim()) window.open(gmailCompose(to, subject.trim(), body.trim()), "_blank", "noopener");
+      }}
+    >
       <div className="ad-field">
         <label>Start from a template</label>
         <div className="ad-template-row">
@@ -72,8 +83,9 @@ export function ReplyComposer({ action, name, position, emailReady }: { action: 
         </select>
       </div>
       <div className="ad-form-foot">
-        <button className="ad-btn" disabled={pending}>{pending ? "Sending…" : emailReady ? "Send email" : "Save & open in mail app"}</button>
+        <button className="ad-btn" disabled={pending}>{pending ? "Sending…" : emailReady ? "Send email" : "Open in Gmail to send"}</button>
         {state && <span className={state.ok ? "ad-ok" : "ad-err"} role="status">{state.message}</span>}
+        {!emailReady && state?.mailto && <a className="ad-btn ad-btn-light" href={state.mailto}>Use my default mail app instead</a>}
       </div>
     </form>
   );
