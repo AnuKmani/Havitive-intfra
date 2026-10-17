@@ -176,8 +176,8 @@ export const RESOURCES: Resource[] = [
       { name: "category", label: "Menu group", type: "select", required: true, options: [{ value: "0", label: "Government" }, { value: "1", label: "Private" }] },
     ],
   },
-  { key: "showcase", viewUrl: (r) => (r.sector_id ? `/sectors/${r.sector_id}` : "/"), icon: "star", hint: "Featured work on sector pages", table: "residenceprojects", label: "Sector showcase", singular: "Showcase project", group: "Projects", columns: ["project_heading", "client_name"], thumb: "residence_image_one", fields: SHOWCASE_FIELDS },
-  { key: "upcoming", home: true, viewUrl: () => "/#upcoming", icon: "clock", hint: "“Our Future Projects” slider", table: "upcomming_projects", label: "Upcoming projects", singular: "Upcoming project", group: "Projects", columns: ["project_heading", "location"], thumb: "residence_image_one", fields: SHOWCASE_FIELDS },
+  { key: "showcase", unique: { column: "project_heading", label: "showcase project" }, viewUrl: (r) => (r.sector_id ? `/sectors/${r.sector_id}` : "/"), icon: "star", hint: "Featured work on sector pages", table: "residenceprojects", label: "Sector showcase", singular: "Showcase project", group: "Projects", columns: ["project_heading", "client_name"], thumb: "residence_image_one", fields: SHOWCASE_FIELDS },
+  { key: "upcoming", unique: { column: "project_heading", label: "upcoming project" }, home: true, viewUrl: () => "/#upcoming", icon: "clock", hint: "“Our Future Projects” slider", table: "upcomming_projects", label: "Upcoming projects", singular: "Upcoming project", group: "Projects", columns: ["project_heading", "location"], thumb: "residence_image_one", fields: SHOWCASE_FIELDS },
   {
     key: "amenities", viewUrl: () => "/", icon: "check", hint: "Amenities you can tag on projects", table: "project_aminities", label: "Amenities", singular: "Amenity", group: "Projects",
     columns: ["aminity_name"], fields: [{ name: "aminity_name", label: "Amenity", type: "text", required: true }],
