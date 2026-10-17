@@ -51,7 +51,13 @@ export default async function PanelLayout({ children }: { children: React.ReactN
               {!!newEnquiries && <span className="ad-badge" title="Unread enquiries">{newEnquiries}</span>}
             </div>
           )}
-          {isAdmin && <NavLink href="/admin/enquiries?view=archived" icon="folder" label="Archived enquiries" plain />}
+          {isAdmin && (
+            <>
+              <NavLink href="/admin/enquiries?view=archived" icon="folder" label="Archived enquiries" plain />
+              <NavLink href="/admin/posts?view=archived" icon="folder" label="Archived blog posts" plain />
+              <NavLink href="/admin/categories?view=archived" icon="folder" label="Archived categories" plain />
+            </>
+          )}
           {isAdmin && (
             <>
               <NavLink href="/admin/team" icon="users" label="Team logins" />
@@ -73,12 +79,6 @@ export default async function PanelLayout({ children }: { children: React.ReactN
               {navResources.filter((r) => r.group === g).map((r) => (
                 <NavLink key={r.key} href={`/admin/${r.key}`} icon={r.icon} label={r.label} />
               ))}
-              {isAdmin && navResources.some((r) => r.group === g && r.archivable) && (
-                <NavLink href="/admin/posts?view=archived" icon="folder" label="Archived blog posts" plain />
-              )}
-              {isAdmin && navResources.some((r) => r.group === g && r.archivable) && (
-                <NavLink href="/admin/categories?view=archived" icon="folder" label="Archived categories" plain />
-              )}
             </div>
           ))}
           <div className="ad-nav-group">Account</div>
