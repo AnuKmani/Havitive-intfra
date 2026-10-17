@@ -68,7 +68,19 @@ export function WhatWeOffer({ home, cards }: { home?: Home | null; cards: OfferC
   );
 }
 
-export function WhyChooseUs() {
+const CHOOSE_FALLBACK: Card[] = [
+  { icon: OFFER_ICONS[0], title: "Creative Professionals", text: "Our team of architects and designers excels in crafting innovative and functional designs that reflect your vision.", img: "/upload/logos/team.jpeg" },
+  { icon: OFFER_ICONS[1], title: "Tailored Solutions", text: "We offer customized design solutions, managing every detail from concept to completion smoothly and seamlessly.", img: "/upload/logos/customer.webp" },
+  { icon: OFFER_ICONS[2], title: "Client-Centric Approach", text: "Your satisfaction is our priority. We deliver designs that are functional, stylish, and perfectly aligned with your goals.", img: "/upload/logos/safety.jpeg" },
+];
+
+/** Heading, text, button and cards come from Admin > Home page (built-in wording until they are saved). */
+export function WhyChooseUs({ home, cards = [] }: { home?: Home | null; cards?: OfferCard[] }) {
+  const link = home?.button_link?.trim() || SITE.whatsapp;
+  const external = /^https?:\/\//.test(link);
+  const shown: Card[] = cards.length
+    ? cards.map((c, i) => ({ icon: OFFER_ICONS[i % OFFER_ICONS.length], title: c.title ?? "", text: c.text ?? "", img: media(c.img) }))
+    : CHOOSE_FALLBACK;
   return (
     <section className="service-area-2 space bg-smokes">
       <div className="sec-bg-shape2-3 jump shape-mockup d-xl-block d-none" data-top="10%" data-right="2%">
@@ -78,22 +90,17 @@ export function WhyChooseUs() {
         <div className="row justify-content-between align-items-center">
           <div className="col-lg-6">
             <div className="title-area">
-              <h2 className="sec-title">Why Choose Us</h2>
-              <p className="sec-text">With over a decade of expertise, our skilled team delivers creative and practical solutions tailored to your unique needs.</p>
+              <h2 className="sec-title">{home?.heading || "Why Choose Us"}</h2>
+              <p className="sec-text">{home?.main_content ?? "With over a decade of expertise, our skilled team delivers creative and practical solutions tailored to your unique needs."}</p>
             </div>
           </div>
           <div className="col-auto">
-            <div className="sec-btn"><a href={SITE.whatsapp} className="th-btn style2 th-btn-icon">Quick Connect</a></div>
+            <div className="sec-btn">
+              <a href={link} className="th-btn style2 th-btn-icon" {...(external ? { target: "_blank", rel: "noopener" } : {})}>{home?.button_text || "Quick Connect"}</a>
+            </div>
           </div>
         </div>
-        <CardSlider
-          height={312}
-          cards={[
-            { icon: "/frontend/assets/img/icon/service-icon2-1.svg", title: "Creative Professionals", text: "Our team of architects and designers excels in crafting innovative and functional designs that reflect your vision.", img: "/upload/logos/team.jpeg" },
-            { icon: "/frontend/assets/img/icon/service-icon2-2.svg", title: "Tailored Solutions", text: "We offer customized design solutions, managing every detail from concept to completion smoothly and seamlessly.", img: "/upload/logos/customer.webp" },
-            { icon: "/frontend/assets/img/icon/service-icon2-3.svg", title: "Client-Centric Approach", text: "Your satisfaction is our priority. We deliver designs that are functional, stylish, and perfectly aligned with your goals.", img: "/upload/logos/safety.jpeg" },
-          ]}
-        />
+        <CardSlider height={312} cards={shown} />
       </div>
     </section>
   );

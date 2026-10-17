@@ -148,6 +148,35 @@ export const RESOURCES: Resource[] = [
     ],
   },
   {
+    key: "home-latest", home: true, icon: "clock", hint: "Heading, text and button above the “Browse our latest projects” slider", table: "homes", label: "“Browse our latest projects” text", singular: "Section", group: "Home page",
+    fixed: { category: "latest" }, singleton: true, columns: ["heading"],
+    fields: [
+      { name: "heading", label: "Heading", type: "text", required: true },
+      { name: "main_content", label: "Text under the heading", type: "textarea" },
+      { name: "button_text", label: "Button text", type: "text", help: "e.g. Browse All Project." },
+      { name: "button_link", label: "Button link", type: "url", help: "Use a full address starting with https://." },
+    ],
+  },
+  {
+    key: "home-choose", home: true, icon: "sparkles", hint: "Heading, text and button of “Why choose us”", table: "homes", label: "“Why choose us” text", singular: "Section", group: "Home page",
+    fixed: { category: "choose" }, singleton: true, columns: ["heading"],
+    fields: [
+      { name: "heading", label: "Heading", type: "text", required: true },
+      { name: "main_content", label: "Text under the heading", type: "textarea" },
+      { name: "button_text", label: "Button text", type: "text", help: "e.g. Quick Connect." },
+      { name: "button_link", label: "Button link", type: "url", help: "Leave empty to open WhatsApp." },
+    ],
+  },
+  {
+    key: "choose-cards", home: true, icon: "grid", hint: "The cards under “Why choose us”: title, text and image", table: "choose_cards", label: "“Why choose us” cards", singular: "Card", group: "Home page",
+    columns: ["title", "text"], thumb: "img",
+    fields: [
+      { name: "title", label: "Title", type: "text", required: true },
+      { name: "text", label: "Text", type: "textarea", required: true },
+      { name: "img", label: "Image", type: "image", folder: "choose", required: true },
+    ],
+  },
+  {
     key: "home-residence", home: true, icon: "building", hint: "Residence project section (kept from the Laravel admin)", table: "homes", label: "Residence project section", singular: "Residence section", group: "Home page",
     fixed: { category: "residence" }, singleton: true, columns: ["main_content"],
     fields: [
@@ -165,6 +194,8 @@ export const RESOURCES: Resource[] = [
       { name: "sector_id", label: "Category", type: "select", options: "sectors" },
       { name: "status", label: "Status", type: "select", required: true, options: PROJECT_STATUS, defaultValue: "ongoing" },
       { name: "location", label: "Location", type: "text" },
+      { name: "client_name", label: "Client name", type: "text", help: "Shown in the project popup." },
+      { name: "project_date", label: "Project date", type: "text", help: "e.g. 1/10/2024 or March 2024. Shown in the project popup." },
       { name: "project_image", label: "Cover image", type: "image", folder: "project_image", required: true },
       { name: "description", label: "Description", type: "html" },
       { name: "main_description", label: "Floor plans heading", type: "text" },

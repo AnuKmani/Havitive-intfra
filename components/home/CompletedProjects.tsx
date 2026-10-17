@@ -1,10 +1,12 @@
-import type { Home, Project } from "@/lib/types";
+import type { Home, Project, Sector } from "@/lib/types";
 import { media } from "@/lib/media";
-import { routes } from "@/lib/routes";
+import { toPopup } from "@/lib/projectPopup";
 import { SITE } from "@/lib/site";
+import ProjectNumberSync from "./ProjectNumberSync";
+import ProjectPopup from "./ProjectPopup";
 
 /** Slider of finished projects (status "Completed"). The heading, text and button come from Admin > Home page. */
-export default function CompletedProjects({ projects, home }: { projects: Project[]; home?: Home | null }) {
+export default function CompletedProjects({ projects, home, sectors = [] }: { projects: Project[]; home?: Home | null; sectors?: Sector[] }) {
   if (!projects.length) return null;
   const link = home?.button_link?.trim() || SITE.social.instagram;
   const external = /^https?:\/\//.test(link);
@@ -23,6 +25,7 @@ export default function CompletedProjects({ projects, home }: { projects: Projec
               <div className={`tab-btn${i === 0 ? " active" : ""}`} key={p.id}><span>{String(i + 1).padStart(2, "0")}</span></div>
             ))}
           </div>
+          <ProjectNumberSync sliderId="projectSlider1" slots={Math.min(projects.length, 4)} />
           <div className="row gy-40 justify-content-between align-items-center">
             <div className="col-xl-4">
               <div className="project-title-wrap1">
@@ -45,13 +48,13 @@ export default function CompletedProjects({ projects, home }: { projects: Projec
                     {projects.map((p) => (
                       <div className="swiper-slide" key={p.id}>
                         <div className="portfolio-card">
-                          <a href={routes.project(p)} className="portfolio-img img-shine" style={{ display: "block" }} aria-label={`View ${p.project_name ?? "project"}`}>
+                          <ProjectPopup project={toPopup(p, sectors)} className="portfolio-img img-shine" style={{ display: "block" }} ariaLabel={`View ${p.project_name ?? "project"}`}>
                             <img src={media(p.project_image)} alt={p.project_image_alt || p.project_name || "Completed project"} loading="lazy" style={{ width: 371, height: 241, objectFit: "cover" }} />
-                          </a>
+                          </ProjectPopup>
                           <div className="portfolio-content">
-                            <a href={routes.project(p)} className="icon-btn" aria-label={`View ${p.project_name ?? "project"}`}>
+                            <ProjectPopup project={toPopup(p, sectors)} className="icon-btn" ariaLabel={`View ${p.project_name ?? "project"}`}>
                               <img src="/frontend/assets/img/icon/arrow-right.svg" alt="" />
-                            </a>
+                            </ProjectPopup>
                           </div>
                         </div>
                       </div>

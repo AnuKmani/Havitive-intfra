@@ -11,7 +11,7 @@ import Appointment from "@/components/home/Appointment";
 import Testimonials from "@/components/home/Testimonials";
 import BlogSlider from "@/components/home/BlogSlider";
 import {
-  getBanners, getClients, getCompletedProjects, getCounters, getHome, getOfferCards, getPosts, getProjects, getSectors, getTestimonials,
+  getBanners, getChooseCards, getClients, getCompletedProjects, getCounters, getHome, getOfferCards, getPosts, getProjects, getSectors, getTestimonials,
 } from "@/lib/data";
 
 export const revalidate = 300;
@@ -21,9 +21,9 @@ export function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const [banners, counters, about, service, offerCards, completed, completedHome, projects, clients, sectors, testimonials, posts] = await Promise.all([
+  const [banners, counters, about, service, offerCards, completed, completedHome, projects, clients, sectors, testimonials, posts, latestHome, chooseHome, chooseCards] = await Promise.all([
     getBanners(), getCounters(), getHome("about"), getHome("service"), getOfferCards(), getCompletedProjects(), getHome("projects"), getProjects(),
-    getClients(), getSectors(), getTestimonials(), getPosts(),
+    getClients(), getSectors(), getTestimonials(), getPosts(), getHome("latest"), getHome("choose"), getChooseCards(),
   ]);
   return (
     <>
@@ -31,9 +31,9 @@ export default async function HomePage() {
       <Counters counters={counters} />
       <About about={about} />
       <WhatWeOffer home={service} cards={offerCards} />
-      <CompletedProjects projects={completed} home={completedHome} />
-      <LatestProjects projects={projects} />
-      <WhyChooseUs />
+      <CompletedProjects projects={completed} home={completedHome} sectors={sectors} />
+      <LatestProjects projects={projects} home={latestHome} sectors={sectors} />
+      <WhyChooseUs home={chooseHome} cards={chooseCards} />
       <Clients clients={clients} />
       <Appointment sectors={sectors} />
       <Testimonials items={testimonials} />

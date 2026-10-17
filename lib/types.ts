@@ -7,6 +7,7 @@ export type Home = Timestamps & {
   shadow_text?: string | null; button_link?: string | null;
 };
 export type OfferCard = Timestamps & { id: number; title: string | null; text: string | null; img: string | null; img_alt: string | null };
+export type ChooseCard = OfferCard;
 export type HomeBanner =Timestamps & { id: number; home_images_alt?: string | null; home_images: string | null; heading: string | null; description: string | null };
 export type Counter = Timestamps & { id: number; counter_name: string | null; counter: string | null };
 export type Sector = Timestamps & { id: number; sector_name: string | null; category: number | null };
@@ -16,6 +17,7 @@ export type Project = Timestamps & {
   project_image: string | null; sector_id: number | null; aminities_id: string | null; location: string | null;
   main_content: string | null; main_description: string | null; project_image_one: string | null;
   project_heading: string | null; description: string | null; status?: string | null;
+  client_name?: string | null; project_date?: string | null;
 };
 export type Floor = Timestamps & { id: number; image_alt?: string | null; project_id: number | null; floor_name: string | null; description: string | null; image: string | null };
 export type Facility = Timestamps & { id: number; facility_image_alt?: string | null; project_id: number | null; facility_name: string | null; facility_description: string | null; facility_image: string | null };
