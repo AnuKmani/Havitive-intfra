@@ -164,3 +164,9 @@
   .hs-news .blog-card.style2 .blog-content .box-title { font-size: 17px; }
   .hs-news.space { padding-top: 48px; padding-bottom: 48px; }
 }
+
+/* News & Articles buttons: dark outline on the light section. */
+.hs-news .th-btn.style-border { color: #052132; border: 1px solid #052132; background: transparent; }
+.hs-news .th-btn.style-border.th-btn-icon:after { filter: none; }
+.hs-news .th-btn.style-border:hover { background: #052132; color: #fff; }
+.hs-news .th-btn.style-border.th-btn-icon:hover:after { filter: brightness(0) invert(1); }
