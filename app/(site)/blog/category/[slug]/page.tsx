@@ -4,13 +4,11 @@ import { pageMetadata } from "@/lib/seo-page";
 import { defaults } from "@/lib/seo";
 import Breadcrumb from "@/components/site/Breadcrumb";
 import BlogSidebar from "@/components/site/BlogSidebar";
-import PostList from "@/components/site/PostList";
+import BlogListing, { pageNumber } from "@/components/site/BlogListing";
 import { getBlogCategories, getBlogCategoryBySlug, getPosts } from "@/lib/data";
 import { routes } from "@/lib/routes";
 
-export const revalidate = 300;
-
-type Props = { params: Promise<{ slug: string }> };
+type Props = { params: Promise<{ slug: string }>; searchParams: Promise<{ page?: string }> };
 
 export async function generateStaticParams() {
   return (await getBlogCategories()).map((c) => ({ slug: c.category_slug }));
@@ -22,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return pageMetadata(`blog-category:${cat.id}`, defaults.blogCategory(cat));
 }
 
-export default async function BlogCategoryPage({ params }: Props) {
+export default async function BlogCategoryPage({ params, searchParams }: Props) {
   const cat = await getBlogCategoryBySlug(decodeURIComponent((await params).slug));
   if (!cat) notFound();
   const [posts, categories] = await Promise.all([getPosts(), getBlogCategories()]);
@@ -32,7 +30,13 @@ export default async function BlogCategoryPage({ params }: Props) {
       <section className="th-blog-wrapper space-top space-extra-bottom">
         <div className="container">
           <div className="row gx-30">
-            <div className="col-xxl-8 col-lg-7"><PostList posts={posts.filter((p) => p.blogcat_id === cat.id)} categories={categories} /></div>
+            <div className="col-xxl-8 col-lg-7"><BlogListing
+                posts={posts.filter((p) => p.blogcat_id === cat.id)}
+                categories={categories}
+                activeSlug={cat.category_slug ?? undefined}
+                basePath={routes.blogCategory(cat)}
+                page={pageNumber((await searchParams).page)}
+              /></div>
             <div className="col-xxl-4 col-lg-5"><BlogSidebar /></div>
           </div>
         </div>
