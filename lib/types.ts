@@ -4,6 +4,7 @@ export type Home = Timestamps & {
   id: number; home_images_alt?: string | null; category: string | null; main_content: string | null; meta_title: string | null;
   meta_descp: string | null; home_images: string | null; description: string | null;
   description_head: string | null; icon: string | null; heading?: string | null; button_text?: string | null;
+  shadow_text?: string | null; button_link?: string | null;
 };
 export type OfferCard = Timestamps & { id: number; title: string | null; text: string | null; img: string | null; img_alt: string | null };
 export type HomeBanner =Timestamps & { id: number; home_images_alt?: string | null; home_images: string | null; heading: string | null; description: string | null };

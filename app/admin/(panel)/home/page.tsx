@@ -20,7 +20,7 @@ const SECTIONS: { key: string; anchor: string; label: string }[] = [
   { key: "home-about", anchor: "about", label: "About" },
   { key: "home-service", anchor: "offer", label: "What we offer" },
   { key: "offer-cards", anchor: "offer-cards", label: "Offer cards" },
-  { key: "upcoming", anchor: "future", label: "Future projects" },
+  { key: "home-projects", anchor: "future", label: "Completed projects" },
   { key: "clients", anchor: "clients", label: "Client logos" },
   { key: "testimonials", anchor: "testimonials", label: "Testimonials" },
   { key: "home-residence", anchor: "residence", label: "Residence section" },
@@ -77,7 +77,7 @@ export default async function HomeEditor() {
         defaults={{ title: "Havitive Infra Pvt Ltd | Architecture, Engineering & Construction in Kerala", description: SITE.description }}
       />
       {blocks}
-      <div className="ad-note"><Icon name="info" /> “Browse our latest projects”, “Why choose us” and “News &amp; articles” fill in automatically from Projects and Blog posts.</div>
+      <div className="ad-note"><Icon name="info" /> The completed projects slider shows every project whose status is “Completed” (change a project&rsquo;s status in Projects). “Browse our latest projects” and “News &amp; articles” fill in automatically from Projects and Blog posts.</div>
     </>
   );
 }

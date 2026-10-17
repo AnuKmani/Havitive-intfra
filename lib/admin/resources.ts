@@ -77,20 +77,6 @@ export const altName = (field: Field) => `${field.name}_alt`;
 
 const slug = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 
-const SHOWCASE_FIELDS: Field[] = [
-  { name: "project_heading", label: "Project name", type: "text", required: true },
-  { name: "sector_id", label: "Category", type: "select", options: "sectors" },
-  { name: "main_content", label: "Section heading", type: "text", help: "Shown as the sector page heading." },
-  { name: "main_description", label: "Section intro", type: "textarea" },
-  { name: "project_descp", label: "Description", type: "textarea" },
-  { name: "project_category", label: "Service category", type: "text" },
-  { name: "client_name", label: "Client", type: "text" },
-  { name: "project_date", label: "Project date", type: "text" },
-  { name: "location", label: "Location", type: "text" },
-  { name: "project_dec_two", label: "Second description", type: "textarea" },
-  { name: "residence_image_one", label: "Main image", type: "image", folder: "residence_img" },
-  { name: "residence_image_two", label: "Second image", type: "image", folder: "residence_img" },
-];
 
 const TEAM_FIELDS: Field[] = [
   { name: "name", label: "Name", type: "text", required: true },
@@ -139,6 +125,17 @@ export const RESOURCES: Resource[] = [
       { name: "heading", label: "Heading", type: "text", required: true },
       { name: "main_content", label: "Intro text", type: "textarea", required: true },
       { name: "button_text", label: "Button text", type: "text", help: "The button that calls the first phone number, e.g. Talk to Experts." },
+    ],
+  },
+  {
+    key: "home-projects", home: true, icon: "clock", hint: "Text of the completed projects slider. The projects themselves come from Projects with status “Completed”.", table: "homes", label: "Completed projects slider", singular: "Section", group: "Home page",
+    fixed: { category: "projects" }, singleton: true, columns: ["heading"],
+    fields: [
+      { name: "shadow_text", label: "Big background word", type: "text", help: "Faint outlined word behind the heading, e.g. PROJECTS." },
+      { name: "heading", label: "Heading", type: "text", required: true },
+      { name: "main_content", label: "Text under the heading", type: "textarea" },
+      { name: "button_text", label: "Button text", type: "text", help: "e.g. Explore More." },
+      { name: "button_link", label: "Button link", type: "url", help: "Where the button goes. Use a full address starting with https://." },
     ],
   },
   {
@@ -204,7 +201,6 @@ export const RESOURCES: Resource[] = [
       { name: "sector_name", label: "Category name", type: "text", required: true },
     ],
   },
-  { key: "upcoming", unique: { column: "project_heading", label: "upcoming project" }, home: true, viewUrl: () => "/#upcoming", icon: "clock", hint: "“Our Future Projects” slider", table: "upcomming_projects", label: "Upcoming projects", singular: "Upcoming project", group: "Projects", columns: ["project_heading", "location"], thumb: "residence_image_one", fields: SHOWCASE_FIELDS },
   {
     key: "amenities", viewUrl: () => "/", icon: "check", hint: "Amenities you can tag on projects", table: "project_aminities", label: "Amenities", singular: "Amenity", group: "Projects",
     columns: ["aminity_name"], fields: [{ name: "aminity_name", label: "Amenity", type: "text", required: true }],

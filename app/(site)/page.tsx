@@ -4,14 +4,14 @@ import Hero from "@/components/home/Hero";
 import Counters from "@/components/home/Counters";
 import About from "@/components/home/About";
 import { WhatWeOffer, WhyChooseUs } from "@/components/home/Offer";
-import Upcoming from "@/components/home/Upcoming";
+import CompletedProjects from "@/components/home/CompletedProjects";
 import LatestProjects from "@/components/home/LatestProjects";
 import Clients from "@/components/home/Clients";
 import Appointment from "@/components/home/Appointment";
 import Testimonials from "@/components/home/Testimonials";
 import BlogSlider from "@/components/home/BlogSlider";
 import {
-  getBanners, getClients, getCounters, getHome, getOfferCards, getPosts, getProjects, getSectors, getTestimonials, getUpcoming,
+  getBanners, getClients, getCompletedProjects, getCounters, getHome, getOfferCards, getPosts, getProjects, getSectors, getTestimonials,
 } from "@/lib/data";
 
 export const revalidate = 300;
@@ -21,8 +21,8 @@ export function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const [banners, counters, about, service, offerCards, upcoming, projects, clients, sectors, testimonials, posts] = await Promise.all([
-    getBanners(), getCounters(), getHome("about"), getHome("service"), getOfferCards(), getUpcoming(), getProjects(),
+  const [banners, counters, about, service, offerCards, completed, completedHome, projects, clients, sectors, testimonials, posts] = await Promise.all([
+    getBanners(), getCounters(), getHome("about"), getHome("service"), getOfferCards(), getCompletedProjects(), getHome("projects"), getProjects(),
     getClients(), getSectors(), getTestimonials(), getPosts(),
   ]);
   return (
@@ -31,7 +31,7 @@ export default async function HomePage() {
       <Counters counters={counters} />
       <About about={about} />
       <WhatWeOffer home={service} cards={offerCards} />
-      <Upcoming projects={upcoming} />
+      <CompletedProjects projects={completed} home={completedHome} />
       <LatestProjects projects={projects} />
       <WhyChooseUs />
       <Clients clients={clients} />

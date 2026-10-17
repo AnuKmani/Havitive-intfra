@@ -2,8 +2,9 @@ import "server-only";
 import { unstable_cache } from "next/cache";
 import {
   getAllTeam, getBlogCategories, getCompanies, getCounters, getHome, getJobs, getPosts, getProjects,
-  getSections, getSectors, getServices, getUpcoming, getFloors,
+  getSections, getSectors, getServices, getFloors,
 } from "@/lib/data";
+import { PROJECT_STATUS } from "@/lib/admin/resources";
 import { routes } from "@/lib/routes";
 import { SITE } from "@/lib/site";
 import { stripHtml, titleCase } from "@/lib/text";
@@ -13,15 +14,16 @@ import { stripHtml, titleCase } from "@/lib/text";
  * The text must be deterministic (stable ordering, no timestamps) so the prompt cache keeps hitting.
  */
 async function build(): Promise<string> {
-  const [about, service, counters, sectors, services, sections, projects, upcoming, companies, team, posts, categories, jobs] =
+  const [about, service, counters, sectors, services, sections, projects, companies, team, posts, categories, jobs] =
     await Promise.all([
       getHome("about"), getHome("service"), getCounters(), getSectors(), getServices(), getSections(), getProjects(),
-      getUpcoming(), getCompanies(), getAllTeam(), getPosts(), getBlogCategories(), getJobs(),
+      getCompanies(), getAllTeam(), getPosts(), getBlogCategories(), getJobs(),
     ]);
   const byId = <T extends { id: number }>(a: T[]) => [...a].sort((x, y) => x.id - y.id);
   const sectorName = (id: number | null) => sectors.find((s) => s.id === id)?.sector_name ?? "Unassigned";
   const floors = await Promise.all(byId(projects).map((p) => getFloors(p.id)));
   const t = (s?: string | null) => stripHtml(s);
+  const statusLabel = (s?: string | null) => PROJECT_STATUS.find((x) => x.value === s)?.label ?? "Completed";
   const out: string[] = [];
 
   out.push(`# Company
@@ -63,15 +65,10 @@ Chairman's message: "We are passionate about creating innovative and sustainable
   out.push(`# Completed / featured projects\n${byId(projects)
     .map((p, i) => {
       const f = floors[i].map((x) => `${x.floor_name}: ${t(x.description)}`).join("; ");
-      return `- ${p.project_name} (category: ${sectorName(p.sector_id)}) – ${SITE.url}${routes.project(p)}
+      return `- ${p.project_name} (category: ${sectorName(p.sector_id)}, status: ${statusLabel(p.status)}) – ${SITE.url}${routes.project(p)}
   ${t(p.project_heading)}. ${t(p.description)}${p.location ? ` Location: ${p.location}.` : ""}${f ? `\n  Floors: ${f}` : ""}`;
     })
     .join("\n")}`);
-
-  if (upcoming.length)
-    out.push(`# Upcoming projects\n${byId(upcoming)
-      .map((u) => `- ${u.project_heading}: ${t(u.project_descp)}. Client: ${u.client_name ?? "-"}. Location: ${u.location ?? "-"}. Date: ${u.project_date ?? "-"}.`)
-      .join("\n")}`);
 
   out.push(`# Leadership and team\n${byId(team)
     .map((m) => `- ${m.name} – ${m.designation} (${m.category === "management" ? "management" : "team"}). Experience: ${m.experience ?? "-"}. Specialisation: ${m.location ?? "-"}. Practice area: ${m.practice_area ?? "-"}. Projects: ${m.project_done ?? "-"}. Profile: ${SITE.url}${routes.team(m)}
