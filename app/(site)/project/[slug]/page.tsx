@@ -58,19 +58,21 @@ export default async function ProjectPage({ params }: Props) {
           { name: project.project_name ?? "Project", href: routes.project(project) },
         ]}
       />
-      <section className="space-top space-extra-bottom">
-        <div className="container">
-          <div className="slider-area property-slider1">
-            <div className="swiper th-slider mb-4" id="propertySlider" data-slider-options='{"effect":"fade","loop":true,"thumbs":{"swiper":".property-thumb-slider"},"autoplayDisableOnInteraction":"true"}'>
-              <div className="swiper-wrapper">
-                {images.map((src, i) => (
-                  <div className="swiper-slide" key={i}>
-                    <div className="property-slider-img"><img src={src} alt={imageAlts[i] || `${project.project_name} – image ${i + 1}`} loading={i ? "lazy" : "eager"} /></div>
-                  </div>
-                ))}
-              </div>
+      <section className="space-extra-bottom project-banner-section">
+        <div className="slider-area property-slider1 project-banner">
+          <div className="swiper th-slider" id="propertySlider" data-slider-options='{"effect":"fade","loop":true,"thumbs":{"swiper":".property-thumb-slider"},"autoplayDisableOnInteraction":"true"}'>
+            <div className="swiper-wrapper">
+              {images.map((src, i) => (
+                <div className="swiper-slide" key={i}>
+                  <div className="property-slider-img"><img src={src} alt={imageAlts[i] || `${project.project_name} – image ${i + 1}`} loading={i ? "lazy" : "eager"} /></div>
+                </div>
+              ))}
             </div>
-            <div className="swiper th-slider property-thumb-slider" data-slider-options='{"effect":"slide","loop":true,"breakpoints":{"0":{"slidesPerView":2},"576":{"slidesPerView":"2"},"768":{"slidesPerView":"3"},"992":{"slidesPerView":"3"},"1200":{"slidesPerView":"4"}},"autoplayDisableOnInteraction":"true"}'>
+          </div>
+          <button data-slider-prev="#propertySlider" className="slider-arrow style3 slider-prev" aria-label="Previous"><img src="/frontend/assets/img/icon/arrow-left.svg" alt="" /></button>
+          <button data-slider-next="#propertySlider" className="slider-arrow style3 slider-next" aria-label="Next"><img src="/frontend/assets/img/icon/arrow-right.svg" alt="" /></button>
+          <div className="container">
+            <div className="swiper th-slider property-thumb-slider" data-slider-options='{"effect":"slide","loop":true,"breakpoints":{"0":{"slidesPerView":3},"576":{"slidesPerView":"4"},"768":{"slidesPerView":"5"},"992":{"slidesPerView":"6"},"1200":{"slidesPerView":"7"}},"autoplayDisableOnInteraction":"true"}'>
               <div className="swiper-wrapper">
                 {images.map((src, i) => (
                   <div className="swiper-slide" key={i}>
@@ -79,10 +81,10 @@ export default async function ProjectPage({ params }: Props) {
                 ))}
               </div>
             </div>
-            <button data-slider-prev="#propertySlider" className="slider-arrow style3 slider-prev" aria-label="Previous"><img src="/frontend/assets/img/icon/arrow-left.svg" alt="" /></button>
-            <button data-slider-next="#propertySlider" className="slider-arrow style3 slider-next" aria-label="Next"><img src="/frontend/assets/img/icon/arrow-right.svg" alt="" /></button>
           </div>
+        </div>
 
+        <div className="container">
           <div className="row gx-30">
             <div className="col-xxl-8 col-lg-7">
               <div className="property-page-single">

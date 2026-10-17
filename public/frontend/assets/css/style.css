@@ -22917,3 +22917,32 @@ span.select2-selection.select2-selection--single:focus {
   .team-card .team-card-content { top: 235px; bottom: 12px; left: 12px; right: 12px; }
   .team-card:hover .team-card-content { top: 12px; }
 }
+
+/* Project detail page: wide banner slider (edge to edge, moderate height) with a thumbnail strip. */
+.project-banner-section { padding-top: 0; }
+.project-banner { position: relative; margin-bottom: 40px; }
+.project-banner .property-slider-img img {
+  display: block;
+  width: 100%;
+  height: clamp(220px, 32vw, 440px);
+  object-fit: cover;
+  border-radius: 0;
+}
+.project-banner .slider-arrow,
+.project-banner .slider-arrow.slider-next {
+  top: calc(clamp(220px, 32vw, 440px) / 2 - 24px);
+  bottom: auto;
+}
+.project-banner .slider-arrow { left: 20px; right: auto; }
+.project-banner .slider-arrow.slider-next { left: auto; right: 20px; }
+.project-banner .property-thumb-slider { margin-top: 14px; }
+.project-banner .property-thumb-slider .property-slider-img img {
+  height: 78px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+@media (max-width: 575px) {
+  .project-banner .property-thumb-slider .property-slider-img img { height: 56px; }
+  .project-banner .slider-arrow { left: 8px; }
+  .project-banner .slider-arrow.slider-next { right: 8px; }
+}
