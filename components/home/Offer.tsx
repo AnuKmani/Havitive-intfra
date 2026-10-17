@@ -1,4 +1,6 @@
+import { media } from "@/lib/media";
 import { SITE } from "@/lib/site";
+import type { Home, OfferCard } from "@/lib/types";
 
 const CARD_SLIDER = '{"breakpoints":{"0":{"slidesPerView":1},"576":{"slidesPerView":"1"},"768":{"slidesPerView":"2"},"992":{"slidesPerView":"2"},"1200":{"slidesPerView":"3"}}}';
 
@@ -25,7 +27,10 @@ function CardSlider({ cards, height }: { cards: Card[]; height: number }) {
   );
 }
 
-export function WhatWeOffer({ intro }: { intro?: string | null }) {
+/** The three icons that come with the theme; the cards use them in turn. */
+const OFFER_ICONS = [1, 2, 3].map((n) => `/frontend/assets/img/icon/service-icon2-${n}.svg`);
+
+export function WhatWeOffer({ home, cards }: { home?: Home | null; cards: OfferCard[] }) {
   return (
     <section className="service-area-2 rounded-80 space bg-smokes">
       <div className="sec-bg-shape2-1 spin shape-mockup d-xl-block d-none" data-bottom="5%" data-left="12%">
@@ -39,22 +44,25 @@ export function WhatWeOffer({ intro }: { intro?: string | null }) {
         <div className="row justify-content-between align-items-center">
           <div className="col-lg-6">
             <div className="title-area">
-              <h2 className="sec-title">What we offer</h2>
-              <p className="sec-text">{intro}</p>
+              <h2 className="sec-title">{home?.heading || "What we offer"}</h2>
+              <p className="sec-text">{home?.main_content}</p>
             </div>
           </div>
           <div className="col-auto">
-            <div className="sec-btn"><a href={`tel:${SITE.phones[0].tel}`} className="th-btn style2 th-btn-icon">Talk to Experts</a></div>
+            <div className="sec-btn"><a href={`tel:${SITE.phones[0].tel}`} className="th-btn style2 th-btn-icon">{home?.button_text || "Talk to Experts"}</a></div>
           </div>
         </div>
-        <CardSlider
-          height={234}
-          cards={[
-            { icon: "/frontend/assets/img/icon/service-icon2-1.svg", title: "Evaluation of Property", text: "We determine the true market value of your property. Make informed decisions with confidence.", img: "/frontend/assets/img/service/7.png" },
-            { icon: "/frontend/assets/img/icon/service-icon2-2.svg", title: "Asset Management", text: "Efficient management solutions to maximize the value and performance of your properties.", img: "/upload/logos/asset.webp" },
-            { icon: "/frontend/assets/img/icon/service-icon2-3.svg", title: "Potential Investment", text: "We guide you to make smart investments in assets for a secure and rewarding future.", img: "/upload/logos/potential.jpg" },
-          ]}
-        />
+        {cards.length > 0 && (
+          <CardSlider
+            height={234}
+            cards={cards.map((c, i) => ({
+              icon: OFFER_ICONS[i % OFFER_ICONS.length],
+              title: c.title ?? "",
+              text: c.text ?? "",
+              img: media(c.img),
+            }))}
+          />
+        )}
       </div>
     </section>
   );

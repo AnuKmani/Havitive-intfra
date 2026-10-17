@@ -118,9 +118,22 @@ export const RESOURCES: Resource[] = [
     ],
   },
   {
-    key: "home-service", home: true, icon: "sparkles", hint: "Intro for “What we offer”", table: "homes", label: "“What we offer” intro", singular: "Intro", group: "Home page",
+    key: "home-service", home: true, icon: "sparkles", hint: "Heading, intro and button of “What we offer”", table: "homes", label: "“What we offer” text", singular: "Intro", group: "Home page",
     fixed: { category: "service" }, singleton: true, columns: ["main_content"],
-    fields: [{ name: "main_content", label: "Intro text", type: "textarea", required: true }],
+    fields: [
+      { name: "heading", label: "Heading", type: "text", required: true },
+      { name: "main_content", label: "Intro text", type: "textarea", required: true },
+      { name: "button_text", label: "Button text", type: "text", help: "The button that calls the first phone number, e.g. Talk to Experts." },
+    ],
+  },
+  {
+    key: "offer-cards", home: true, icon: "grid", hint: "The cards under “What we offer”: title, text and image", table: "offer_cards", label: "“What we offer” cards", singular: "Card", group: "Home page",
+    columns: ["title", "text"], thumb: "img",
+    fields: [
+      { name: "title", label: "Title", type: "text", required: true },
+      { name: "text", label: "Text", type: "textarea", required: true },
+      { name: "img", label: "Image", type: "image", folder: "offer", required: true },
+    ],
   },
   {
     key: "home-residence", home: true, icon: "building", hint: "Residence project section (kept from the Laravel admin)", table: "homes", label: "Residence project section", singular: "Residence section", group: "Home page",

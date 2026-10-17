@@ -19,6 +19,7 @@ const SECTIONS: { key: string; anchor: string; label: string }[] = [
   { key: "counters", anchor: "counters", label: "Counters" },
   { key: "home-about", anchor: "about", label: "About" },
   { key: "home-service", anchor: "offer", label: "What we offer" },
+  { key: "offer-cards", anchor: "offer-cards", label: "Offer cards" },
   { key: "upcoming", anchor: "future", label: "Future projects" },
   { key: "clients", anchor: "clients", label: "Client logos" },
   { key: "testimonials", anchor: "testimonials", label: "Testimonials" },

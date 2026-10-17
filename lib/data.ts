@@ -34,7 +34,8 @@ export const getSections = cache(() => rows<T.Section>(db().from("sections").sel
 export const getBanners = cache(() => rows<T.HomeBanner>(db().from("home_banners").select("*").order("created_at", latest)));
 export const getCounters = cache(() => rows<T.Counter>(db().from("counters").select("*").order("id")));
 export const getHome = cache((category: string) => one<T.Home>(db().from("homes").select("*").eq("category", category).order("created_at", latest).limit(1).maybeSingle()));
-export const getClients = cache(() => rows<T.Client>(db().from("clients").select("*").order("created_at", latest)));
+export const getOfferCards = cache(() => rows<T.OfferCard>(db().from("offer_cards").select("*").order("id")));
+export const getClients =cache(() => rows<T.Client>(db().from("clients").select("*").order("created_at", latest)));
 export const getTestimonials = cache(() => rows<T.Testimonial>(db().from("testimonials").select("*").order("created_at", latest)));
 export const getCompanies = cache(() => rows<T.Company>(db().from("gropuof_companies").select("*").order("created_at", { ascending: true })));
 export const getTeam = cache((category: "management" | "team") => rows<T.TeamMember>(db().from("teams").select("*").eq("category", category).order("created_at", { ascending: true })));

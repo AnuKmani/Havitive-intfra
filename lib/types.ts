@@ -3,9 +3,10 @@ export type Timestamps = { created_at: string | null; updated_at: string | null 
 export type Home = Timestamps & {
   id: number; home_images_alt?: string | null; category: string | null; main_content: string | null; meta_title: string | null;
   meta_descp: string | null; home_images: string | null; description: string | null;
-  description_head: string | null; icon: string | null;
+  description_head: string | null; icon: string | null; heading?: string | null; button_text?: string | null;
 };
-export type HomeBanner = Timestamps & { id: number; home_images_alt?: string | null; home_images: string | null; heading: string | null; description: string | null };
+export type OfferCard = Timestamps & { id: number; title: string | null; text: string | null; img: string | null; img_alt: string | null };
+export type HomeBanner =Timestamps & { id: number; home_images_alt?: string | null; home_images: string | null; heading: string | null; description: string | null };
 export type Counter = Timestamps & { id: number; counter_name: string | null; counter: string | null };
 export type Sector = Timestamps & { id: number; sector_name: string | null; category: number | null };
 export type Amenity = Timestamps & { id: number; aminity_name: string | null };

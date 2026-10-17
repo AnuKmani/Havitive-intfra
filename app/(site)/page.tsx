@@ -11,7 +11,7 @@ import Appointment from "@/components/home/Appointment";
 import Testimonials from "@/components/home/Testimonials";
 import BlogSlider from "@/components/home/BlogSlider";
 import {
-  getBanners, getClients, getCounters, getHome, getPosts, getProjects, getSectors, getTestimonials, getUpcoming,
+  getBanners, getClients, getCounters, getHome, getOfferCards, getPosts, getProjects, getSectors, getTestimonials, getUpcoming,
 } from "@/lib/data";
 
 export const revalidate = 300;
@@ -21,8 +21,8 @@ export function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const [banners, counters, about, service, upcoming, projects, clients, sectors, testimonials, posts] = await Promise.all([
-    getBanners(), getCounters(), getHome("about"), getHome("service"), getUpcoming(), getProjects(),
+  const [banners, counters, about, service, offerCards, upcoming, projects, clients, sectors, testimonials, posts] = await Promise.all([
+    getBanners(), getCounters(), getHome("about"), getHome("service"), getOfferCards(), getUpcoming(), getProjects(),
     getClients(), getSectors(), getTestimonials(), getPosts(),
   ]);
   return (
@@ -30,7 +30,7 @@ export default async function HomePage() {
       <Hero banners={banners} />
       <Counters counters={counters} />
       <About about={about} />
-      <WhatWeOffer intro={service?.main_content} />
+      <WhatWeOffer home={service} cards={offerCards} />
       <Upcoming projects={upcoming} />
       <LatestProjects projects={projects} />
       <WhyChooseUs />
