@@ -1,4 +1,4 @@
-import type { Home, Project, Sector } from "@/lib/types";
+import type { Gallery, Home, Project, Sector } from "@/lib/types";
 import { media } from "@/lib/media";
 import { toPopup } from "@/lib/projectPopup";
 import { SITE } from "@/lib/site";
@@ -6,7 +6,7 @@ import { truncate } from "@/lib/text";
 import ProjectPopup from "./ProjectPopup";
 
 /** Heading, text and button come from Admin > Home page (falls back to the built-in wording). */
-export default function LatestProjects({ projects, home, sectors = [] }: { projects: Project[]; home?: Home | null; sectors?: Sector[] }) {
+export default function LatestProjects({ projects, home, sectors = [], galleries = [] }: { projects: Project[]; home?: Home | null; sectors?: Sector[]; galleries?: Gallery[] }) {
   const link = home?.button_link?.trim() || SITE.social.instagram;
   const external = /^https?:\/\//.test(link);
   return (
@@ -39,13 +39,13 @@ export default function LatestProjects({ projects, home, sectors = [] }: { proje
                 <div className="swiper-slide" key={p.id}>
                   <div className="portfolio-card style2">
                     <div className="portfolio-img img-shine" style={{ width: "100%", height: 278 }}>
-                      <ProjectPopup project={toPopup(p, sectors)}>
+                      <ProjectPopup project={toPopup(p, sectors, galleries)}>
                         <img src={media(p.project_image)} alt={p.project_image_alt || p.project_name || "Project"} loading="lazy" />
                         <div className="portfolio-card-shape"><img src={media(p.project_image)} alt="" loading="lazy" /></div>
                       </ProjectPopup>
                     </div>
                     <div className="portfolio-content">
-                      <h3 className="portfolio-title"><ProjectPopup project={toPopup(p, sectors)}>{p.project_name}</ProjectPopup></h3>
+                      <h3 className="portfolio-title"><ProjectPopup project={toPopup(p, sectors, galleries)}>{p.project_name}</ProjectPopup></h3>
                       <p className="portfolio-text">{truncate(p.description, 60)}</p>
                     </div>
                   </div>

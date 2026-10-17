@@ -266,6 +266,8 @@ export function FieldInput({ field, value, alt = "", options }: { field: Field; 
       return <input {...common} type="url" placeholder="https://" />;
     case "email":
       return <input {...common} type="email" />;
+    case "date":
+      return <input {...common} type="date" />;
     default:
       return <input {...common} type="text" />;
   }

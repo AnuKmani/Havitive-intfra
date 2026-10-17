@@ -70,7 +70,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
         <link rel="stylesheet" href="/frontend/assets/css/fontawesome.subset.css" />
         <link rel="stylesheet" href="/frontend/assets/css/magnific-popup.min.css" />
         <link rel="stylesheet" href="/frontend/assets/css/swiper-bundle.min.css" />
-        <link rel="stylesheet" href="/frontend/assets/css/style.css" />
+        <link rel="stylesheet" href="/frontend/assets/css/style.css?v=2" />
         <link rel="stylesheet" href="/css/custom.css" />
       </head>
       <body className="bg-smoke">

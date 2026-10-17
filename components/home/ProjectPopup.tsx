@@ -6,7 +6,8 @@ import { createPortal } from "react-dom";
 export type PopupProject = {
   href: string;
   name: string;
-  image: string;
+  /** Cover image first, then the gallery. */
+  images: string[];
   imageAlt: string;
   description: string;
   category?: string | null;
@@ -20,6 +21,7 @@ export default function ProjectPopup({ project, children, className, style, aria
   project: PopupProject; children: ReactNode; className?: string; style?: React.CSSProperties; ariaLabel?: string;
 }) {
   const [open, setOpen] = useState(false);
+  const [current, setCurrent] = useState(0);
 
   useEffect(() => {
     if (!open) return;
@@ -36,14 +38,23 @@ export default function ProjectPopup({ project, children, className, style, aria
 
   return (
     <>
-      <a href={project.href} className={className} style={style} aria-label={ariaLabel} onClick={(e) => { e.preventDefault(); setOpen(true); }}>
+      <a href={project.href} className={className} style={style} aria-label={ariaLabel} onClick={(e) => { e.preventDefault(); setCurrent(0); setOpen(true); }}>
         {children}
       </a>
       {open && createPortal(
         <div className="pp-overlay" role="presentation" onClick={(e) => { if (e.target === e.currentTarget) setOpen(false); }}>
           <div className="pp-box" role="dialog" aria-modal="true" aria-label={project.name}>
             <button type="button" className="pp-close" aria-label="Close" onClick={() => setOpen(false)}>&times;</button>
-            <img className="pp-img" src={project.image} alt={project.imageAlt} />
+            <img className="pp-img" src={project.images[current] ?? project.images[0]} alt={project.imageAlt} />
+            {project.images.length > 1 && (
+              <div className="pp-thumbs">
+                {project.images.map((src, i) => (
+                  <button type="button" key={src + i} className={i === current ? "on" : ""} aria-label={`Show image ${i + 1}`} onClick={() => setCurrent(i)}>
+                    <img src={src} alt="" loading="lazy" />
+                  </button>
+                ))}
+              </div>
+            )}
             <h3 className="pp-title">{project.name}</h3>
             <div className="pp-grid">
               <p className="pp-desc">{project.description}</p>
@@ -60,6 +71,10 @@ export default function ProjectPopup({ project, children, className, style, aria
             .pp-box{position:relative;background:#05202f;color:#c5d0d8;border-radius:20px;padding:40px;width:100%;max-width:1250px;margin:auto}
             .pp-close{position:absolute;top:12px;right:16px;width:36px;height:36px;border-radius:50%;border:0;background:#fff;color:#05202f;font-size:24px;line-height:1;cursor:pointer}
             .pp-img{width:100%;max-width:608px;height:auto;max-height:342px;object-fit:cover;border-radius:20px;display:block}
+            .pp-thumbs{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+            .pp-thumbs button{padding:0;border:2px solid transparent;border-radius:10px;overflow:hidden;background:none;cursor:pointer;opacity:.65;width:96px;height:64px}
+            .pp-thumbs button.on{border-color:#fff;opacity:1}
+            .pp-thumbs img{width:100%;height:100%;object-fit:cover;display:block}
             .pp-title{color:#fff;margin:28px 0 12px;font-size:32px}
             .pp-grid{display:flex;gap:40px;flex-wrap:wrap;justify-content:space-between}
             .pp-desc{flex:1 1 320px;margin:0}

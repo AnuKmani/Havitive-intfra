@@ -48,6 +48,7 @@ export const getProject = cache((id: number) => one<T.Project>(db().from("latest
 export const getProjectsBySector = cache((sectorId: number) => rows<T.Project>(db().from("latest_projects").select("*").eq("sector_id", sectorId).order("created_at", latest)));
 export const getFloors = cache((projectId: number) => rows<T.Floor>(db().from("floors").select("*").eq("project_id", projectId).order("id")));
 export const getFacilities = cache((projectId: number) => rows<T.Facility>(db().from("project_facitities").select("*").eq("project_id", projectId).order("id")));
+export const getAllGalleries = cache(() => rows<T.Gallery>(db().from("galleries").select("*").order("id")));
 export const getGallery = cache((projectId: number) => rows<T.Gallery>(db().from("galleries").select("*").eq("project_id", projectId).order("id")));
 export const getAmenities = cache(() => rows<T.Amenity>(db().from("project_aminities").select("*").order("id")));
 

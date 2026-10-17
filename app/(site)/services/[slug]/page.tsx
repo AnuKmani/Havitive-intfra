@@ -6,7 +6,7 @@ import Strengths from "@/components/site/Strengths";
 import LatestProjects from "@/components/home/LatestProjects";
 import CompletedProjects from "@/components/home/CompletedProjects";
 import JsonLd from "@/components/site/JsonLd";
-import { getCompletedProjects, getHome, getProjects, getSections, getService, getServices } from "@/lib/data";
+import { getAllGalleries, getCompletedProjects, getHome, getProjects, getSectors, getSections, getService, getServices } from "@/lib/data";
 import { loadBySlug } from "@/lib/canonical";
 import { media, splitList } from "@/lib/media";
 import { routes } from "@/lib/routes";
@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ServicePage({ params }: Props) {
   const { slug } = await params;
   const service = await loadBySlug(slug, getService, routes.service);
-  const [sections, projects, completed, completedHome] = await Promise.all([getSections(), getProjects(), getCompletedProjects(), getHome("projects")]);
+  const [sections, projects, completed, completedHome, sectors, galleries] = await Promise.all([getSections(), getProjects(), getCompletedProjects(), getHome("projects"), getSectors(), getAllGalleries()]);
   const ids = splitList(service.section_id).map(Number);
   const serviceSections = sections.filter((s) => ids.includes(s.id));
   const name = titleCase(service.name);
@@ -108,7 +108,7 @@ export default async function ServicePage({ params }: Props) {
           </div>
         </div>
       )}
-      <LatestProjects projects={projects} />
+      <LatestProjects projects={projects} sectors={sectors} galleries={galleries} />
       {serviceSections.length > 0 && (
         <Strengths
           heading="Design Solutions for Every Need"
@@ -116,7 +116,7 @@ export default async function ServicePage({ params }: Props) {
           items={serviceSections.map((s) => ({ title: s.section_name ?? "", icon: media(s.icon), img: media(s.img), imgAlt: s.img_alt }))}
         />
       )}
-      <CompletedProjects projects={completed} home={completedHome} />
+      <CompletedProjects projects={completed} home={completedHome} sectors={sectors} galleries={galleries} />
     </>
   );
 }

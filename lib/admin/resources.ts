@@ -17,7 +17,7 @@ export type Field = {
   label: string;
   /** Pre-filled value for a new record. */
   defaultValue?: string;
-  type: "text" | "textarea" | "html" | "image" | "images" | "select" | "multiselect" | "number" | "url" | "email";
+  type: "text" | "textarea" | "html" | "image" | "images" | "select" | "multiselect" | "number" | "url" | "email" | "date";
   required?: boolean;
   options?: OptionSource;
   help?: string;
@@ -195,7 +195,7 @@ export const RESOURCES: Resource[] = [
       { name: "status", label: "Status", type: "select", required: true, options: PROJECT_STATUS, defaultValue: "ongoing" },
       { name: "location", label: "Location", type: "text" },
       { name: "client_name", label: "Client name", type: "text", help: "Shown in the project popup." },
-      { name: "project_date", label: "Project date", type: "text", help: "e.g. 1/10/2024 or March 2024. Shown in the project popup." },
+      { name: "project_date", label: "Project date", type: "date", help: "Pick from the calendar. Shown in the project popup." },
       { name: "project_image", label: "Cover image", type: "image", folder: "project_image", required: true },
       { name: "description", label: "Description", type: "html" },
       { name: "main_description", label: "Floor plans heading", type: "text" },

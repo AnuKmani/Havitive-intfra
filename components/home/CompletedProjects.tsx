@@ -1,4 +1,4 @@
-import type { Home, Project, Sector } from "@/lib/types";
+import type { Gallery, Home, Project, Sector } from "@/lib/types";
 import { media } from "@/lib/media";
 import { toPopup } from "@/lib/projectPopup";
 import { SITE } from "@/lib/site";
@@ -6,7 +6,7 @@ import ProjectNumberSync from "./ProjectNumberSync";
 import ProjectPopup from "./ProjectPopup";
 
 /** Slider of finished projects (status "Completed"). The heading, text and button come from Admin > Home page. */
-export default function CompletedProjects({ projects, home, sectors = [] }: { projects: Project[]; home?: Home | null; sectors?: Sector[] }) {
+export default function CompletedProjects({ projects, home, sectors = [], galleries = [] }: { projects: Project[]; home?: Home | null; sectors?: Sector[]; galleries?: Gallery[] }) {
   if (!projects.length) return null;
   const link = home?.button_link?.trim() || SITE.social.instagram;
   const external = /^https?:\/\//.test(link);
@@ -48,11 +48,11 @@ export default function CompletedProjects({ projects, home, sectors = [] }: { pr
                     {projects.map((p) => (
                       <div className="swiper-slide" key={p.id}>
                         <div className="portfolio-card">
-                          <ProjectPopup project={toPopup(p, sectors)} className="portfolio-img img-shine" style={{ display: "block" }} ariaLabel={`View ${p.project_name ?? "project"}`}>
+                          <ProjectPopup project={toPopup(p, sectors, galleries)} className="portfolio-img img-shine" style={{ display: "block" }} ariaLabel={`View ${p.project_name ?? "project"}`}>
                             <img src={media(p.project_image)} alt={p.project_image_alt || p.project_name || "Completed project"} loading="lazy" style={{ width: 371, height: 241, objectFit: "cover" }} />
                           </ProjectPopup>
                           <div className="portfolio-content">
-                            <ProjectPopup project={toPopup(p, sectors)} className="icon-btn" ariaLabel={`View ${p.project_name ?? "project"}`}>
+                            <ProjectPopup project={toPopup(p, sectors, galleries)} className="icon-btn" ariaLabel={`View ${p.project_name ?? "project"}`}>
                               <img src="/frontend/assets/img/icon/arrow-right.svg" alt="" />
                             </ProjectPopup>
                           </div>

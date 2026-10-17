@@ -18712,7 +18712,9 @@ span.select2-selection.select2-selection--single:focus {
 .project-wrap1 .project-number-pagination {
   position: absolute;
   z-index: 9;
+  /* Keep the number circle (and its ring) fully on screen when the page margin is narrow. */
   left: -80px;
+  left: max(-80px, calc(64px - (100% - var(--main-container)) / 2));
   top: 50%;
   -webkit-transform: translate(-100%, calc(-50% + 40px));
       -ms-transform: translate(-100%, calc(-50% + 40px));
