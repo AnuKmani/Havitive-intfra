@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { altName, type Field, type Option } from "@/lib/admin/resources";
 import { media, splitList, STORAGE_PREFIX } from "@/lib/media";
 import { browserClient } from "@/lib/supabase/browser";
@@ -189,22 +189,88 @@ function ImagesField({ field, value, alt }: { field: Field; value: string; alt: 
   );
 }
 
+const FONTS: { label: string; css: string }[] = [
+  { label: "Inter", css: "Inter, Arial, sans-serif" },
+  { label: "Outfit", css: "Outfit, Arial, sans-serif" },
+  { label: "Arial", css: "Arial, Helvetica, sans-serif" },
+  { label: "Verdana", css: "Verdana, Geneva, sans-serif" },
+  { label: "Georgia", css: "Georgia, serif" },
+  { label: "Times New Roman", css: "'Times New Roman', Times, serif" },
+  { label: "Courier New", css: "'Courier New', monospace" },
+];
+const SIZES = [12, 14, 16, 18, 20, 24, 28, 32, 40, 48];
+
 function RichTextField({ field, value }: { field: Field; value: string }) {
   const [html, setHtml] = useState(value);
   const ref = useRef<HTMLDivElement>(null);
-  const cmd = (name: string, arg?: string) => {
+  const saved = useRef<Range | null>(null);
+
+  // Remember the selection, because clicking a dropdown or colour picker moves focus away from the text.
+  useEffect(() => {
+    const keep = () => {
+      const sel = window.getSelection();
+      if (sel?.rangeCount && ref.current?.contains(sel.anchorNode)) saved.current = sel.getRangeAt(0).cloneRange();
+    };
+    document.addEventListener("selectionchange", keep);
+    return () => document.removeEventListener("selectionchange", keep);
+  }, []);
+
+  const restore = () => {
     ref.current?.focus();
-    document.execCommand(name, false, arg);
-    setHtml(ref.current?.innerHTML ?? "");
+    const sel = window.getSelection();
+    if (saved.current && sel) { sel.removeAllRanges(); sel.addRange(saved.current); }
   };
+  const sync = () => setHtml(ref.current?.innerHTML ?? "");
+  const cmd = (name: string, arg?: string) => {
+    restore();
+    document.execCommand(name, false, arg);
+    sync();
+  };
+  /** Wrap the selected text in a span with one CSS property (font, size or colour). */
+  const style = (prop: string, val: string) => {
+    restore();
+    const sel = window.getSelection();
+    if (!sel?.rangeCount || sel.isCollapsed) return;
+    const range = sel.getRangeAt(0);
+    const span = document.createElement("span");
+    span.style.setProperty(prop, val);
+    span.appendChild(range.extractContents());
+    span.querySelectorAll<HTMLElement>("span").forEach((s) => s.style.removeProperty(prop));
+    range.insertNode(span);
+    const r = document.createRange();
+    r.selectNodeContents(span);
+    sel.removeAllRanges();
+    sel.addRange(r);
+    saved.current = r.cloneRange();
+    sync();
+  };
+  const keepSelection = (e: React.MouseEvent) => e.preventDefault();
+
   return (
     <div className="ad-rich">
       <input type="hidden" name={field.name} value={html} />
-      <div className="ad-rich-bar">
-        <button type="button" onClick={() => cmd("bold")}><b>B</b></button>
-        <button type="button" onClick={() => cmd("italic")}><i>I</i></button>
+      <div className="ad-rich-bar" onMouseDown={(e) => { if (!(e.target as HTMLElement).closest("select, input")) keepSelection(e); }}>
+        <select aria-label="Font style" defaultValue="" onChange={(e) => { if (e.target.value) style("font-family", e.target.value); e.target.value = ""; }}>
+          <option value="">Font style</option>
+          {FONTS.map((f) => <option key={f.label} value={f.css} style={{ fontFamily: f.css }}>{f.label}</option>)}
+        </select>
+        <select aria-label="Font size" defaultValue="" onChange={(e) => { if (e.target.value) style("font-size", `${e.target.value}px`); e.target.value = ""; }}>
+          <option value="">Size</option>
+          {SIZES.map((s) => <option key={s} value={s}>{s}px</option>)}
+        </select>
+        <label className="ad-rich-color" title="Text colour">
+          A<input type="color" defaultValue="#1c2d37" aria-label="Text colour" onChange={(e) => style("color", e.target.value)} />
+        </label>
+        <button type="button" title="Bold" onClick={() => cmd("bold")}><b>B</b></button>
+        <button type="button" title="Italic" onClick={() => cmd("italic")}><i>I</i></button>
+        <button type="button" title="Underline" onClick={() => cmd("underline")}><u>U</u></button>
+        <button type="button" title="Strikethrough" onClick={() => cmd("strikeThrough")}><s>S</s></button>
         <button type="button" onClick={() => cmd("formatBlock", "<h3>")}>Heading</button>
         <button type="button" onClick={() => cmd("formatBlock", "<p>")}>Paragraph</button>
+        <button type="button" title="Align left" onClick={() => cmd("justifyLeft")}>⬅</button>
+        <button type="button" title="Align centre" onClick={() => cmd("justifyCenter")}>↔</button>
+        <button type="button" title="Align right" onClick={() => cmd("justifyRight")}>➡</button>
+        <button type="button" title="Justify" onClick={() => cmd("justifyFull")}>≡</button>
         <button type="button" onClick={() => cmd("insertUnorderedList")}>• List</button>
         <button type="button" onClick={() => cmd("insertOrderedList")}>1. List</button>
         <button
@@ -216,6 +282,8 @@ function RichTextField({ field, value }: { field: Field; value: string }) {
         >
           Link
         </button>
+        <button type="button" title="Undo" onClick={() => cmd("undo")}>↶</button>
+        <button type="button" title="Redo" onClick={() => cmd("redo")}>↷</button>
         <button type="button" onClick={() => cmd("removeFormat")}>Clear</button>
       </div>
       <div

@@ -53,7 +53,9 @@ export function safeHtml(html?: string | null): string {
     .replace(/<\s*(script|style|iframe|object|embed|form)[^>]*>[\s\S]*?<\s*\/\s*\1\s*>/gi, "")
     .replace(/<\s*(script|style|iframe|object|embed|form|link|meta)[^>]*\/?>/gi, "")
     .replace(/\son\w+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, "")
-    .replace(/(href|src)\s*=\s*(["']?)\s*javascript:[^"'\s>]*\2/gi, "$1=\"#\"");
+    .replace(/(href|src)\s*=\s*(["']?)\s*javascript:[^"'\s>]*\2/gi, "$1=\"#\"")
+    // Keep colours, sizes and fonts from the editor, but drop style values that could load or run something.
+    .replace(/\sstyle\s*=\s*("[^"]*(?:url\(|expression\(|javascript:)[^"]*"|'[^']*(?:url\(|expression\(|javascript:)[^']*')/gi, "");
 }
 
 /** Plain text with line breaks → paragraphs; HTML is passed through safeHtml. */
