@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Breadcrumb from "@/components/site/Breadcrumb";
+import TestimonialFacade, { type FacadeItem } from "@/components/site/TestimonialFacade";
 import VideoCard from "@/components/site/VideoCard";
 import "@/components/site/showcase.css";
 import { getShowcase, getTestimonials } from "@/lib/data";
@@ -14,10 +15,20 @@ export function generateMetadata(): Promise<Metadata> {
   return staticPageMetadata("page:testimonials");
 }
 
-/** Video testimonials (YouTube links from Admin > Showcase) and written testimonials as a conversation of speech bubbles. */
+/** Video testimonials (YouTube links from Admin > Showcase) and written testimonials as a building facade. */
 export default async function TestimonialsPage() {
   const [videos, written] = await Promise.all([getShowcase("testimonial-videos"), getTestimonials()]);
   const playable = videos.filter((v) => toEmbed(v.video_url));
+  const items: FacadeItem[] = written.map((t) => ({
+    id: t.id,
+    quote: t.desription ?? "",
+    name: t.client_name ?? "",
+    role: t.client_designation ?? "",
+    photo: media(t.client_img),
+    photoAlt: t.client_img_alt || t.client_name || "",
+    project: t.img ? media(t.img) : null,
+    projectAlt: t.img_alt || `Project of ${t.client_name ?? "our client"}`,
+  }));
 
   return (
     <>
@@ -55,40 +66,24 @@ export default async function TestimonialsPage() {
         </div>
       </section>
 
-      {written.length > 0 && (
-        <section className="cv-wall">
+      {items.length > 0 && (
+        <section className="fx-wallband">
+          <span className="fx-glow" aria-hidden="true"></span>
           <div className="container">
-            <div className="cv-head">
+            <div className="fx-head">
               <span className="sc-kicker">Testimonials</span>
               <h2>What our clients say</h2>
               <span className="sc-bar" aria-hidden="true"></span>
             </div>
 
-            <div className="cv-thread">
-              {written.map((t, i) => (
-                <div className={`cv-row${i % 2 ? " right" : ""}`} key={t.id}>
-                  <img className="cv-face" src={media(t.client_img)} alt={t.client_img_alt || t.client_name || ""} loading="lazy" />
-                  <figure className="cv-bubble">
-                    <div className="cv-stars" aria-label="5 out of 5 stars">★★★★★</div>
-                    <blockquote>{t.desription}</blockquote>
-                    {t.img && (
-                      <img className="cv-project" src={media(t.img)} alt={t.img_alt || `Project of ${t.client_name ?? "our client"}`} loading="lazy" />
-                    )}
-                    <figcaption>
-                      <strong>{t.client_name}</strong>
-                      {t.client_designation && <span>{t.client_designation}</span>}
-                    </figcaption>
-                  </figure>
-                </div>
-              ))}
-            </div>
+            <TestimonialFacade items={items} />
 
-            <div className="cv-cta">
+            <div className="fx-cta">
               <div>
                 <h3>Planning your own project?</h3>
                 <p>Talk to our architects and engineers. We would love to build the next success story with you.</p>
               </div>
-              <a className="cv-btn" href="/contact">Start your project</a>
+              <a className="fx-btn" href="/contact">Start your project</a>
             </div>
           </div>
         </section>
