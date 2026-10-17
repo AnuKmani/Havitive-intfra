@@ -22,7 +22,7 @@ export default function PostList({ posts, categories }: { posts: BlogPost[]; cat
               </div>
               <h2 className="blog-title"><a href={routes.post(p)}>{p.post_title}</a></h2>
               <p className="blog-text">{truncateWords(p.short_descp, 40)}</p>
-              <a href={routes.post(p)} className="th-btn style-border th-btn-icon">Read More</a>
+              <a href={routes.post(p)} className="th-btn style-border th-btn-icon hs-dark-btn">Read More</a>
             </div>
           </article>
         );

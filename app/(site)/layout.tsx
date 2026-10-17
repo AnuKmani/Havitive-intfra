@@ -71,7 +71,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
         <link rel="stylesheet" href="/frontend/assets/css/magnific-popup.min.css" />
         <link rel="stylesheet" href="/frontend/assets/css/swiper-bundle.min.css" />
         <link rel="stylesheet" href="/frontend/assets/css/style.css?v=5" />
-        <link rel="stylesheet" href="/css/custom.css?v=11" />
+        <link rel="stylesheet" href="/css/custom.css?v=12" />
       </head>
       <body className="bg-smoke">
         <a href="#main" className="visually-hidden-focusable">Skip to content</a>

@@ -170,3 +170,9 @@
 .hs-news .th-btn.style-border.th-btn-icon:after { filter: none; }
 .hs-news .th-btn.style-border:hover { background: #052132; color: #fff; }
 .hs-news .th-btn.style-border.th-btn-icon:hover:after { filter: brightness(0) invert(1); }
+
+/* Same dark outline for "Read More" on the Blog list and category pages (light background). */
+.hs-dark-btn.th-btn.style-border { color: #052132; border: 1px solid #052132; background: transparent; }
+.hs-dark-btn.th-btn.style-border.th-btn-icon:after { filter: none; }
+.hs-dark-btn.th-btn.style-border:hover { background: #052132; color: #fff; }
+.hs-dark-btn.th-btn.style-border.th-btn-icon:hover:after { filter: brightness(0) invert(1); }
