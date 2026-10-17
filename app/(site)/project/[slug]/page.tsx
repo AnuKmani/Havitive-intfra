@@ -117,7 +117,7 @@ export default async function ProjectPage({ params }: Props) {
                     <>
                       <div className="row align-items-center justify-content-between">
                         <div className="col-lg-auto"><h3 className="page-title mt-50 mb-30">{project.main_description || "Floor Plans"}</h3></div>
-                        <div className="col-lg-auto">
+                        <div className="col-lg-auto floor-tabs-col">
                           <ul className="nav nav-tabs property-tab mt-50" role="tablist">
                             {floors.map((f, i) => (
                               <li className="nav-item" role="presentation" key={f.id}>
@@ -129,11 +129,11 @@ export default async function ProjectPage({ params }: Props) {
                           </ul>
                         </div>
                       </div>
-                      <div className="tab-content">
+                      <div className="tab-content floor-plans-content">
                         {floors.map((f, i) => (
                           <div className={`tab-pane fade${i === 0 ? " show active" : ""}`} id={`floor-pane-${f.id}`} role="tabpanel" aria-labelledby={`floor-tab-${f.id}`} tabIndex={0} key={f.id}>
                             <div className="property-grid-plan">
-                              <div className="property-grid-thumb"><img src={media(f.image)} alt={f.image_alt || `${f.floor_name} plan`} loading="lazy" style={{ height: 300, objectFit: "contain" }} /></div>
+                              <div className="property-grid-thumb"><a className="popup-image" href={media(f.image)} aria-label={`Enlarge ${f.floor_name} plan`}><img src={media(f.image)} alt={f.image_alt || `${f.floor_name} plan`} loading="lazy" style={{ height: 300, objectFit: "contain" }} /></a></div>
                               <div className="property-grid-details">
                                 <h4 className="property-grid-title">{f.floor_name}</h4>
                                 <div className="property-grid-text rich-text" dangerouslySetInnerHTML={{ __html: richText(f.description) }} />

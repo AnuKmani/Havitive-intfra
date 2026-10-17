@@ -38,3 +38,30 @@
   .portfolio-card.style2 .portfolio-title a, .portfolio-card .portfolio-title a { font-size: 19px; }
   .sec-title { font-size: 26px; }
 }
+
+/* ---------- Mobile polish for detail pages ---------- */
+/* The header (about 117px on phones) sits on top of the grey title band, so the band needs more room above the title. */
+@media (max-width: 767px) {
+  .breadcumb-wrapper { padding: 148px 0 34px !important; }
+  .breadcumb-title { font-size: clamp(24px, 7vw, 32px); line-height: 1.2; margin: 0; }
+  .breadcumb-menu { margin: 16px 0 0 !important; }
+  .breadcumb-menu li, .breadcumb-menu a, .breadcumb-menu span { font-size: 14px !important; line-height: 1.5; }
+  .breadcumb-menu li:after { margin-left: 8px; font-size: 12px; }
+}
+
+/* Plan and facility pictures never overflow the screen. */
+.property-grid-plan .property-grid-thumb { display: block; max-width: 100%; box-sizing: border-box; }
+.property-grid-plan .property-grid-thumb img { max-width: 100%; }
+
+/* Floor plans on phones: all plans side by side in one row, each plan's text in its own row underneath. */
+@media (max-width: 767px) {
+  .floor-tabs-col { display: none; }
+  .floor-plans-content { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .floor-plans-content > .tab-pane { display: contents !important; opacity: 1 !important; }
+  .floor-plans-content .property-grid-plan { display: contents; }
+  .floor-plans-content .property-grid-thumb { order: 1; padding: 8px; margin: 0; border: 1px solid #d9e0e6; background: #fff; }
+  .floor-plans-content .property-grid-thumb img { height: auto !important; display: block; }
+  .floor-plans-content .property-grid-details { order: 2; grid-column: 1 / -1; padding: 4px 2px 8px; border-bottom: 1px solid #e6ebef; }
+  .floor-plans-content .property-grid-title { font-size: 18px; margin-bottom: 6px; }
+  .floor-plans-content .property-grid-text { font-size: 15px; line-height: 1.6; }
+}
