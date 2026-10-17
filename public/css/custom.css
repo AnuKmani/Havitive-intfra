@@ -76,6 +76,8 @@
 
 /* ---------- Home page on phones: tighter, less spacey ---------- */
 @media (max-width: 767px) {
+  /* No slider bullets on phones. */
+  .slider-pagination, .swiper-pagination { display: none !important; }
   /* Counters in two columns instead of one long column. */
   .counter-card-wrap { display: grid !important; grid-template-columns: 1fr 1fr; gap: 26px 8px; padding: 34px 0 40px !important; }
   .counter-card-wrap .counter-card { padding: 0 6px !important; text-align: center; }
