@@ -2,7 +2,7 @@
 
 import { after } from "next/server";
 import { trySendMail } from "@/lib/mail";
-import { IN_MOBILE_HINT, isValidIndianMobile } from "@/lib/phone";
+import { IN_MOBILE_FAKE_HINT, IN_MOBILE_HINT, isValidIndianMobile } from "@/lib/phone";
 import { SITE } from "@/lib/site";
 import { publicClient } from "@/lib/supabase/public";
 
@@ -22,7 +22,8 @@ export async function submitEnquiry(_: FormState, form: FormData): Promise<FormS
   };
   if (!data.name || data.name.length > 255) return { ok: false, message: "Please enter your name." };
   if (!EMAIL.test(data.email)) return { ok: false, message: "Please enter a valid email address." };
-  if (!isValidIndianMobile(data.phone)) return { ok: false, message: IN_MOBILE_HINT };
+  if (!/^\+91[6-9][0-9]{9}$/.test(data.phone)) return { ok: false, message: IN_MOBILE_HINT };
+  if (!isValidIndianMobile(data.phone)) return { ok: false, message: IN_MOBILE_FAKE_HINT };
   if (!data.service_type) return { ok: false, message: "Please select a service type." };
   if (!data.message || data.message.length > 5000) return { ok: false, message: "Please enter a message." };
 

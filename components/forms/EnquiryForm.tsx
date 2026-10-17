@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import { submitEnquiry, type FormState } from "@/app/actions/public";
-import { IN_MOBILE_HINT, IN_MOBILE_PATTERN } from "@/lib/phone";
+import { IN_MOBILE_FAKE_HINT, IN_MOBILE_HINT, IN_MOBILE_PATTERN, isValidIndianMobile } from "@/lib/phone";
 
 export default function EnquiryForm({ sectors, light }: { sectors: { id: number; sector_name: string | null }[]; light?: boolean }) {
   const [state, action, pending] = useActionState<FormState, FormData>(submitEnquiry, null);
@@ -22,6 +22,12 @@ export default function EnquiryForm({ sectors, light }: { sectors: { id: number;
           <input
             type="tel" className="form-control" name="phone" placeholder="+91 XXXXXXXXXX" aria-label="Phone number" required
             pattern={IN_MOBILE_PATTERN} title={IN_MOBILE_HINT} autoComplete="tel" inputMode="tel"
+            onInput={(e) => {
+              // Tells the visitor straight away when a number is well-formed but obviously made up.
+              const input = e.currentTarget;
+              const value = input.value.replace(/\s+/g, "");
+              input.setCustomValidity(/^\+91[6-9][0-9]{9}$/.test(value) && !isValidIndianMobile(value) ? IN_MOBILE_FAKE_HINT : "");
+            }}
           />
           <i className="fal fa-phone"></i>
         </div>
