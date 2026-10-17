@@ -2,12 +2,12 @@
 
 import { after } from "next/server";
 import { trySendMail } from "@/lib/mail";
+import { IN_MOBILE_HINT, isValidIndianMobile } from "@/lib/phone";
 import { SITE } from "@/lib/site";
 import { publicClient } from "@/lib/supabase/public";
 
 export type FormState = { ok: boolean; message: string } | null;
 
-const PHONE = /^\+91[0-9]{10}$/;
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const str = (f: FormData, k: string) => String(f.get(k) ?? "").trim();
 
@@ -22,7 +22,7 @@ export async function submitEnquiry(_: FormState, form: FormData): Promise<FormS
   };
   if (!data.name || data.name.length > 255) return { ok: false, message: "Please enter your name." };
   if (!EMAIL.test(data.email)) return { ok: false, message: "Please enter a valid email address." };
-  if (!PHONE.test(data.phone)) return { ok: false, message: "Phone number must start with +91 followed by 10 digits." };
+  if (!isValidIndianMobile(data.phone)) return { ok: false, message: IN_MOBILE_HINT };
   if (!data.service_type) return { ok: false, message: "Please select a service type." };
   if (!data.message || data.message.length > 5000) return { ok: false, message: "Please enter a message." };
 

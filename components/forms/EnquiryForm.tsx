@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { submitEnquiry, type FormState } from "@/app/actions/public";
+import { IN_MOBILE_HINT, IN_MOBILE_PATTERN } from "@/lib/phone";
 
 export default function EnquiryForm({ sectors, light }: { sectors: { id: number; sector_name: string | null }[]; light?: boolean }) {
   const [state, action, pending] = useActionState<FormState, FormData>(submitEnquiry, null);
@@ -20,7 +21,7 @@ export default function EnquiryForm({ sectors, light }: { sectors: { id: number;
         <div className="form-group style-border3 col-md-12">
           <input
             type="tel" className="form-control" name="phone" placeholder="+91 XXXXXXXXXX" aria-label="Phone number" required
-            pattern="^\+91[0-9]{10}$" title="Phone number must start with +91 and contain exactly 10 digits after +91"
+            pattern={IN_MOBILE_PATTERN} title={IN_MOBILE_HINT} autoComplete="tel" inputMode="tel"
           />
           <i className="fal fa-phone"></i>
         </div>

@@ -1,0 +1,40 @@
+/* Contact page: heading, three contact cards, form beside the map, WhatsApp strip */
+
+.ct-head { text-align: center; max-width: 640px; margin: 0 auto 32px; }
+.ct-head h2 { margin: 0 0 10px; }
+.ct-head p { margin: 0; color: #5d6b78; }
+
+.ct-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-bottom: 32px; }
+.ct-card { border: 1px solid #e3e8ee; border-radius: 16px; padding: 24px 20px; text-align: center; background: #fff; transition: border-color .2s, box-shadow .2s; }
+.ct-card:hover { border-color: #eed26e; box-shadow: 0 6px 20px rgba(5, 33, 50, .07); }
+.ct-icon {
+  width: 52px; height: 52px; border-radius: 50%; margin: 0 auto 14px; background: #052132; color: #eed26e;
+  display: flex; align-items: center; justify-content: center;
+}
+.ct-card h3 { font-size: 20px; margin: 0 0 8px; color: var(--theme-color); }
+.ct-card p { margin: 0; color: #5d6b78; line-height: 1.7; }
+.ct-card p a { display: block; color: inherit; overflow-wrap: anywhere; }
+.ct-card p a:hover { color: var(--theme-color); }
+
+.ct-side { display: flex; flex-direction: column; gap: 18px; height: 100%; }
+.ct-map { flex: 1 1 auto; min-height: 320px; border-radius: 20px; overflow: hidden; background: #e9eef3; }
+.ct-map iframe { display: block; width: 100%; height: 100%; min-height: 320px; border: 0; }
+.ct-chat {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  padding: 18px 22px; border-radius: 16px; background: #052132;
+}
+.ct-chat strong { display: block; color: #fff; font-size: 17px; font-weight: 600; }
+.ct-chat span { color: #b9c6d1; font-size: 14px; }
+.ct-chat a {
+  display: inline-block; padding: 10px 24px; border-radius: 30px; background: #eed26e; color: #052132;
+  font-weight: 600; transition: background-color .2s;
+}
+.ct-chat a:hover { background: #fff; color: #052132; }
+
+@media (max-width: 991px) {
+  .ct-side { height: auto; }
+}
+@media (max-width: 767px) {
+  .ct-cards { grid-template-columns: 1fr; gap: 14px; margin-bottom: 24px; }
+  .ct-card { padding: 20px 16px; }
+}
