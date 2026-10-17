@@ -66,7 +66,7 @@ export default async function ProjectPage({ params }: Props) {
             <div className="swiper-wrapper">
               {images.map((src, i) => (
                 <div className="swiper-slide" key={i}>
-                  <div className="property-slider-img"><img src={src} alt={imageAlts[i] || `${project.project_name} – image ${i + 1}`} loading={i ? "lazy" : "eager"} /></div>
+                  <div className="property-slider-img" style={{ ["--bg" as string]: `url("${src}")` }}><img src={src} alt={imageAlts[i] || `${project.project_name} – image ${i + 1}`} loading={i ? "lazy" : "eager"} /></div>
                 </div>
               ))}
             </div>

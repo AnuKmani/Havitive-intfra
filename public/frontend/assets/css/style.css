@@ -22921,11 +22921,26 @@ span.select2-selection.select2-selection--single:focus {
 /* Project detail page: wide banner slider (edge to edge, moderate height) with a thumbnail strip. */
 .project-banner-section { padding-top: 0; }
 .project-banner { position: relative; margin-bottom: 40px; }
-.project-banner .property-slider-img img {
+/* Whole image is always visible (never cropped); a blurred copy of it fills the sides. */
+#propertySlider .property-slider-img {
+  position: relative;
+  height: clamp(220px, 32vw, 440px);
+  overflow: hidden;
+  background: #10202b;
+}
+#propertySlider .property-slider-img:before {
+  content: "";
+  position: absolute;
+  inset: -30px;
+  background: var(--bg) center / cover no-repeat;
+  filter: blur(22px) brightness(0.7);
+}
+#propertySlider .property-slider-img img {
+  position: relative;
   display: block;
   width: 100%;
-  height: clamp(220px, 32vw, 440px);
-  object-fit: cover;
+  height: 100%;
+  object-fit: contain;
   border-radius: 0;
 }
 .project-banner .slider-arrow,
@@ -22946,3 +22961,4 @@ span.select2-selection.select2-selection--single:focus {
   .project-banner .slider-arrow { left: 8px; }
   .project-banner .slider-arrow.slider-next { right: 8px; }
 }
+.project-banner .property-thumb-slider .property-slider-img img { display: block; width: 100%; object-fit: cover; }
