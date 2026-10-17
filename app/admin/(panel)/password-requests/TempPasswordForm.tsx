@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useActionState, useState } from "react";
 import PasswordInput from "@/components/admin/PasswordInput";
 import { generatePassword } from "@/components/admin/generatePassword";
@@ -7,6 +8,7 @@ import { setTempPassword, type TempPasswordState } from "../../password-actions"
 
 export default function TempPasswordForm({ requestId }: { requestId: number }) {
   const [state, action, pending] = useActionState<TempPasswordState, FormData>(setTempPassword.bind(null, requestId), null);
+  const router = useRouter();
   const [value, setValue] = useState("");
   const [copied, setCopied] = useState(false);
   if (state?.ok) {
@@ -16,6 +18,7 @@ export default function TempPasswordForm({ requestId }: { requestId: number }) {
         <div style={{ marginTop: 8 }}>
           Temporary password: <strong style={{ fontFamily: "monospace", userSelect: "all" }}>{value}</strong>
         </div>
+        <button type="button" className="ad-btn ad-btn-light" style={{ marginTop: 12 }} onClick={() => router.refresh()}>Done</button>
       </div>
     );
   }

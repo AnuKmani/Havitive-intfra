@@ -7,11 +7,6 @@ import { signOut } from "../actions";
 
 const PANEL_NAME = { admin: "Admin panel", hr: "HR panel", telecaller: "Telecaller panel", marketing: "Marketing panel", designer: "Design panel" } as const;
 
-/** Start of the "new this week" window for the enquiries badge. */
-function weekAgo() {
-  return new Date(Date.now() - 7 * 864e5).toISOString();
-}
-
 export default async function PanelLayout({ children }: { children: React.ReactNode }) {
   const { user, supabase, role } = await requireStaff();
   const isAdmin = role === "admin";
@@ -19,7 +14,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
   const canEnquiries = role === "admin" || role === "telecaller" || role === "marketing";
   const canContent = role === "admin" || role === "marketing" || role === "designer";
   const [{ count: newEnquiries }, { count: unreadApplications }, { count: passwordRequests }] = await Promise.all([
-    !canEnquiries ? { count: 0 } : supabase.from("applies").select("id", { count: "exact", head: true }).gte("created_at", weekAgo()),
+    !canEnquiries ? { count: 0 } : supabase.from("applies").select("id", { count: "exact", head: true }).is("read_at", null),
     !canCareers ? { count: 0 } : supabase.from("career_pages").select("id", { count: "exact", head: true }).is("read_at", null),
     !isAdmin ? { count: 0 } : supabase.from("password_requests").select("id", { count: "exact", head: true }).eq("status", "pending"),
   ]);
@@ -53,7 +48,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
           {canEnquiries && (
             <div className="ad-nav-badge-wrap">
               <NavLink href="/admin/enquiries" icon="inbox" label="Enquiries" />
-              {!!newEnquiries && <span className="ad-badge" title="New this week">{newEnquiries}</span>}
+              {!!newEnquiries && <span className="ad-badge" title="Unread enquiries">{newEnquiries}</span>}
             </div>
           )}
           {isAdmin && (

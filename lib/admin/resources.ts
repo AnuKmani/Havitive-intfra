@@ -42,6 +42,8 @@ export type Resource = {
   children?: Child[];
   /** Fill derived columns before saving. */
   derive?: (values: Record<string, string | null>, isNew: boolean) => Record<string, string | null>;
+  /** Column that must be unique (case-insensitive); saving a duplicate is refused with a message. */
+  unique?: { column: string; label: string };
   /** Edited on the combined Home page editor instead of its own sidebar entry. */
   home?: boolean;
   /** page_seo key when the record has its own page on the site. */
@@ -128,7 +130,7 @@ export const RESOURCES: Resource[] = [
     ],
   },
   {
-    key: "projects", seoKey: (r) => `project:${r.id}`, viewUrl: (r) => routes.project({ id: r.id, project_name: r.project_name }), icon: "building", hint: "Completed projects, galleries, floor plans", table: "latest_projects", label: "Projects", singular: "Project", group: "Projects",
+    key: "projects", unique: { column: "project_name", label: "project" }, seoKey: (r) => `project:${r.id}`, viewUrl: (r) => routes.project({ id: r.id, project_name: r.project_name }), icon: "building", hint: "Completed projects, galleries, floor plans", table: "latest_projects", label: "Projects", singular: "Project", group: "Projects",
     columns: ["project_name", "project_heading"], thumb: "project_image",
     fields: [
       { name: "project_name", label: "Project name", type: "text", required: true },
@@ -226,7 +228,7 @@ export const RESOURCES: Resource[] = [
     columns: ["id"], thumb: "img", fields: [{ name: "img", label: "Logo", type: "image", folder: "clients", required: true }],
   },
   {
-    key: "posts", seoKey: (r) => `post:${r.id}`, viewUrl: (r) => routes.post({ id: r.id, post_slug: r.post_slug }), icon: "pen", hint: "News & articles", table: "blog_posts", label: "Blog posts", singular: "Post", group: "Content",
+    key: "posts", unique: { column: "post_slug", label: "blog post" }, seoKey: (r) => `post:${r.id}`, viewUrl: (r) => routes.post({ id: r.id, post_slug: r.post_slug }), icon: "pen", hint: "News & articles", table: "blog_posts", label: "Blog posts", singular: "Post", group: "Content",
     columns: ["post_title", "created_at"], thumb: "post_image",
     fields: [
       { name: "post_title", label: "Title", type: "text", required: true },
@@ -240,7 +242,7 @@ export const RESOURCES: Resource[] = [
     derive: (v) => ({ post_slug: v.post_slug ? slug(v.post_slug) : slug(v.post_title ?? "") }),
   },
   {
-    key: "categories", seoKey: (r) => `blog-category:${r.id}`, viewUrl: (r) => routes.blogCategory({ category_slug: r.category_slug }), icon: "folder", hint: "Blog categories", table: "blog_categories", label: "Blog categories", singular: "Category", group: "Content",
+    key: "categories", unique: { column: "category_slug", label: "blog category" }, seoKey: (r) => `blog-category:${r.id}`, viewUrl: (r) => routes.blogCategory({ category_slug: r.category_slug }), icon: "folder", hint: "Blog categories", table: "blog_categories", label: "Blog categories", singular: "Category", group: "Content",
     columns: ["category_name", "category_slug"],
     fields: [{ name: "category_name", label: "Category name", type: "text", required: true }],
     derive: (v) => ({ category_slug: slug(v.category_name ?? "") }),

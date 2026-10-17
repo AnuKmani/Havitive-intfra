@@ -49,7 +49,7 @@ export type CareersPage = {
   life_title: string | null; life_text: string | null; life_points: string | null; life_image: string | null; life_image_alt: string | null;
   talent_title: string | null; talent_text: string | null;
 };
-export type Apply = Timestamps & { id: number; name: string | null; email: string | null; phone: string | null; service_type: string | null; message: string | null };
+export type Apply = Timestamps & { id: number; name: string | null; email: string | null; phone: string | null; service_type: string | null; message: string | null; read_at: string | null };
 export type CareerApplication = Timestamps & {
   id: number; job_id: number | null; name: string; email: string; phone: string;
   cover_letter_path: string | null; cv_path: string; message: string | null;

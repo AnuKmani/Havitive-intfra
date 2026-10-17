@@ -2,8 +2,8 @@
 
 import { revalidatePath, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
-import { requireAdmin, requireCareers, requireContent, requireSection, requireStaff, requireStaffAny } from "@/lib/admin/auth";
-import { altName, getResource, type Field } from "@/lib/admin/resources";
+import { requireAdmin, requireCareers, requireContent, requireEnquiries, requireEnquiryDelete, requireSection, requireStaff, requireStaffAny } from "@/lib/admin/auth";
+import { altName, getResource, type Field, type Resource } from "@/lib/admin/resources";
 import { serverClient } from "@/lib/supabase/server";
 
 export type ActionState = { ok: boolean; message: string } | null;
@@ -26,6 +26,24 @@ function readValues(fields: Field[], form: FormData, table: string) {
   return values;
 }
 
+/** Refuses a second record with the same name / URL, e.g. when a marketing manager and a designer both add the same blog category. */
+async function duplicateMessage(
+  supabase: Awaited<ReturnType<typeof serverClient>>,
+  res: Resource,
+  values: Record<string, string | number | null>,
+  id: number | null,
+) {
+  const u = res.unique;
+  const value = u && values[u.column];
+  if (!u || typeof value !== "string" || !value) return null;
+  let q = supabase.from(res.table).select("id").ilike(u.column, value.replace(/[\\%_]/g, "\\$&")).limit(1);
+  if (id) q = q.neq("id", id);
+  const { data } = await q;
+  if (!data?.length) return null;
+  const name = String(values[res.fields[0].name] ?? value);
+  return `A ${u.label} named “${name}” is already added. Open the existing one from the list, or use a different name.`;
+}
+
 function refreshSite() {
   updateTag("content");
   revalidatePath("/", "layout");
@@ -43,6 +61,8 @@ export async function saveRecord(resourceKey: string, id: number | null, _: Acti
   }
   if (res.derive) Object.assign(values, res.derive(values as Record<string, string | null>, id === null));
   Object.assign(values, res.fixed ?? {});
+  const duplicate = await duplicateMessage(supabase, res, values, id);
+  if (duplicate) return { ok: false, message: duplicate };
 
   let newId = id;
   if (id) {
@@ -100,7 +120,7 @@ export async function deleteChild(resourceKey: string, childKey: string, parentI
 }
 
 export async function deleteSubmission(table: "applies" | "career_pages", id: number) {
-  const { supabase } = await (table === "career_pages" ? requireCareers() : requireAdmin());
+  const { supabase } = await (table === "career_pages" ? requireCareers() : requireEnquiryDelete());
   if (table === "career_pages") {
     const { data } = await supabase.from("career_pages").select("cv_path, cover_letter_path").eq("id", id).maybeSingle();
     const files = [data?.cv_path, data?.cover_letter_path]
@@ -110,6 +130,17 @@ export async function deleteSubmission(table: "applies" | "career_pages", id: nu
   }
   await supabase.from(table).delete().eq("id", id);
   revalidatePath(table === "applies" ? "/admin/enquiries" : "/admin/applications");
+  revalidatePath("/admin", "layout"); // refreshes the sidebar badges
+}
+
+/** Marks one enquiry (or all of them, when id is null) as read, so the sidebar number goes down. */
+export async function markEnquiriesRead(id: number | null) {
+  const { supabase } = await requireEnquiries();
+  let q = supabase.from("applies").update({ read_at: new Date().toISOString() }).is("read_at", null);
+  if (id !== null) q = q.eq("id", id);
+  await q;
+  revalidatePath("/admin/enquiries");
+  revalidatePath("/admin", "layout");
 }
 
 export async function signOut() {
@@ -143,6 +174,8 @@ export async function saveInline(resourceKey: string, id: number | null, returnT
   }
   if (res.derive) Object.assign(values, res.derive(values as Record<string, string | null>, id === null));
   Object.assign(values, res.fixed ?? {});
+  const duplicate = await duplicateMessage(supabase, res, values, id);
+  if (duplicate) return { ok: false, message: duplicate };
   const { error } = id
     ? await supabase.from(res.table).update({ ...values, updated_at: new Date().toISOString() }).eq("id", id)
     : await supabase.from(res.table).insert(values);
