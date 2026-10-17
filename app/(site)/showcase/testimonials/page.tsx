@@ -46,7 +46,11 @@ export default async function TestimonialsPage() {
 
           {playable.length > 0 && (
             <div className="sc-block">
-              <h2 className="sc-heading">Video testimonials</h2>
+              <div className="sc-title-block">
+                <span className="sc-kicker">Watch</span>
+                <h2 className="sc-heading">Video testimonials</h2>
+                <span className="sc-bar" aria-hidden="true"></span>
+              </div>
               <div className="sc-grid">
                 {playable.map((v) => (
                   <VideoCard
@@ -67,15 +71,18 @@ export default async function TestimonialsPage() {
 
       {featured && (
         <section className="sw-wall">
+          <span className="sw-glow" aria-hidden="true"></span>
           <div className="container">
             <div className="sw-head">
               <span className="sw-kicker">Testimonials</span>
               <h2>What our clients say</h2>
+              <span className="sw-bar" aria-hidden="true"></span>
             </div>
 
             <figure className={`sw-feature${featured.img ? "" : " no-photo"}`}>
               {featured.img && (
                 <div className="sw-feature-photo">
+                  <span className="sw-chip">Featured story</span>
                   <img src={media(featured.img)} alt={featured.img_alt || `Project of ${featured.client_name ?? "our client"}`} loading="lazy" />
                 </div>
               )}
@@ -99,6 +106,14 @@ export default async function TestimonialsPage() {
                 ))}
               </div>
             )}
+
+            <div className="sw-cta">
+              <div>
+                <h3>Planning your own project?</h3>
+                <p>Talk to our architects and engineers. We would love to build the next success story with you.</p>
+              </div>
+              <a className="sw-btn" href="/contact">Start your project</a>
+            </div>
           </div>
         </section>
       )}
