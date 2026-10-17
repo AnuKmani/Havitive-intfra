@@ -84,6 +84,11 @@ export async function deleteRecord(resourceKey: string, id: number) {
   const { supabase, role } = await requireSection(res);
   if (res.archivable && role !== "admin") {
     // Marketing and designers can't delete: the record moves to the admin's Archived list instead.
+    if (res.key === "categories") {
+      // A category that still has live posts can't leave the website, or those posts would lose their category.
+      const { count } = await supabase.from("blog_posts").select("id", { count: "exact", head: true }).eq("blogcat_id", id).is("archived_at", null);
+      if (count) redirect(`/admin/categories?blocked=${count}`);
+    }
     await supabase.from(res.table).update({ archived_at: new Date().toISOString() }).eq("id", id);
     refreshSite();
     redirect(`/admin/${res.key}`);

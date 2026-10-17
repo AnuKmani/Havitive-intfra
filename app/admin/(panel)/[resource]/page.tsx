@@ -10,7 +10,7 @@ import { stripHtml } from "@/lib/text";
 
 export default async function ResourceList({ params, searchParams }: {
   params: Promise<{ resource: string }>;
-  searchParams: Promise<{ view?: string }>;
+  searchParams: Promise<{ view?: string; blocked?: string }>;
 }) {
   const res = getResource((await params).resource);
   if (!res) notFound();
@@ -18,7 +18,8 @@ export default async function ResourceList({ params, searchParams }: {
   if (res.home) redirect("/admin/home");
   const { supabase, role } = await requireSection(res);
   const isAdmin = role === "admin";
-  const archivedView = !!res.archivable && isAdmin && (await searchParams).view === "archived";
+  const { view, blocked } = await searchParams;
+  const archivedView = !!res.archivable && isAdmin && view === "archived";
   let q = supabase.from(res.table).select("*").order("id", { ascending: false });
   for (const [k, v] of Object.entries(res.fixed ?? {})) q = q.eq(k, v);
   if (res.archivable) q = archivedView ? q.not("archived_at", "is", null) : q.is("archived_at", null);
@@ -61,6 +62,11 @@ export default async function ResourceList({ params, searchParams }: {
         </nav>
       )}
       {error && <p className="ad-err">{error.message}</p>}
+      {blocked && Number(blocked) > 0 && (
+        <p className="ad-err" role="alert">
+          Not archived: this category still has {blocked} blog post{Number(blocked) === 1 ? "" : "s"}. Move them to another category or archive them first.
+        </p>
+      )}
 
       {!rows?.length && archivedView ? (
         <div className="ad-empty">

@@ -244,7 +244,7 @@ export const RESOURCES: Resource[] = [
     derive: (v) => ({ post_slug: v.post_slug ? slug(v.post_slug) : slug(v.post_title ?? "") }),
   },
   {
-    key: "categories", unique: { column: "category_slug", label: "blog category" }, seoKey: (r) => `blog-category:${r.id}`, viewUrl: (r) => routes.blogCategory({ category_slug: r.category_slug }), icon: "folder", hint: "Blog categories", table: "blog_categories", label: "Blog categories", singular: "Category", group: "Content",
+    key: "categories", archivable: true, unique: { column: "category_slug", label: "blog category" }, seoKey: (r) => `blog-category:${r.id}`, viewUrl: (r) => routes.blogCategory({ category_slug: r.category_slug }), icon: "folder", hint: "Blog categories", table: "blog_categories", label: "Blog categories", singular: "Category", group: "Content",
     columns: ["category_name", "category_slug"],
     fields: [{ name: "category_name", label: "Category name", type: "text", required: true }],
     derive: (v) => ({ category_slug: slug(v.category_name ?? "") }),

@@ -7,7 +7,7 @@ export async function loadOptions(supabase: SupabaseClient): Promise<Record<stri
     supabase.from("sectors").select("id, sector_name").order("id"),
     supabase.from("sections").select("id, section_name").order("id"),
     supabase.from("project_aminities").select("id, aminity_name").order("id"),
-    supabase.from("blog_categories").select("id, category_name").order("id"),
+    supabase.from("blog_categories").select("id, category_name").is("archived_at", null).order("id"),
   ]);
   const map = <T extends { id: number }>(rows: T[] | null, label: (r: T) => string | null) =>
     (rows ?? []).map((r) => ({ value: String(r.id), label: label(r) ?? `#${r.id}` }));
