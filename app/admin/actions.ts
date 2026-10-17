@@ -47,6 +47,7 @@ async function duplicateMessage(
 function refreshSite() {
   updateTag("content");
   revalidatePath("/", "layout");
+  revalidatePath("/admin", "layout"); // sidebar badges, e.g. the archived counts
 }
 
 export async function saveRecord(resourceKey: string, id: number | null, _: ActionState, form: FormData): Promise<ActionState> {

@@ -13,10 +13,18 @@ export default async function PanelLayout({ children }: { children: React.ReactN
   const canCareers = role === "admin" || role === "hr";
   const canEnquiries = role === "admin" || role === "telecaller" || role === "marketing";
   const canContent = role === "admin" || role === "marketing" || role === "designer";
-  const [{ count: newEnquiries }, { count: unreadApplications }, { count: passwordRequests }] = await Promise.all([
+  const archived = (table: string) =>
+    !isAdmin ? { count: 0 } : supabase.from(table).select("id", { count: "exact", head: true }).not("archived_at", "is", null);
+  const [
+    { count: newEnquiries }, { count: unreadApplications }, { count: passwordRequests },
+    { count: archivedEnquiries }, { count: archivedPosts }, { count: archivedCategories },
+  ] = await Promise.all([
     !canEnquiries ? { count: 0 } : supabase.from("applies").select("id", { count: "exact", head: true }).is("read_at", null).is("archived_at", null),
     !canCareers ? { count: 0 } : supabase.from("career_pages").select("id", { count: "exact", head: true }).is("read_at", null),
     !isAdmin ? { count: 0 } : supabase.from("password_requests").select("id", { count: "exact", head: true }).eq("status", "pending"),
+    archived("applies"),
+    archived("blog_posts"),
+    archived("blog_categories"),
   ]);
   const navResources = RESOURCES.filter(
     (r) => !r.home && (isAdmin || (canCareers && r.group === "Careers") || (canContent && isContentSection(r))),
@@ -53,9 +61,16 @@ export default async function PanelLayout({ children }: { children: React.ReactN
           )}
           {isAdmin && (
             <>
-              <NavLink href="/admin/enquiries?view=archived" icon="folder" label="Archived enquiries" plain />
-              <NavLink href="/admin/posts?view=archived" icon="folder" label="Archived blog posts" plain />
-              <NavLink href="/admin/categories?view=archived" icon="folder" label="Archived categories" plain />
+              {([
+                ["/admin/enquiries?view=archived", "Archived enquiries", archivedEnquiries],
+                ["/admin/posts?view=archived", "Archived blog posts", archivedPosts],
+                ["/admin/categories?view=archived", "Archived categories", archivedCategories],
+              ] as const).map(([href, label, count]) => (
+                <div className="ad-nav-badge-wrap" key={href}>
+                  <NavLink href={href} icon="folder" label={label} plain />
+                  {!!count && <span className="ad-badge" title="Archived items waiting for you to restore or delete">{count}</span>}
+                </div>
+              ))}
             </>
           )}
           {isAdmin && (
