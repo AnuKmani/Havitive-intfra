@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Breadcrumb from "@/components/site/Breadcrumb";
+import CsrGallery from "@/components/site/CsrGallery";
 import VideoCard from "@/components/site/VideoCard";
 import "@/components/site/showcase.css";
 import { getShowcase } from "@/lib/data";
@@ -43,6 +44,17 @@ export default async function ShowcasePage({ params }: Props) {
           <p className="sc-intro">{section.intro}</p>
           {!items.length ? (
             <p className="sc-empty">New updates are coming soon.</p>
+          ) : section.key === "csr" ? (
+            <CsrGallery
+              items={items.filter((it) => it.image).map((it) => ({
+                id: it.id,
+                title: it.title,
+                description: it.description,
+                image: media(it.image),
+                alt: it.image_alt || it.title,
+                date: it.event_date ? (/^\d{4}-\d{2}-\d{2}$/.test(it.event_date) ? formatDate(it.event_date) : it.event_date) : null,
+              }))}
+            />
           ) : (
             <div className="sc-grid">
               {items.map((it) => {

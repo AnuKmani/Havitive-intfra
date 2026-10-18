@@ -112,3 +112,29 @@
   .sw-card { padding: 16px 16px; }
   .sw-cta { flex-direction: column; align-items: flex-start; padding: 18px 18px; margin-top: 22px; }
 }
+
+/* CSR activities: cards + popup slider */
+.csr-card { padding: 0; }
+.csr-open { display: flex; flex-direction: column; width: 100%; padding: 0; border: 0; background: none; text-align: left; cursor: pointer; font: inherit; color: inherit; }
+.csr-open .sc-media img { transition: transform .5s; }
+.csr-open:hover .sc-media img { transform: scale(1.06); }
+.csr-open .sc-body, .csr-open .sc-media { display: block; }
+.csr-open .sc-media { position: relative; overflow: hidden; }
+.csr-title { display: block; }
+.csr-short { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.csr-modal { position: fixed; inset: 0; z-index: 9999; background: rgba(5, 20, 30, 0.88); display: flex; align-items: center; justify-content: center; padding: 20px; animation: csrFade .25s; }
+.csr-dialog { position: relative; width: 100%; max-width: 920px; max-height: 100%; overflow: auto; background: #fff; border-radius: 16px; }
+.csr-stage { position: relative; aspect-ratio: 16 / 9; background: #0b2234; overflow: hidden; }
+.csr-big { width: 100%; height: 100%; object-fit: cover; display: block; animation: csrSlide .4s ease; }
+.csr-info { padding: 20px 26px 26px; animation: csrFade .4s; }
+.csr-info h3 { margin: 0 0 8px; font-size: 24px; }
+.csr-info p { margin: 0; font-size: 16px; line-height: 1.7; }
+.csr-count { display: block; margin-top: 14px; font-size: 13px; color: #7a8791; }
+.csr-close { position: absolute; z-index: 3; top: 10px; right: 12px; width: 38px; height: 38px; border-radius: 50%; border: 0; background: rgba(255, 255, 255, .92); font-size: 26px; line-height: 1; cursor: pointer; }
+.csr-nav { position: absolute; z-index: 2; top: 50%; width: 44px; height: 44px; margin-top: -22px; border-radius: 50%; border: 0; background: rgba(255, 255, 255, .92); font-size: 28px; line-height: 1; cursor: pointer; }
+.csr-nav.prev { left: 12px; }
+.csr-nav.next { right: 12px; }
+@keyframes csrFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes csrSlide { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: none; } }
+@media (max-width: 767px) { .csr-info { padding: 16px 18px 20px; } .csr-info h3 { font-size: 20px; } }
+@media (prefers-reduced-motion: reduce) { .csr-big, .csr-info, .csr-modal { animation: none; } }
