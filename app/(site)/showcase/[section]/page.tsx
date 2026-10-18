@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Breadcrumb from "@/components/site/Breadcrumb";
 import ShowcasePager, { SHOWCASE_PER_PAGE, showcasePageNumber } from "@/components/site/ShowcasePager";
-import { AwardsGrid, CsrList, HandoverList, MediaList, ProjectVideos, type ShowItem } from "@/components/site/ShowcaseLayouts";
+import { PictureList, ProjectVideos, type ShowItem } from "@/components/site/ShowcaseLayouts";
 import "@/components/site/showcase.css";
 import { getShowcase } from "@/lib/data";
 import { media } from "@/lib/media";
@@ -48,11 +48,8 @@ export default async function ShowcasePage({ params, searchParams }: Props) {
   }));
 
   const list =
-    section.key === "csr" ? <CsrList items={items} /> :
-    section.key === "handover" ? <HandoverList items={items} /> :
-    section.key === "awards" ? <AwardsGrid items={items} /> :
-    section.key === "media" ? <MediaList items={items} /> :
-    <ProjectVideos items={items} />;
+    section.key === "project-videos" ? <ProjectVideos items={items} /> :
+    <PictureList items={items} variant={section.key as "csr" | "handover" | "awards" | "media"} />;
 
   const wrap = section.key === "awards" ? " aw-wrap" : section.key === "project-videos" ? " pv-wrap" : "";
 
