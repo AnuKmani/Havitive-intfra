@@ -233,3 +233,6 @@
 .mg-cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 36px 16px 14px; text-align: left; color: #fff; font-size: 15px; font-weight: 600; line-height: 1.35; background: linear-gradient(0deg, rgba(5, 20, 30, .85), transparent); opacity: 0; transform: translateY(8px); transition: opacity .3s, transform .3s; }
 .mg-tile:hover .mg-cap, .mg-tile:focus-visible .mg-cap { opacity: 1; transform: none; }
 @media (hover: none) { .mg-cap { opacity: 1; transform: none; } }
+.aw-open .aw-photo, .aw-open .aw-body { display: block; }
+.aw-open .aw-body { padding-top: 38px; }
+.aw-open .aw-year { margin-top: 2px; }
