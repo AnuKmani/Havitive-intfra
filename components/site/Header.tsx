@@ -51,15 +51,12 @@ export default async function Header() {
                     <li className="menu-item-has-children">
                       <a href="#">Showcase</a>
                       <ul className="sub-menu">
-                        <li><a href="/showcase/testimonials">Testimonials</a></li>
-                        <li><a href="/showcase/csr-activities">CSR Activities</a></li>
                         <li><a href="/showcase/handing-over-events">Handing Over Events</a></li>
-                        <li><a href="/showcase/awards-and-recognition">Awards &amp; Recognition</a></li>
                         <li><a href="/showcase/media">Media</a></li>
                         <li><a href="/showcase/project-videos">Project Videos</a></li>
                       </ul>
                     </li>
-                    <li><a href="/blog">Blog</a></li>
+                    <li><a href="/showcase/testimonials">Testimonials</a></li>
                     <li><a href="/careers">Career</a></li>
                   </ul>
                 </nav>
@@ -129,15 +126,12 @@ export async function MobileMenu() {
             <li className="menu-item-has-children">
               <a href="#">Showcase</a>
               <ul className="sub-menu">
-                <li><a href="/showcase/testimonials">Testimonials</a></li>
-                <li><a href="/showcase/csr-activities">CSR Activities</a></li>
                 <li><a href="/showcase/handing-over-events">Handing Over Events</a></li>
-                <li><a href="/showcase/awards-and-recognition">Awards &amp; Recognition</a></li>
                 <li><a href="/showcase/media">Media</a></li>
                 <li><a href="/showcase/project-videos">Project Videos</a></li>
               </ul>
             </li>
-            <li><a href="/blog">Blog</a></li>
+            <li><a href="/showcase/testimonials">Testimonials</a></li>
             <li><a href="/careers">Career</a></li>
             <li><a href="/contact">Contact Us</a></li>
           </ul>
