@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
-export type ManagementMember = {
+export type TeamCardMember = {
   href: string;
   name: string;
   designation: string | null;
@@ -19,7 +19,7 @@ export type ManagementMember = {
 };
 
 /** A management team card: pressing it opens the member's details in a popup instead of a new page. */
-export default function ManagementCard({ member: m }: { member: ManagementMember }) {
+export default function TeamCard({ member: m, variant = "management" }: { member: TeamCardMember; variant?: "management" | "employee" }) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -35,23 +35,49 @@ export default function ManagementCard({ member: m }: { member: ManagementMember
 
   return (
     <>
-      <div className="th-team team-card style3">
-        <div className="img-wrap">
-          <div className="team-img">
-            <a href={m.href} onClick={show} aria-label={`About ${m.name}`}><img src={m.img} alt={m.imgAlt} loading="lazy" /></a>
+      {variant === "employee" ? (
+        <div className="th-team team-card">
+          <div className="img-wrap">
+            <div className="team-img" data-mask-src="/frontend/assets/img/theme-img/team-shape1.png">
+              <a href={m.href} onClick={show} aria-label={`About ${m.name}`}><img src={m.img} alt={m.imgAlt} loading="lazy" /></a>
+            </div>
           </div>
-          <div className="th-social-wrap">
-            <a className="icon-btn" href={m.href} onClick={show} aria-label={`About ${m.name}`}><img src="/frontend/assets/img/icon/arrow-right.svg" alt="" /></a>
+          <div className="team-card-content">
+            <div className="media">
+              <div className="media-left">
+                <h3 className="box-title"><a href={m.href} onClick={show}>{m.name}</a></h3>
+                <span className="team-desig">{m.designation}</span>
+              </div>
+              <div className="media-body">
+                {m.phone && <a className="icon-btn" href={`tel:${m.phone}`} aria-label={`Call ${m.name}`}><img src="/frontend/assets/img/icon/phone.svg" alt="" /></a>}
+              </div>
+            </div>
+            {m.linkedin && (
+              <div className="th-social">
+                <a target="_blank" rel="noopener" href={m.linkedin} aria-label="LinkedIn"><i className="fab fa-linkedin-in"></i></a>
+              </div>
+            )}
           </div>
         </div>
-        <div className="team-card-content">
-          <div className="media-left">
-            <h3 className="box-title"><a href={m.href} onClick={show}>{m.name}</a></h3>
-            <span className="team-desig">{m.designation}</span>
+      ) : (
+        <div className="th-team team-card style3">
+          <div className="img-wrap">
+            <div className="team-img">
+              <a href={m.href} onClick={show} aria-label={`About ${m.name}`}><img src={m.img} alt={m.imgAlt} loading="lazy" /></a>
+            </div>
+            <div className="th-social-wrap">
+              <a className="icon-btn" href={m.href} onClick={show} aria-label={`About ${m.name}`}><img src="/frontend/assets/img/icon/arrow-right.svg" alt="" /></a>
+            </div>
           </div>
-          {m.phone && <a className="icon-btn" href={`tel:${m.phone}`} aria-label={`Call ${m.name}`}><img src="/frontend/assets/img/icon/phone.svg" alt="" /></a>}
+          <div className="team-card-content">
+            <div className="media-left">
+              <h3 className="box-title"><a href={m.href} onClick={show}>{m.name}</a></h3>
+              <span className="team-desig">{m.designation}</span>
+            </div>
+            {m.phone && <a className="icon-btn" href={`tel:${m.phone}`} aria-label={`Call ${m.name}`}><img src="/frontend/assets/img/icon/phone.svg" alt="" /></a>}
+          </div>
         </div>
-      </div>
+      )}
       {open && createPortal(
         <div className="tm-overlay" role="presentation" onClick={(e) => { if (e.target === e.currentTarget) setOpen(false); }}>
           <div className="tm-box" role="dialog" aria-modal="true" aria-label={m.name}>

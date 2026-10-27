@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { staticPageMetadata } from "@/lib/seo-page";
 import Breadcrumb from "@/components/site/Breadcrumb";
-import ManagementCard from "@/components/site/ManagementCard";
+import TeamCard, { type TeamCardMember } from "@/components/site/TeamCard";
+import type { TeamMember } from "@/lib/types";
 import Strengths from "@/components/site/Strengths";
 import { getAboutPage, getAboutStrengths, getCompanies, getTeam } from "@/lib/data";
 import { media } from "@/lib/media";
@@ -13,6 +14,23 @@ export const revalidate = 300;
 
 export function generateMetadata(): Promise<Metadata> {
   return staticPageMetadata("page:about");
+}
+
+/** What a team card and its popup need to show for one person. */
+function cardMember(m: TeamMember): TeamCardMember {
+  return {
+    href: routes.team(m),
+    name: m.name ?? "Team member",
+    designation: m.designation,
+    img: media(m.img),
+    imgAlt: m.img_alt || m.name || "Team member",
+    phone: m.phone,
+    email: m.email,
+    linkedin: m.linkedin,
+    facts: ([["Position", m.designation], ["Experience", m.experience], ["Specialised", m.location], ["Practice Area", m.practice_area], ["Projects Done", m.project_done]] as [string, string | null][])
+      .filter((f): f is [string, string] => !!f[1]?.trim()),
+    aboutHtml: richText(m.about),
+  };
 }
 
 /** The wording of every block comes from Admin > About page. */
@@ -146,21 +164,7 @@ export default async function AboutPage() {
               <div className="swiper-wrapper">
                 {management.map((m) => (
                   <div className="swiper-slide" key={m.id}>
-                    <ManagementCard
-                      member={{
-                        href: routes.team(m),
-                        name: m.name ?? "Team member",
-                        designation: m.designation,
-                        img: media(m.img),
-                        imgAlt: m.img_alt || m.name || "Team member",
-                        phone: m.phone,
-                        email: m.email,
-                        linkedin: m.linkedin,
-                        facts: ([["Position", m.designation], ["Experience", m.experience], ["Specialised", m.location], ["Practice Area", m.practice_area], ["Projects Done", m.project_done]] as [string, string | null][])
-                          .filter((f): f is [string, string] => !!f[1]?.trim()),
-                        aboutHtml: richText(m.about),
-                      }}
-                    />
+                    <TeamCard member={cardMember(m)} />
                   </div>
                 ))}
               </div>
@@ -188,29 +192,7 @@ export default async function AboutPage() {
             <div className="swiper-wrapper">
               {team.map((m) => (
                 <div className="swiper-slide" key={m.id}>
-                  <div className="th-team team-card">
-                    <div className="img-wrap">
-                      <div className="team-img" data-mask-src="/frontend/assets/img/theme-img/team-shape1.png">
-                        <img src={media(m.img)} alt={m.img_alt || m.name || "Team member"} loading="lazy" />
-                      </div>
-                    </div>
-                    <div className="team-card-content">
-                      <div className="media">
-                        <div className="media-left">
-                          <h3 className="box-title"><a href={routes.team(m)}>{m.name}</a></h3>
-                          <span className="team-desig">{m.designation}</span>
-                        </div>
-                        <div className="media-body">
-                          {m.phone && <a className="icon-btn" href={`tel:${m.phone}`} aria-label={`Call ${m.name}`}><img src="/frontend/assets/img/icon/phone.svg" alt="" /></a>}
-                        </div>
-                      </div>
-                      {m.linkedin && (
-                        <div className="th-social">
-                          <a target="_blank" rel="noopener" href={m.linkedin} aria-label="LinkedIn"><i className="fab fa-linkedin-in"></i></a>
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                  <TeamCard variant="employee" member={cardMember(m)} />
                 </div>
               ))}
             </div>
