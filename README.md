@@ -30,10 +30,8 @@ npm run dev                  # http://localhost:3000
 | --- | --- |
 | `app/(site)` | Public pages: home, about, sectors, projects, services, team, blog, careers, contact |
 | `app/admin` | Admin panel at `/admin` (sign in with a Supabase user listed in `public.admins`) |
-| `app/api/chat` | Streaming chat endpoint used by the "Ask Havi" widget |
 | `lib/data.ts` | All public data queries |
 | `lib/admin/resources.ts` | The admin's editable sections and their fields |
-| `lib/chat/` | The assistant's instructions and the knowledge base built from Supabase |
 | `supabase/migrations` | Database schema, row-level security and storage buckets |
 | `scripts/mysql_to_pg.py` | Converts the old phpMyAdmin MySQL dump into Postgres inserts |
 

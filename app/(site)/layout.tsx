@@ -3,7 +3,6 @@ import Header, { MobileMenu } from "@/components/site/Header";
 import Footer from "@/components/site/Footer";
 import { SideMenu } from "@/components/site/ContactInfo";
 import ThemeScripts from "@/components/site/ThemeScripts";
-import ChatWidget from "@/components/chat/ChatWidget";
 import JsonLd from "@/components/site/JsonLd";
 import { SITE } from "@/lib/site";
 
@@ -93,7 +92,6 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
             ></path>
           </svg>
         </div>
-        <ChatWidget />
         <ThemeScripts />
       </body>
     </html>
