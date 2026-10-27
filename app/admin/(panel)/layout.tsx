@@ -76,7 +76,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
           )}
           {isAdmin && (
             <>
-              <NavLink href="/admin/team" icon="users" label="Team logins" />
+              <NavLink href="/admin/staff-logins" icon="users" label="Team logins" />
               <div className="ad-nav-badge-wrap">
                 <NavLink href="/admin/password-requests" icon="key" label="Password requests" />
                 {!!passwordRequests && <span className="ad-badge" title="Someone is waiting for a password">{passwordRequests}</span>}

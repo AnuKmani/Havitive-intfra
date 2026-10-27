@@ -41,7 +41,7 @@ export function CreateLoginForm() {
     return (
       <>
         <Done message={state.message} value={value} />
-        <p style={{ marginTop: 12 }}><a className="ad-btn ad-btn-light" href="/admin/team">Done</a></p>
+        <p style={{ marginTop: 12 }}><a className="ad-btn ad-btn-light" href="/admin/staff-logins">Done</a></p>
         <small className="ad-hint">Username: {email}</small>
       </>
     );

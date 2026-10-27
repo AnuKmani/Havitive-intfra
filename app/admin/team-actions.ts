@@ -37,6 +37,6 @@ export async function resetStaffPassword(userId: string, _: TeamState, form: For
 export async function removeStaff(userId: string) {
   const { supabase } = await requireAdmin();
   await supabase.rpc("admin_remove_staff", { p_user_id: userId });
-  revalidatePath("/admin/team");
+  revalidatePath("/admin/staff-logins");
   revalidatePath("/admin", "layout");
 }
