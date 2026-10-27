@@ -4,12 +4,12 @@ export type Home = Timestamps & {
   id: number; home_images_alt?: string | null; category: string | null; main_content: string | null; meta_title: string | null;
   meta_descp: string | null; home_images: string | null; description: string | null;
   description_head: string | null; icon: string | null; heading?: string | null; button_text?: string | null;
-  shadow_text?: string | null; button_link?: string | null;
+  shadow_text?: string | null; button_link?: string | null; video_url?: string | null;
 };
 export type OfferCard = Timestamps & { id: number; title: string | null; text: string | null; img: string | null; img_alt: string | null };
 export type ChooseCard = OfferCard;
 export type AboutPage = Timestamps & {
-  id: number;
+  id: number; video_url?: string | null;
   mission_title: string | null; mission_text: string | null; mission_image: string | null; mission_image_alt?: string | null;
   vision_text: string | null; vision_image: string | null; vision_image_alt?: string | null;
   companies_kicker: string | null; companies_title: string | null; companies_text: string | null;

@@ -19,13 +19,13 @@ export function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const [banners, counters, about, service, offerCards, completed, completedHome, projects, clients, sectors, latestHome, chooseHome, chooseCards, galleries] = await Promise.all([
-    getBanners(), getCounters(), getHome("about"), getHome("service"), getOfferCards(), getCompletedProjects(), getHome("projects"), getProjects(),
+  const [banners, heroVideo, counters, about, service, offerCards, completed, completedHome, projects, clients, sectors, latestHome, chooseHome, chooseCards, galleries] = await Promise.all([
+    getBanners(), getHome("hero_video"), getCounters(), getHome("about"), getHome("service"), getOfferCards(), getCompletedProjects(), getHome("projects"), getProjects(),
     getClients(), getSectors(), getHome("latest"), getHome("choose"), getChooseCards(), getAllGalleries(),
   ]);
   return (
     <>
-      <Hero banners={banners} />
+      <Hero banners={banners} videoUrl={heroVideo?.main_content?.trim() || undefined} />
       <Counters counters={counters} />
       <About about={about} />
       <WhatWeOffer home={service} cards={offerCards} />

@@ -16,6 +16,7 @@ const RETURN = "/admin/home";
 // Order matches the sections on the live home page.
 const SECTIONS: { key: string; anchor: string; label: string }[] = [
   { key: "banners", anchor: "banners", label: "Hero banners" },
+  { key: "hero-video", anchor: "hero-video", label: "Banner video" },
   { key: "counters", anchor: "counters", label: "Counters" },
   { key: "home-about", anchor: "about", label: "About" },
   { key: "home-service", anchor: "offer", label: "What we offer" },

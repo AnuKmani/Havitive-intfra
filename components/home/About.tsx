@@ -34,7 +34,7 @@ export default function About({ about }: { about: Home | null }) {
               </div>
               <div className="about-tag">
                 <div className="about-experience-tag"><span className="circle-title-anime">Havitive Infra</span></div>
-                <a href={SITE.video} className="play-btn popup-video" aria-label="Play video"><i className="fa-sharp fa-solid fa-play"></i></a>
+                <a href={about?.video_url?.trim() || SITE.video} className="play-btn popup-video" aria-label="Play video"><i className="fa-sharp fa-solid fa-play"></i></a>
               </div>
             </div>
           </div>

@@ -2,7 +2,7 @@ import type { HomeBanner } from "@/lib/types";
 import { media } from "@/lib/media";
 import { SITE } from "@/lib/site";
 
-export default function Hero({ banners }: { banners: HomeBanner[] }) {
+export default function Hero({ banners, videoUrl }: { banners: HomeBanner[]; videoUrl?: string }) {
   return (
     <div className="hero-1" id="hero">
       <div className="swiper th-slider hero-slider1" id="heroSlide1" data-slider-options='{"effect":"fade"}'>
@@ -31,7 +31,7 @@ export default function Hero({ banners }: { banners: HomeBanner[] }) {
                     </div>
                     <div className="col-lg-4">
                       <div className="hero-video-wrap text-center" data-ani="slideinright" data-ani-delay="0.4s">
-                        <a href={SITE.video} className="play-btn style2 popup-video" aria-label="Play Havitive video">
+                        <a href={videoUrl ?? SITE.video} className="play-btn style2 popup-video" aria-label="Play Havitive video">
                           <i className="fa-sharp fa-solid fa-play"></i>
                         </a>
                       </div>
