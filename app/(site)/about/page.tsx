@@ -221,7 +221,7 @@ export default async function AboutPage() {
       </section>
 
       <section className="space-bottom bg-theme overflow-hidden">
-        <div className="container" style={{ marginTop: 46 }}>
+        <div className="container" style={{ marginTop: "clamp(46px, 8vw, 100px)" }}>
           <div className="row gy-80 gx-40 align-items-center">
             <div className="col-xl-6">
               <div className="cta-thumb img-shine" data-mask-src="/frontend/assets/img/shape/cta_1_1-img-mask.png">
