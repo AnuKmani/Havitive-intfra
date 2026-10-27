@@ -8,9 +8,8 @@ import CompletedProjects from "@/components/home/CompletedProjects";
 import LatestProjects from "@/components/home/LatestProjects";
 import Clients from "@/components/home/Clients";
 import Appointment from "@/components/home/Appointment";
-import BlogSlider from "@/components/home/BlogSlider";
 import {
-  getAllGalleries, getBanners, getChooseCards, getClients, getCompletedProjects, getCounters, getHome, getOfferCards, getPosts, getProjects, getSectors,
+  getAllGalleries, getBanners, getChooseCards, getClients, getCompletedProjects, getCounters, getHome, getOfferCards, getProjects, getSectors,
 } from "@/lib/data";
 
 export const revalidate = 300;
@@ -20,9 +19,9 @@ export function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const [banners, counters, about, service, offerCards, completed, completedHome, projects, clients, sectors, posts, latestHome, chooseHome, chooseCards, galleries] = await Promise.all([
+  const [banners, counters, about, service, offerCards, completed, completedHome, projects, clients, sectors, latestHome, chooseHome, chooseCards, galleries] = await Promise.all([
     getBanners(), getCounters(), getHome("about"), getHome("service"), getOfferCards(), getCompletedProjects(), getHome("projects"), getProjects(),
-    getClients(), getSectors(), getPosts(), getHome("latest"), getHome("choose"), getChooseCards(), getAllGalleries(),
+    getClients(), getSectors(), getHome("latest"), getHome("choose"), getChooseCards(), getAllGalleries(),
   ]);
   return (
     <>
@@ -35,7 +34,6 @@ export default async function HomePage() {
       <WhyChooseUs home={chooseHome} cards={chooseCards} />
       <Clients clients={clients} />
       <Appointment sectors={sectors} />
-      <BlogSlider posts={posts} />
     </>
   );
 }
