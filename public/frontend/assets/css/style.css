@@ -7538,6 +7538,19 @@ ol.wp-block-rss {
   .th-widget-about .about-text {
     margin-bottom: 20px;
   }
+  .footer-wrapper.footer-layout2 .widget-area {
+    padding-top: 50px;
+    padding-bottom: 10px;
+  }
+  .footer-widget {
+    margin-bottom: 30px;
+  }
+  .footer-widget .widget_title {
+    margin-bottom: 22px;
+  }
+  .th-widget-about .about-logo {
+    margin-bottom: 20px;
+  }
 }
 
 /*------------------- 4.2. Header  -------------------*/
