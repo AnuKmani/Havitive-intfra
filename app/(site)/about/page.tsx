@@ -64,7 +64,9 @@ export default async function AboutPage() {
                   <div className="img1"><img src={media(a?.mission_image)} alt={a?.mission_image_alt || "Havitive mission"} /></div>
                   <div className="about-tag">
                     <div className="about-experience-tag"><span className="circle-title-anime">Havitive Infra Pvt Ltd</span></div>
-                    <a href={a?.video_url?.trim() || SITE.video} className="play-btn popup-video" aria-label="Play video"><i className="fa-sharp fa-solid fa-play"></i></a>
+                    {a?.video_url?.trim() && (
+                      <a href={a.video_url.trim()} className="play-btn popup-video" aria-label="Play video"><i className="fa-sharp fa-solid fa-play"></i></a>
+                    )}
                   </div>
                 </div>
               </div>

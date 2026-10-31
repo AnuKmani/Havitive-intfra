@@ -30,11 +30,14 @@ export default function Hero({ banners, videoUrl }: { banners: HomeBanner[]; vid
                       </div>
                     </div>
                     <div className="col-lg-4">
-                      <div className="hero-video-wrap text-center" data-ani="slideinright" data-ani-delay="0.4s">
-                        <a href={videoUrl ?? SITE.video} className="play-btn style2 popup-video" aria-label="Play Havitive video">
-                          <i className="fa-sharp fa-solid fa-play"></i>
-                        </a>
-                      </div>
+                      {/* The play button only shows once a video link is saved in the admin. */}
+                      {videoUrl && (
+                        <div className="hero-video-wrap text-center" data-ani="slideinright" data-ani-delay="0.4s">
+                          <a href={videoUrl} className="play-btn style2 popup-video" aria-label="Play Havitive video">
+                            <i className="fa-sharp fa-solid fa-play"></i>
+                          </a>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

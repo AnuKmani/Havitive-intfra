@@ -106,7 +106,7 @@ export const RESOURCES: Resource[] = [
     key: "hero-video", home: true, icon: "play", hint: "The play button in the home page banner opens this YouTube video", table: "homes", label: "Banner YouTube video", singular: "Banner video", group: "Home page",
     fixed: { category: "hero_video" }, singleton: true, columns: ["main_content"],
     fields: [
-      { name: "main_content", label: "YouTube video link", type: "url", required: true, help: "Paste the YouTube link, e.g. https://www.youtube.com/watch?v=… It plays in a popup when a visitor presses the play button on the banner." },
+      { name: "main_content", label: "YouTube video link", type: "url", help: "Paste the YouTube link, e.g. https://www.youtube.com/watch?v=… The play button then appears on the banner and plays it in a popup. Leave empty to hide the play button." },
     ],
   },
   {
@@ -123,7 +123,7 @@ export const RESOURCES: Resource[] = [
     fields: [
       { name: "main_content", label: "About text", type: "textarea", required: true },
       { name: "home_images", label: "Slider images", type: "images", folder: "home_img", legacyFolder: "upload/home_img" },
-      { name: "video_url", label: "YouTube video link", type: "url", help: "The play button on the About section opens this YouTube video in a popup. Leave empty to use the default company video." },
+      { name: "video_url", label: "YouTube video link", type: "url", help: "The play button on the About section opens this YouTube video in a popup. Leave empty to hide the play button." },
     ],
   },
   {
@@ -254,7 +254,7 @@ export const RESOURCES: Resource[] = [
       { name: "mission_title", label: "Vision & mission heading", type: "text", required: true },
       { name: "mission_text", label: "Vision text", type: "textarea", help: "Leave a blank line between paragraphs." },
       { name: "mission_image", label: "Vision picture (top right)", type: "image", folder: "about" },
-      { name: "video_url", label: "YouTube video link", type: "url", help: "The play button on the Vision picture opens this YouTube video in a popup. Leave empty to use the default company video." },
+      { name: "video_url", label: "YouTube video link", type: "url", help: "The play button on the Vision picture opens this YouTube video in a popup. Leave empty to hide the play button." },
       { name: "vision_image", label: "Mission picture (bottom left)", type: "image", folder: "about" },
       { name: "vision_text", label: "Mission text", type: "textarea", help: "Leave a blank line between paragraphs." },
       { name: "companies_kicker", label: "Group of companies: big background word", type: "text", help: "Faint word behind the heading, e.g. Havitive." },
